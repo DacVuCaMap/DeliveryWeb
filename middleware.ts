@@ -10,28 +10,28 @@ export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
     // Các route public không cần token
-    const publicRoutes = ['/signin', '/signup']
+    const publicRoutes = ['/signin', '/signup',"/admin"]
 
     // Nếu là route public, cho phép truy cập không cần kiểm tra token
     if (publicRoutes.includes(pathname)) {
         return NextResponse.next()
     }
 
-    // Nếu là route admin
-    if (pathname.startsWith('/admin')) {
-        // Kiểm tra token
-        if (!token) {
-            // Nếu không có token, redirect về signin
-            return NextResponse.redirect(new URL('/signin', request.url))
-        }
-        try {
-            // Giả sử token hợp lệ, tiếp tục request
-            return NextResponse.next()
-        } catch (error) {
-            // Nếu token không hợp lệ, redirect về signin
-            return NextResponse.redirect(new URL('/signin', request.url))
-        }
-    }
+    // // Nếu là route admin
+    // if (pathname.startsWith('/admin')) {
+    //     // Kiểm tra token
+    //     if (!token) {
+    //         // Nếu không có token, redirect về signin
+    //         return NextResponse.redirect(new URL('/signin', request.url))
+    //     }
+    //     try {
+    //         // Giả sử token hợp lệ, tiếp tục request
+    //         return NextResponse.next()
+    //     } catch (error) {
+    //         // Nếu token không hợp lệ, redirect về signin
+    //         return NextResponse.redirect(new URL('/signin', request.url))
+    //     }
+    // }
 
     // Đối với các route khác, tiếp tục request bình thường
     return NextResponse.next()
