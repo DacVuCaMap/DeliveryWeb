@@ -89,11 +89,11 @@ const othersItems: NavItem[] = [
     icon: <CircleUserRound />,
     name: "Hồ sơ",
     subItems: [
-      { name: "Tất cả", path: "/line-chart", pro: false },
-      { name: "Người dùng", path: "/bar-chart", pro: false },
-      { name: "Người vận chuyển", path: "/bar-charta", pro: false },
-      { name: "Đối tác", path: "/bar-chartb", pro: false },
-      { name: "Nhân viên", path: "/bar-chartc", pro: false },
+      { name: "Tất cả", path: "/admin/users/all-user", pro: false },
+      { name: "Người dùng", path: "/admin/users/user", pro: false },
+      { name: "Người vận chuyển", path: "/admin/users/shiper", pro: false },
+      { name: "Đối tác", path: "/admin/users/partners", pro: false },
+      { name: "Nhân viên", path: "/admin/users/employee", pro: false },
     ],
   },
   {
