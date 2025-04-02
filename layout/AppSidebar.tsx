@@ -18,20 +18,20 @@ import {
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
-import { AlignJustify, AlignLeft, ChartColumnIncreasing, ChevronRight, CircleUserRound, SquareMenu } from "lucide-react";
+import { AlignJustify, AlignLeft, Bell, ChartColumnIncreasing, ChevronRight, CircleUserRound, SquareMenu } from "lucide-react";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: string; path: string; pro?: boolean; new?: boolean; nof?:boolean }[];
 };
 
 const navItems: NavItem[] = [
   {
     icon: <SquareMenu />,
     name: "Chung",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/admin",
   },
   // {
   //   icon: <img
@@ -91,9 +91,10 @@ const othersItems: NavItem[] = [
     subItems: [
       { name: "Tất cả", path: "/admin/users/all-user", pro: false },
       { name: "Người dùng", path: "/admin/users/user", pro: false },
-      { name: "Người vận chuyển", path: "/admin/users/shiper", pro: false },
-      { name: "Đối tác", path: "/admin/users/partners", pro: false },
+      { name: "Người vận chuyển", path: "/admin/users/shipper", pro: false },
+      { name: "Đối tác", path: "/admin/users/partner", pro: false },
       { name: "Nhân viên", path: "/admin/users/employee", pro: false },
+      { name: "Duyệt tài khoản", path: "/admin/users/user-request", pro: false,nof:true },
     ],
   },
   {
@@ -217,6 +218,10 @@ const AppSidebar: React.FC = () => {
                             pro
                           </span>
                         )}
+                        {subItem.nof && (
+                          <span className="rounded-full w-2 h-2 bg-red-500"></span> 
+                        )
+                        }
                       </span>
                     </Link>
                   </li>
@@ -311,7 +316,7 @@ const AppSidebar: React.FC = () => {
         className={`py-8 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
           }`}
       >
-        <Link href="/">
+        <Link href="/admin">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <div className="flex flex-row items-center justify-center gap-2">
