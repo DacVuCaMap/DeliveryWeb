@@ -172,8 +172,8 @@ const AppHeader: React.FC = () => {
           </div>
           {/* <!-- User Area --> */}
           {/* <UserDropdown />  */}
-          <Link href="/" className="hidden underline lg:block text-sm font-medium text-gray-500 dark:text-gray-400 px-4">
-            Sign In
+          <Link href="/signin" className="hidden underline lg:block text-sm font-medium text-gray-500 dark:text-gray-400 px-4">
+            Đăng nhập
           </Link>
         </div>
       </div>

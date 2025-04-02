@@ -115,5 +115,5 @@ export default function MonthlyTarget() {
         </p>
       </div>
     </div>
-  );
+  );  
 }
