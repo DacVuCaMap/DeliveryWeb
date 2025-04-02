@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { EllipsisVertical } from "lucide-react";
 
 export default function DemographicCard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,12 +33,13 @@ export default function DemographicCard() {
 
         <div className="relative inline-block">
           <button onClick={toggleDropdown} className="dropdown-toggle">
-            <img
+            {/* <img
               src={MoreDotIcon.src || MoreDotIcon}
               alt="Box Icon"
               className="text-gray-800 dark:text-white/90 h-6 w-6"
-            />
+            /> */}
             {/* <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" /> */}
+            <EllipsisVertical className="w-6 h-6 dark:text-white"/>
           </button>
           <Dropdown
             isOpen={isOpen}

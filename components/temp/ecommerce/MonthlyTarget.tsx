@@ -10,6 +10,7 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import MoreDotIcon from "@/icons/more-dot.svg";
 import ArrowUpIcon from "@/icons/arrow-up.svg";
 import ArrowDownIcon from "@/icons/arrow-down.svg";
+import { EllipsisVertical } from "lucide-react";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -90,7 +91,8 @@ export default function MonthlyTarget() {
           </div>
           <div className="relative inline-block">
             <button onClick={toggleDropdown} className="dropdown-toggle">
-              <img src={MoreDotIcon.src} alt="More Options" className="w-6 h-6" />
+              {/* <img src={MoreDotIcon.src} alt="More Options" className="w-6 h-6" /> */}
+              <EllipsisVertical className="w-6 h-6 dark:text-white"/>
             </button>
             <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
               <DropdownItem tag="a" onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
