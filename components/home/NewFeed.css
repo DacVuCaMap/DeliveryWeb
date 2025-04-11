@@ -1,0 +1,13 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Giới hạn chiều cao bằng viewport */
+    overflow-x: hidden; /* Ngăn tràn ngang */
+  }
+  
+  .layout {
+    min-height: 100vh; /* Chiều cao tối thiểu bằng viewport */
+    background: pink; /* Giả sử đây là màu hồng bạn đề cập */
+    display: flex;
+    flex-direction: column;
+  }

@@ -1,0 +1,12 @@
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  scroll-behavior: smooth; /* Kích hoạt scroll mượt */
+  transition: scroll-top 0.2s ease-out; /* Tùy chỉnh thời gian snap: 0.2s */
+}
