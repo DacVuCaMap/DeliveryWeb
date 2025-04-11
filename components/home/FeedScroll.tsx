@@ -33,7 +33,7 @@ export default function FeedScroll() {
             id: 2,
             username: "user2",
             avatar: "/avatar1.jpg",
-            videoUrl: "/video/testvid.mp4",
+            videoUrl: "/video/test2.mp4",
             description: "Video tuyệt vời nhất hôm nay! #tiktok #fun",
             likes: 1200,
             comments: 45,
@@ -43,9 +43,9 @@ export default function FeedScroll() {
         },
         {
             id: 3,
-            username: "user2",
+            username: "user3",
             avatar: "/avatar1.jpg",
-            videoUrl: "/video/testvid.mp4",
+            videoUrl: "/video/test3.mp4",
             description: "Video tuyệt vời nhất hôm nay! #tiktok #fun",
             likes: 1200,
             comments: 45,
@@ -54,7 +54,7 @@ export default function FeedScroll() {
             isFollowing: false,
         },
     ];
-
+    console.log(videos)
     const scrollRef = useRef<HTMLDivElement>(null);
     const lastTouchY = useRef<number | null>(null);
 
