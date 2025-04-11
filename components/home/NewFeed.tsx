@@ -93,24 +93,37 @@ export default function NewFeed({ video }: { video: Video }) {
                 </div>
 
                 {/* Right actions */}
-                <div className="absolute right-2 bottom-8 -translate-y-1/2 flex flex-col gap-6 text-white z-10">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="flex flex-col items-center"
-                        onClick={() => setIsLiked(!isLiked)}
-                    >
-                        <Heart className={`w-8 h-8 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                <div className="absolute right-2 bottom-20 flex flex-col gap-4 text-white z-10">
+                    <div className='flex flex-col items-center space-y-1'>
+                        <button
+                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
+                            onClick={() => setIsLiked(!isLiked)}
+                        >
+                            <Heart className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+
+                        </button>
                         <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                        <MessageCircle className="w-8 h-8" />
-                        <span className="text-xs mt-1">{video.comments}</span>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                        <Share2 className="w-8 h-8" />
-                        <span className="text-xs mt-1">{video.shares}</span>
-                    </Button>
+                    </div>
+                    <div className='flex flex-col items-center space-y-1'>
+                        <button
+                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
+                            onClick={() => setIsLiked(!isLiked)}
+                        >
+                            <MessageCircle className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+
+                        </button>
+                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
+                    </div>
+                    <div className='flex flex-col items-center space-y-1'>
+                        <button
+                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
+                            onClick={() => setIsLiked(!isLiked)}
+                        >
+                            <Share2 className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+
+                        </button>
+                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
+                    </div>
                 </div>
             </div>
         </div>

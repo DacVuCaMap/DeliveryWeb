@@ -54,7 +54,6 @@ export default function FeedScroll() {
             isFollowing: false,
         },
     ];
-    console.log(videos)
     const scrollRef = useRef<HTMLDivElement>(null);
     const lastTouchY = useRef<number | null>(null);
 
