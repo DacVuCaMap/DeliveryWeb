@@ -77,7 +77,7 @@ export default function NewFeed({ video }: { video: Video }) {
                 />
 
                 {/* Left overlay - User info */}
-                <div className="absolute lg:bottom-2 bottom-12 left-4 right-4 text-white z-10">
+                <div className="absolute lg:bottom-2 bottom-32 left-4 right-4 text-white z-10">
                     <button className='flex flex-row bg-green-500/40 px-2 py-2 rounded-lg mb-2 text-xs'>
                         <Check className='w-4 h-4 mr-1' />
                         <span>{video.statusShip}</span>
