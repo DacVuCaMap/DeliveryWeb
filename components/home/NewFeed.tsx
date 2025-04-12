@@ -76,8 +76,8 @@ export default function NewFeed({ video }: { video: Video }) {
 
                 {/* Left overlay - User info */}
                 <div className="absolute bottom-6 left-4 right-4 text-white z-10">
-                    <button className='flex flex-row bg-green-500/40 px-4 py-2 rounded-lg mb-2'>
-                        <Check/>
+                    <button className='flex flex-row bg-green-500/40 px-2 py-2 rounded-lg mb-2 text-xs'>
+                        <Check className='w-4 h-4 mr-1'/>
                         <span>Giao gần-COD</span>
                     </button>
                     <div className="flex items-center gap-2">
@@ -97,9 +97,9 @@ export default function NewFeed({ video }: { video: Video }) {
                         <Music className="w-4 h-4" />
                         <span className="truncate">{video.music}</span>
                     </div> */}
-                    <div className="flex items-center gap-2 mt-1 ">
+                    <div className="flex items-center gap-2 mt-1">
                         <Shirt className="w-6 h-6" />
-                        <span className="truncate text-xl">{video.productName}</span>
+                        <span className="truncate text-lg">{video.productName}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1 text-sm font-bold">
                         <span className="truncate">{video.productPrice}</span>

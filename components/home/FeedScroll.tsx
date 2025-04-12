@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import "./FeedScroll.css"
 import NewFeed from './NewFeed';
-import { Shirt } from 'lucide-react';
+import { ArrowDown, ArrowUp, Shirt } from 'lucide-react';
 interface Video {
     id: number;
     username: string;
@@ -14,10 +14,10 @@ interface Video {
     shares: number;
     music: string;
     isFollowing: boolean;
-    productName:string;
-    productPrice:string;
-    quantity:number;
-    icon:any;
+    productName: string;
+    productPrice: string;
+    quantity: number;
+    icon: any;
 }
 
 export default function FeedScroll() {
@@ -33,10 +33,10 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
-            productName:"Áo thun trắng",
-            productPrice:"200.000đ",
-            quantity:21,
-            icon:<Shirt className="w-6 h-6" />,
+            productName: "Áo thun trắng",
+            productPrice: "200.000đ",
+            quantity: 21,
+            icon: <Shirt className="w-6 h-6" />,
         },
         {
             id: 2,
@@ -49,10 +49,10 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
-            productName:"Áo khoác adidas",
-            productPrice:"1.200.000đ",
-            quantity:31,
-            icon:<Shirt className="w-6 h-6" />,
+            productName: "Áo khoác adidas",
+            productPrice: "1.200.000đ",
+            quantity: 31,
+            icon: <Shirt className="w-6 h-6" />,
         },
         {
             id: 3,
@@ -65,45 +65,50 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
-            productName:"Áo 3 lỗ",
-            productPrice:"200.000đ",
-            quantity:1,
-            icon:<Shirt className="w-6 h-6" />,
+            productName: "Áo 3 lỗ",
+            productPrice: "200.000đ",
+            quantity: 1,
+            icon: <Shirt className="w-6 h-6" />,
         },
     ];
     const scrollRef = useRef<HTMLDivElement>(null);
     const lastTouchY = useRef<number | null>(null);
 
+    const scrollOnePage = (direction: "up" | "down") => {
+        if (!scrollRef.current) return;
+        const container = scrollRef.current;
+        const scrollHeight = window.innerHeight;
+        const currentScroll = container.scrollTop;
+
+        container.scrollTo({
+            top:
+                direction === "down"
+                    ? Math.min(currentScroll + scrollHeight, container.scrollHeight - scrollHeight)
+                    : Math.max(currentScroll - scrollHeight, 0),
+            behavior: "smooth",
+        });
+    };
+
     useEffect(() => {
         const handleTouchStart = (e: TouchEvent) => {
-            lastTouchY.current = e.touches[0].clientY; // Lưu vị trí bắt đầu vuốt
+            lastTouchY.current = e.touches[0].clientY;
         };
 
         const handleTouchMove = (e: TouchEvent) => {
             if (!scrollRef.current || lastTouchY.current === null) return;
 
             const currentTouchY = e.touches[0].clientY;
-            const deltaY = lastTouchY.current - currentTouchY; // Khoảng cách vuốt
-            const scrollHeight = window.innerHeight; // Chiều cao 1 video
+            const deltaY = lastTouchY.current - currentTouchY;
+            const scrollHeight = window.innerHeight;
             const container = scrollRef.current;
             const currentScroll = container.scrollTop;
 
-            // Xác định hướng vuốt và chỉ cho phép scroll 1 video
             if (deltaY > 0) {
-                // Vuốt lên -> scroll xuống 1 video
-                container.scrollTo({
-                    top: Math.min(currentScroll + scrollHeight, container.scrollHeight - scrollHeight),
-                    behavior: "smooth",
-                });
+                scrollOnePage("down");
             } else if (deltaY < 0) {
-                // Vuốt xuống -> scroll lên 1 video
-                container.scrollTo({
-                    top: Math.max(currentScroll - scrollHeight, 0),
-                    behavior: "smooth",
-                });
+                scrollOnePage("up");
             }
 
-            // Ngăn scroll mặc định để kiểm soát hoàn toàn
             e.preventDefault();
         };
 
@@ -119,15 +124,34 @@ export default function FeedScroll() {
     }, []);
 
     return (
-        <div
-            ref={scrollRef}
-            className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth scroll-hide"
-        >
-            {videos.map((video) => (
-                <div className="h-screen snap-start" key={video.id}>
-                    <NewFeed video={video} />
-                </div>
-            ))}
+        <div className="relative">
+            {/* Scrollable video list */}
+            <div
+                ref={scrollRef}
+                className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth scroll-hide"
+            >
+                {videos.map((video) => (
+                    <div className="h-screen snap-start" key={video.id}>
+                        <NewFeed video={video} />
+                    </div>
+                ))}
+            </div>
+
+            {/* Nút điều hướng */}
+            <div className="absolute hidden right-2 top-1/2 transform -translate-y-1/2 lg:flex flex-col gap-2 z-50">
+                <button
+                    onClick={() => scrollOnePage("up")}
+                    className="bg-black/70 hover:bg-black text-white p-4 rounded-full"
+                >
+                    <ArrowUp size={20} />
+                </button>
+                <button
+                    onClick={() => scrollOnePage("down")}
+                    className="bg-black/70 hover:bg-black text-white p-4 rounded-full"
+                >
+                    <ArrowDown size={20} />
+                </button>
+            </div>
         </div>
     );
 }
