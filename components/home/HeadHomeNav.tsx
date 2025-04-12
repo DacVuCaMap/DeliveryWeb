@@ -25,19 +25,19 @@ export default function HeadHomeNav() {
 
                 <div className="flex flex-row items-center justify-center gap-2">
                     <Image
-                        className="dark:hidden"
-                        src="/images/logo/logo-icon.svg"
+                        className=""
+                        src="/images/snapgo-logo.png"
                         alt="Logo"
-                        width={32}
-                        height={32}
+                        width={70}
+                        height={70}
                     />
-                    <Image
+                    {/* <Image
                         className="hidden dark:block"
                         src="/images/logo/logo-icon.svg"
                         alt="Logo"
                         width={32}
                         height={32}
-                    />
+                    /> */}
                     <span className="font-bold text-3xl dark:text-white">snapgo.vn</span>
                 </div>
                 <form className="max-w-md mx-auto">
