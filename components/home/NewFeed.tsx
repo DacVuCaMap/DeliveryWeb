@@ -19,6 +19,7 @@ interface Video {
     productName: string;
     productPrice: string;
     quantity: number;
+    statusShip:string;
 }
 export default function NewFeed({ video }: { video: Video }) {
 
@@ -78,7 +79,7 @@ export default function NewFeed({ video }: { video: Video }) {
                 <div className="absolute bottom-6 left-4 right-4 text-white z-10">
                     <button className='flex flex-row bg-green-500/40 px-2 py-2 rounded-lg mb-2 text-xs'>
                         <Check className='w-4 h-4 mr-1'/>
-                        <span>Giao gần-COD</span>
+                        <span>{video.statusShip}</span>
                     </button>
                     <div className="flex items-center gap-2">
                         <Avatar>
@@ -98,7 +99,6 @@ export default function NewFeed({ video }: { video: Video }) {
                         <span className="truncate">{video.music}</span>
                     </div> */}
                     <div className="flex items-center gap-2 mt-1">
-                        <Shirt className="w-6 h-6" />
                         <span className="truncate text-lg">{video.productName}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1 text-sm font-bold">

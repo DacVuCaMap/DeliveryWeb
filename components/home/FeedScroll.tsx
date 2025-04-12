@@ -18,6 +18,7 @@ interface Video {
     productPrice: string;
     quantity: number;
     icon: any;
+    statusShip:string;
 }
 
 export default function FeedScroll() {
@@ -33,10 +34,11 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
-            productName: "Áo thun trắng",
+            productName: "Phở bò bát tràng ",
             productPrice: "200.000đ",
             quantity: 21,
             icon: <Shirt className="w-6 h-6" />,
+            statusShip:"Giao nhanh"
         },
         {
             id: 2,
@@ -49,10 +51,11 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
-            productName: "Áo khoác adidas",
+            productName: "Áo thun cao cấp",
             productPrice: "1.200.000đ",
             quantity: 31,
             icon: <Shirt className="w-6 h-6" />,
+            statusShip:"Giao COD"
         },
         {
             id: 3,
@@ -69,6 +72,7 @@ export default function FeedScroll() {
             productPrice: "200.000đ",
             quantity: 1,
             icon: <Shirt className="w-6 h-6" />,
+            statusShip:"Giao nhanh"
         },
     ];
     const scrollRef = useRef<HTMLDivElement>(null);
