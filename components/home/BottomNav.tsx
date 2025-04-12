@@ -19,10 +19,10 @@ export function BottomNav() {
                 <span className="text-xs">Cửa hàng</span>
             </button>
             <button className="relative w-[60px] h-[40px] cursor-pointer">
-                {/* Background cyan */}
+                {/* Background cyan
                 <div className="absolute left-0 top-0 w-full h-full rounded-xl bg-cyan-400 -translate-x-1 z-0" />
                 {/* Background pink */}
-                <div className="absolute right-0 top-0 w-full h-full rounded-xl bg-pink-500 translate-x-1 z-0" />
+                {/* <div className="absolute right-0 top-0 w-full h-full rounded-xl bg-pink-500 translate-x-1 z-0" /> */}
 
                 {/* Main white button */}
                 <div className="absolute inset-0 bg-white rounded-xl flex items-center justify-center z-10">

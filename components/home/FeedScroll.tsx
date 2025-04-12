@@ -19,6 +19,7 @@ interface Video {
     quantity: number;
     icon: any;
     statusShip:string;
+    productExpired:string;
 }
 
 export default function FeedScroll() {
@@ -38,7 +39,8 @@ export default function FeedScroll() {
             productPrice: "200.000đ",
             quantity: 21,
             icon: <Shirt className="w-6 h-6" />,
-            statusShip:"Giao nhanh"
+            statusShip:"Giao nhanh",
+            productExpired:"2 tiếng"
         },
         {
             id: 2,
@@ -55,7 +57,8 @@ export default function FeedScroll() {
             productPrice: "1.200.000đ",
             quantity: 31,
             icon: <Shirt className="w-6 h-6" />,
-            statusShip:"Giao COD"
+            statusShip:"Giao COD",
+            productExpired:""
         },
         {
             id: 3,
@@ -72,7 +75,8 @@ export default function FeedScroll() {
             productPrice: "200.000đ",
             quantity: 1,
             icon: <Shirt className="w-6 h-6" />,
-            statusShip:"Giao nhanh"
+            statusShip:"Giao nhanh",
+            productExpired:"21 ngày"
         },
     ];
     const scrollRef = useRef<HTMLDivElement>(null);
