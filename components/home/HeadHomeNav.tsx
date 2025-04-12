@@ -24,11 +24,11 @@ export default function HeadHomeNav() {
             <div className="lg:fixed hidden top-4 left-2 lg:flex flex-col z-50 py-4 px-4 items-start gap-4 ">
 
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <Image
+                    {/* <Image
                         className=""
                         src="/images/snapgo-logo1.png"
                         width={70}
-                        height={70} alt={''} />
+                        height={70} alt={''} /> */}
                     {/* <Image
                         className="hidden dark:block"
                         src="/images/logo/logo-icon.svg"
