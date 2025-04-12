@@ -27,10 +27,8 @@ export default function HeadHomeNav() {
                     <Image
                         className=""
                         src="/images/snapgo-logo.png"
-                        alt="Logo"
                         width={70}
-                        height={70}
-                    />
+                        height={70} alt={''} />
                     {/* <Image
                         className="hidden dark:block"
                         src="/images/logo/logo-icon.svg"
@@ -38,7 +36,7 @@ export default function HeadHomeNav() {
                         width={32}
                         height={32}
                     /> */}
-                    <span className="font-bold text-3xl dark:text-white">snapgo.vn</span>
+                    <span className="font-bold text-3xl dark:text-white text-orange-600">snapgo.vn</span>
                 </div>
                 <form className="max-w-md mx-auto">
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Tìm kiếm</label>
