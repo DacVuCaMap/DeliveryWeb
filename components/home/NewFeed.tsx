@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { Box, Check, Heart, MessageCircle, Music, Plus, Share2, Shirt } from 'lucide-react';
+import { Bookmark, Box, Check, Heart, MessageCircle, Music, Plus, Share2, Shirt } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface Video {
@@ -147,6 +147,16 @@ export default function NewFeed({ video }: { video: Video }) {
                             onClick={() => setIsLiked(!isLiked)}
                         >
                             <Share2 className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+
+                        </button>
+                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
+                    </div>
+                    <div className='flex flex-col items-center space-y-1'>
+                        <button
+                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
+                            onClick={() => setIsLiked(!isLiked)}
+                        >
+                            <Bookmark className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
 
                         </button>
                         <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
