@@ -77,7 +77,7 @@ export default function NewFeed({ video }: { video: Video }) {
                 />
 
                 {/* Left overlay - User info */}
-                <div className="absolute lg:block hidden bottom-6 left-4 right-4 text-white z-10">
+                <div className="absolute lg:bottom-2 bottom-12 left-4 right-4 text-white z-10">
                     <button className='flex flex-row bg-green-500/40 px-2 py-2 rounded-lg mb-2 text-xs'>
                         <Check className='w-4 h-4 mr-1' />
                         <span>{video.statusShip}</span>
@@ -120,7 +120,7 @@ export default function NewFeed({ video }: { video: Video }) {
                     </div>
                 </div>
                 {/* Right actions */}
-                <div className="absolute hidden right-2 bottom-32 lg:flex flex-col gap-4 text-white z-10">
+                <div className="absolute right-2 bottom-32 lg:flex flex-col gap-4 text-white z-10">
                     <div className='flex flex-col items-center space-y-1'>
                         <button
                             className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
@@ -154,85 +154,6 @@ export default function NewFeed({ video }: { video: Video }) {
                 </div>
             </div>
 
-            {/* for phone */}
-            <div className='fixed lg:hidden h-screen w-screen'>
-                {/* Left overlay - User info */}
-                <div className="absolute bottom-12 left-4 right-4 text-white z-10">
-                    <button className='flex flex-row bg-green-500/40 px-2 py-2 rounded-lg mb-2 text-xs'>
-                        <Check className='w-4 h-4 mr-1' />
-                        <span>{video.statusShip}</span>
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <Avatar>
-                            <AvatarImage src={video.avatar} />
-                            <AvatarFallback>{video.username[0]}</AvatarFallback>
-                        </Avatar>
-                        <span className="font-bold">{video.username}</span>
-                        {/* {!video.isFollowing && (
-                            <Button size="sm" className="ml-2 bg-orange-500 hover:bg-orange-700 text-white">
-                                <Plus className="w-4 h-4 mr-1" /> Follow
-                            </Button>
-                        )} */}
-                    </div>
-                    {/* <p className="mt-2 text-sm line-clamp-2">{video.description}</p> */}
-                    {/* <div className="flex items-center gap-2 mt-1 text-sm">
-                        <Music className="w-4 h-4" />
-                        <span className="truncate">{video.music}</span>
-                    </div> */}
-                    <div className="flex items-center gap-2 mt-1">
-                        <span className="truncate text-lg">{video.productName}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-sm font-bold">
-                        <span className="truncate">{video.productPrice}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-sm text-gray-200">
-                        <span className="truncate">Số lượng: {video.quantity}</span>
-                    </div>
-                    {video.productExpired && (
-                        <div className="flex items-center gap-2 mt-1 text-sm text-gray-200">
-                            <span className="truncate">Thời gian bán sản phẩm: {video.productExpired}</span>
-                        </div>
-                    )}
-                    <div className='flex items-center justify-center mt-2'>
-                        <button className='bg-orange-500 px-4 py-2 rounded-lg'>
-                            Mua hàng
-                        </button>
-                    </div>
-                </div>
-                {/* Right actions */}
-                <div className="absolute right-2 bottom-32 flex flex-col gap-4 text-white z-10">
-                    <div className='flex flex-col items-center space-y-1'>
-                        <button
-                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
-                            onClick={() => setIsLiked(!isLiked)}
-                        >
-                            <Heart className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-
-                        </button>
-                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
-                    </div>
-                    <div className='flex flex-col items-center space-y-1'>
-                        <button
-                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
-                            onClick={() => setIsLiked(!isLiked)}
-                        >
-                            <MessageCircle className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-
-                        </button>
-                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
-                    </div>
-                    <div className='flex flex-col items-center space-y-1'>
-                        <button
-                            className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
-                            onClick={() => setIsLiked(!isLiked)}
-                        >
-                            <Share2 className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-
-                        </button>
-                        <span className="text-xs mt-1">{video.likes + (isLiked ? 1 : 0)}</span>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
