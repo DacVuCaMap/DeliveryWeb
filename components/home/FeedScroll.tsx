@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import "./FeedScroll.css"
 import NewFeed from './NewFeed';
+import { Shirt } from 'lucide-react';
 interface Video {
     id: number;
     username: string;
@@ -13,6 +14,10 @@ interface Video {
     shares: number;
     music: string;
     isFollowing: boolean;
+    productName:string;
+    productPrice:string;
+    quantity:number;
+    icon:any;
 }
 
 export default function FeedScroll() {
@@ -28,6 +33,10 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
+            productName:"Áo thun trắng",
+            productPrice:"200.000đ",
+            quantity:21,
+            icon:<Shirt className="w-6 h-6" />,
         },
         {
             id: 2,
@@ -40,6 +49,10 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
+            productName:"Áo khoác adidas",
+            productPrice:"1.200.000đ",
+            quantity:31,
+            icon:<Shirt className="w-6 h-6" />,
         },
         {
             id: 3,
@@ -52,6 +65,10 @@ export default function FeedScroll() {
             shares: 23,
             music: "Original Sound - user1",
             isFollowing: false,
+            productName:"Áo 3 lỗ",
+            productPrice:"200.000đ",
+            quantity:1,
+            icon:<Shirt className="w-6 h-6" />,
         },
     ];
     const scrollRef = useRef<HTMLDivElement>(null);

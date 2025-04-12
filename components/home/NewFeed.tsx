@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { Heart, MessageCircle, Music, Plus, Share2 } from 'lucide-react';
+import { Box, Check, Heart, MessageCircle, Music, Plus, Share2, Shirt } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface Video {
@@ -16,6 +16,9 @@ interface Video {
     shares: number;
     music: string;
     isFollowing: boolean;
+    productName: string;
+    productPrice: string;
+    quantity: number;
 }
 export default function NewFeed({ video }: { video: Video }) {
 
@@ -72,28 +75,48 @@ export default function NewFeed({ video }: { video: Video }) {
                 />
 
                 {/* Left overlay - User info */}
-                <div className="absolute bottom-4 left-4 right-4 text-white z-10">
+                <div className="absolute bottom-6 left-4 right-4 text-white z-10">
+                    <button className='flex flex-row bg-green-500/40 px-4 py-2 rounded-lg mb-2'>
+                        <Check/>
+                        <span>Giao gần-COD</span>
+                    </button>
                     <div className="flex items-center gap-2">
                         <Avatar>
                             <AvatarImage src={video.avatar} />
                             <AvatarFallback>{video.username[0]}</AvatarFallback>
                         </Avatar>
                         <span className="font-bold">{video.username}</span>
-                        {!video.isFollowing && (
-                            <Button size="sm" className="ml-2 bg-red-600 hover:bg-red-700">
+                        {/* {!video.isFollowing && (
+                            <Button size="sm" className="ml-2 bg-orange-500 hover:bg-orange-700 text-white">
                                 <Plus className="w-4 h-4 mr-1" /> Follow
                             </Button>
-                        )}
+                        )} */}
                     </div>
-                    <p className="mt-2 text-sm line-clamp-2">{video.description}</p>
-                    <div className="flex items-center gap-2 mt-1 text-sm">
+                    {/* <p className="mt-2 text-sm line-clamp-2">{video.description}</p> */}
+                    {/* <div className="flex items-center gap-2 mt-1 text-sm">
                         <Music className="w-4 h-4" />
                         <span className="truncate">{video.music}</span>
+                    </div> */}
+                    <div className="flex items-center gap-2 mt-1 ">
+                        <Shirt className="w-6 h-6" />
+                        <span className="truncate text-xl">{video.productName}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 text-sm font-bold">
+                        <span className="truncate">{video.productPrice}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 text-sm">
+                        <img src="/clock.svg" alt="Clock" className="w-4 h-4" />
+                        <span className="truncate">Còn lại: {video.quantity}</span>
+                    </div>
+                    <div className='flex items-center justify-center'>
+                        <button className='bg-orange-500 px-4 py-2 rounded-lg'>
+                            Mua hàng
+                        </button>
                     </div>
                 </div>
 
                 {/* Right actions */}
-                <div className="absolute right-2 bottom-20 flex flex-col gap-4 text-white z-10">
+                <div className="absolute right-2 bottom-32 flex flex-col gap-4 text-white z-10">
                     <div className='flex flex-col items-center space-y-1'>
                         <button
                             className="flex flex-col items-center rounded-full p-4 bg-gray-600/40 backdrop-blur-md shadow-md transition"
