@@ -26,7 +26,7 @@ export default function HeadHomeNav() {
                 <div className="flex flex-row items-center justify-center gap-2">
                     <Image
                         className=""
-                        src="/images/snapgo-logo.png"
+                        src="/images/snapgo-logo1.png"
                         width={70}
                         height={70} alt={''} />
                     {/* <Image
