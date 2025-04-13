@@ -10,9 +10,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { useUser } from '@/context/userContext'; 
+import { useUser } from '@/context/userContext';
 export default function SignInForm() {
-  const { setUser } = useUser(); 
+  const { setUser } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
@@ -53,7 +53,7 @@ export default function SignInForm() {
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
-          href="/admin"
+          href="/home"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           {/* <ChevronLeftIcon /> */}
@@ -99,6 +99,21 @@ export default function SignInForm() {
                   />
                 </svg>
                 Đăng nhập bằng Google
+              </button>
+              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-white transition-colors bg-[#1877F2] rounded-lg px-7 hover:bg-[#165EB8]">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 12.0611C22 6.50451 17.5228 2 12 2C6.47715 2 2 6.50451 2 12.0611C2 17.0833 5.65684 21.2453 10.4375 22V14.9694H7.89844V12.0611H10.4375V9.84443C10.4375 7.32271 11.9305 5.93056 14.2146 5.93056C15.3087 5.93056 16.4531 6.125 16.4531 6.125V8.5625H15.1895C13.9512 8.5625 13.5625 9.33333 13.5625 10.1243V12.0611H16.3359L15.8926 14.9694H13.5625V22C18.3432 21.2453 22 17.0833 22 12.0611Z"
+                    fill="white"
+                  />
+                </svg>
+                Đăng nhập bằng Facebook
               </button>
               {/* <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg

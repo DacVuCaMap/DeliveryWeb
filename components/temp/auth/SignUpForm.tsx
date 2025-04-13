@@ -3,7 +3,8 @@ import Checkbox from "@/components/temp/form/input/Checkbox";
 import Input from "@/components/temp/form/input/InputField";
 import Label from "@/components/temp/form/Label";
 import { registerUser } from "@/utils/api";
-import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
+import { ChevronLeft, Eye, EyeClosed, RefreshCw } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -18,10 +19,16 @@ type RegisterForm = {
   address: string;
   name: string;
 }
-
+type RoleRegister = {
+  value: string, name: string, description: string, src: string
+}
 
 export default function SignUpForm() {
-
+  const roleList: RoleRegister[] = [
+    { value: "USER", name: "Người dùng", description: "Trải nghiệm mua bán khắp mọi nơi", src: "/snapgoimg/userAvt.png" },
+    { value: "PARTNER", name: "Người bán", description: "Trở thành đối tác cùng snapgo.vn", src: "/snapgoimg/shipperAvt.png" },
+    { value: "SHIPPER", name: "Người giao hàng", description: "Vận chuyển những đơn hàng của chúng tôi", src: "/snapgoimg/partnerAvt.png" }];
+  const [role, setRole] = useState<RoleRegister | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [formData, setFormData] = useState<RegisterForm>({
@@ -32,7 +39,7 @@ export default function SignUpForm() {
     confirmPassword: "",
     phoneNumber: "",
     address: "",
-    name:""
+    name: ""
   });
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -49,18 +56,18 @@ export default function SignUpForm() {
     }
 
     try {
-      const formPost : RegisterForm = {...formData,name:`${formData.lastName} ${formData.firstName}`};
+      const formPost: RegisterForm = { ...formData, name: `${formData.lastName} ${formData.firstName}` };
       const data = await registerUser(formPost);
       console.log(data)
-      if(data && data.success){
+      if (data && data.success) {
         toast.success("Đăng ký thành công!");
         return;
       }
-      else if (data && data.status ===409){
+      else if (data && data.status === 409) {
         toast.error("Email đã tồn tại!");
         return;
       }
-      else if(data && !data.success){
+      else if (data && !data.success) {
         toast.error(data.message);
         return;
       }
@@ -68,13 +75,15 @@ export default function SignUpForm() {
       console.error("Error:", error);
     }
   };
-
+  const handleClickRole = (item: RoleRegister) => {
+    setRole(item);
+  }
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar pb-10">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
-          href="/admin"
+          href="/home"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           {/* <ChevronLeftIcon /> */}
@@ -93,7 +102,7 @@ export default function SignUpForm() {
             </p>
           </div>
           <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 sm:gap-5">
+            <div className="grid grid-cols-1 gap-3 sm:gap-5">
               <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
@@ -121,19 +130,21 @@ export default function SignUpForm() {
                 </svg>
                 Đăng nhập bằng Google
               </button>
-              {/* <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
+              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-white transition-colors bg-[#1877F2] rounded-lg px-7 hover:bg-[#165EB8]">
                 <svg
-                  width="21"
-                  className="fill-current"
+                  width="20"
                   height="20"
-                  viewBox="0 0 21 20"
+                  viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
+                  <path
+                    d="M22 12.0611C22 6.50451 17.5228 2 12 2C6.47715 2 2 6.50451 2 12.0611C2 17.0833 5.65684 21.2453 10.4375 22V14.9694H7.89844V12.0611H10.4375V9.84443C10.4375 7.32271 11.9305 5.93056 14.2146 5.93056C15.3087 5.93056 16.4531 6.125 16.4531 6.125V8.5625H15.1895C13.9512 8.5625 13.5625 9.33333 13.5625 10.1243V12.0611H16.3359L15.8926 14.9694H13.5625V22C18.3432 21.2453 22 17.0833 22 12.0611Z"
+                    fill="white"
+                  />
                 </svg>
-                Sign up with X
-              </button> */}
+                Đăng nhập bằng Facebook
+              </button>
             </div>
             <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
@@ -145,73 +156,119 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input required type="text" name="firstName" placeholder="Enter your first name" value={formData.firstName} onChange={handleChange} />
+
+
+            {role ? (
+              <div>
+                <div className="mb-10">
+                  <span>Tài khoản</span>
+                  <div className="flex flex-row items-center space-x-2 border-b hover:bg-gray-300 py-2 px-4">
+                    <div className="w-14 h-14 relative rounded-full overflow-hidden">
+                      <Image
+                        src={`${role.src}`}
+                        alt="avatar"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col ml-4 items-start">
+                      <span className="text-lg font-bold">{role.name}</span>
+                      <span className="text-sm text-gray-500">{role.description}</span>
+                    </div>
                   </div>
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input required type="text" name="lastName" placeholder="Enter your last name" value={formData.lastName} onChange={handleChange} />
+                  <div onClick={e => setRole(null)} className="flex flex-row gap-1 justify-center hover:underline cursor-pointer py-2 text-gray-500"><span>Đổi </span><RefreshCw size={20} /> </div>
+                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                      <div className="sm:col-span-1">
+                        <Label>
+                          First Name<span className="text-error-500">*</span>
+                        </Label>
+                        <Input required type="text" name="firstName" placeholder="Enter your first name" value={formData.firstName} onChange={handleChange} />
+                      </div>
+                      <div className="sm:col-span-1">
+                        <Label>
+                          Last Name<span className="text-error-500">*</span>
+                        </Label>
+                        <Input required type="text" name="lastName" placeholder="Enter your last name" value={formData.lastName} onChange={handleChange} />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>
+                        Email<span className="text-error-500">*</span>
+                      </Label>
+                      <Input required type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
+                    </div>
+                    <div>
+                      <Label>
+                        Phone Number
+                      </Label>
+                      <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
+                    </div>
+                    <div>
+                      <Label>
+                        Address
+                      </Label>
+                      <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
+                    </div>
+                    <div>
+                      <Label>
+                        Password<span className="text-error-500">*</span>
+                      </Label>
+                      <div className="relative">
+                        <Input required type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
+                        <span onClick={() => setShowPassword(!showPassword)} className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
+                          {showPassword ? <Eye /> : <EyeClosed />}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label>
+                        Confirm Password<span className="text-error-500">*</span>
+                      </Label>
+                      <Input required type="password" name="confirmPassword" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Checkbox className="w-5 h-5" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
+                      <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
+                        Bằng cách tạo một tài khoản có nghĩa là bạn đồng ý với {" "}
+                        <span className="text-gray-800 dark:text-white/90">
+                          Điều khoản và Điều kiện, Chính sách Bảo mật
+                        </span>{" "}của chúng tôi
+                      </p>
+                    </div>
+                    <div>
+                      <button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                        Đăng ký
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
-                  </Label>
-                  <Input required type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
-                </div>
-                <div>
-                  <Label>
-                    Phone Number
-                  </Label>
-                  <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
-                </div>
-                <div>
-                  <Label>
-                    Address
-                  </Label>
-                  <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
-                </div>
-                <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Input required type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
-                    <span onClick={() => setShowPassword(!showPassword)} className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
-                      {showPassword ? <Eye /> : <EyeClosed />}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <Label>
-                    Confirm Password<span className="text-error-500">*</span>
-                  </Label>
-                  <Input required type="password" name="confirmPassword" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Checkbox className="w-5 h-5" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
-                  <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
-                    Bằng cách tạo một tài khoản có nghĩa là bạn đồng ý với {" "}
-                    <span className="text-gray-800 dark:text-white/90">
-                      Điều khoản và Điều kiện, Chính sách Bảo mật
-                    </span>{" "}của chúng tôi
-                  </p>
-                </div>
-                <div>
-                  <button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Đăng ký
-                  </button>
-                </div>
+                </form>
               </div>
-            </form>
+            ) :
+              (
+                <div className="flex flex-col mb-10">
+                  <span className="text-gray-400 mb-2">Chọn vai trò tài khoản</span>
+                  {roleList.map((item) => (
+                    <button key={item.value} onClick={e => handleClickRole(item)} className="flex flex-row items-center space-x-2 border-b hover:bg-gray-300 py-2 px-4">
+                      <div className="w-14 h-14 relative rounded-full overflow-hidden">
+                        <Image
+                          src={`${item.src}`}
+                          alt="avatar"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col ml-4 items-start">
+                        <span className="text-lg font-bold">{item.name}</span>
+                        <span className="text-sm text-gray-500">{item.description}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
