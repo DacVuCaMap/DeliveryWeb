@@ -19,18 +19,21 @@ export default function AuthLayout({
           <div className="lg:w-1/2 w-full h-full bg-brand-950 dark:bg-white/5 lg:grid items-center hidden">
             <div className="relative items-center justify-center  flex z-1">
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
-              <GridShape />
+              {/* <GridShape /> */}
+
+              <div className="absolute -z-10 w-full h-screen">
+                <Image
+                  src="/snapgoimg/snapgo-authbg.png"
+                  alt="grid"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+
               <div className="flex flex-col items-center max-w-xs">
-                <Link href="/" className="block mb-4">
-                  <Image
-                    width={100}
-                    height={48}
-                    src="./images/logo/logo-icon.svg"
-                    alt="Logo"
-                  />
-                </Link>
-                <p className="text-center text-gray-400 dark:text-white/60">
-                  DELLIVERY MANAGERMENT
+                <p className="text-center text-orange-600 font-bold text-5xl dark:text-white/60">
+                  snapgo.vn
                 </p>
               </div>
             </div>
