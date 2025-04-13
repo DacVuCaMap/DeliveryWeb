@@ -21,21 +21,32 @@ export default function AuthLayout({
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               {/* <GridShape /> */}
 
-              <div className="absolute -z-10 w-full h-screen">
+              {/* <div className="absolute -z-10 w-full h-screen">
                 <Image
                   src="/snapgoimg/snapgo-authbg.png"
                   alt="grid"
                   fill
                   className="object-cover"
                 />
+              </div> */}
+              <div className="absolute -z-10 w-full h-screen overflow-hidden">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                >
+                  <source src="/video/autorun/snapgoauth.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
 
-
-              <div className="flex flex-col items-center max-w-xs">
+              {/* <div className="flex flex-col items-center max-w-xs">
                 <p className="text-center text-orange-600 font-bold text-5xl dark:text-white/60">
                   snapgo.vn
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="fixed bottom-6 right-6 z-50 hidden sm:block">
