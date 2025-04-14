@@ -3,7 +3,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
-export default function ConfirmCode() {
+export default function ConfirmCode({email}:{email:string}) {
     const [otp,setOtp] = useState("");
     const router = useRouter();
     const handleOtp = (e:any)=>{
@@ -15,7 +15,7 @@ export default function ConfirmCode() {
         <div>
             <form onSubmit={handleOtp}>
                 <div className="flex flex-col justify-center items-center space-y-4 py-10">
-                    <span>Nhập mã OTP đã gửi tới email</span>
+                    <span>Nhập mã OTP đã gửi tới email <strong>{email}</strong></span>
                     <InputOTP
                         maxLength={6}
                         value={otp}

@@ -76,7 +76,7 @@ export default function SignUpForm() {
         const formPost: RegisterForm = {
           ...formData,
           name: `${formData.lastName} ${formData.firstName}`,
-          roleName: role.name,
+          roleName: role.value,
         };
         const data = await registerUser(formPost);
         if (data?.success) {
@@ -143,7 +143,7 @@ export default function SignUpForm() {
           </div>
           {isWaitCode ? (
             <div>
-              <ConfirmCode/>
+              <ConfirmCode email={formData.email}/>
             </div>
           ) :
             <div>
