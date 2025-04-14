@@ -149,7 +149,7 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Mật khẩu <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
@@ -188,9 +188,9 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
+                  <button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-orange-500 shadow-theme-xs hover:bg-orange-600">
                     Đăng nhập
-                  </Button>
+                  </button>
                 </div>
               </div>
             </form>

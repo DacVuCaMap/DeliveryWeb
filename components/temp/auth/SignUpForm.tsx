@@ -18,6 +18,8 @@ type RegisterForm = {
   phoneNumber: string;
   address: string;
   name: string;
+  citizenIdFront: File | null,
+  citizenIdBack: File | null,
 }
 type RoleRegister = {
   value: string, name: string, description: string, src: string
@@ -26,11 +28,13 @@ type RoleRegister = {
 export default function SignUpForm() {
   const roleList: RoleRegister[] = [
     { value: "USER", name: "Người dùng", description: "Trải nghiệm mua bán khắp mọi nơi", src: "/snapgoimg/userAvt.png" },
-    { value: "PARTNER", name: "Người bán", description: "Trở thành đối tác cùng snapgo.vn", src: "/snapgoimg/shipperAvt.png" },
-    { value: "SHIPPER", name: "Người giao hàng", description: "Vận chuyển những đơn hàng của chúng tôi", src: "/snapgoimg/partnerAvt.png" }];
+    { value: "PARTNER", name: "Người bán", description: "Trở thành đối tác cùng snapgo.vn", src: "/snapgoimg/partnerAvt.png" },
+    { value: "SHIPPER", name: "Người giao hàng", description: "Vận chuyển những đơn hàng của chúng tôi", src: "/snapgoimg/shipperAvt.png" }];
   const [role, setRole] = useState<RoleRegister | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [previewFront, setPreviewFront] = useState<string | null>(null);
+  const [previewBack, setPreviewBack] = useState<string | null>(null);
   const [formData, setFormData] = useState<RegisterForm>({
     email: "",
     password: "",
@@ -39,7 +43,9 @@ export default function SignUpForm() {
     confirmPassword: "",
     phoneNumber: "",
     address: "",
-    name: ""
+    name: "",
+    citizenIdFront: null,
+    citizenIdBack: null,
   });
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -78,7 +84,23 @@ export default function SignUpForm() {
   const handleClickRole = (item: RoleRegister) => {
     setRole(item);
   }
+  const handleImageChange = (e: any, side: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    const previewUrl = URL.createObjectURL(file);
+
+    setFormData((prev) => ({
+      ...prev,
+      [side === "front" ? "citizenIdFront" : "citizenIdBack"]: file,
+    }));
+
+    if (side === "front") {
+      setPreviewFront(previewUrl);
+    } else {
+      setPreviewBack(previewUrl);
+    }
+  };
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar pb-10">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -98,11 +120,11 @@ export default function SignUpForm() {
               Đăng Ký
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
+              Tạo tài khoản để sử dụng snapgo
             </p>
           </div>
           <div>
-            <div className="grid grid-cols-1 gap-3 sm:gap-5">
+            {/* <div className="grid grid-cols-1 gap-3 sm:gap-5">
               <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
@@ -155,7 +177,7 @@ export default function SignUpForm() {
                   Or
                 </span>
               </div>
-            </div>
+            </div> */}
 
 
             {role ? (
@@ -183,13 +205,13 @@ export default function SignUpForm() {
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                       <div className="sm:col-span-1">
                         <Label>
-                          First Name<span className="text-error-500">*</span>
+                          Tên<span className="text-error-500">*</span>
                         </Label>
                         <Input required type="text" name="firstName" placeholder="Enter your first name" value={formData.firstName} onChange={handleChange} />
                       </div>
                       <div className="sm:col-span-1">
                         <Label>
-                          Last Name<span className="text-error-500">*</span>
+                          Họ<span className="text-error-500">*</span>
                         </Label>
                         <Input required type="text" name="lastName" placeholder="Enter your last name" value={formData.lastName} onChange={handleChange} />
                       </div>
@@ -202,19 +224,19 @@ export default function SignUpForm() {
                     </div>
                     <div>
                       <Label>
-                        Phone Number
+                        Số điện thoại
                       </Label>
                       <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
                     </div>
                     <div>
                       <Label>
-                        Address
+                        Địa chỉ
                       </Label>
                       <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
                     </div>
                     <div>
                       <Label>
-                        Password<span className="text-error-500">*</span>
+                        Mật khẩu<span className="text-error-500">*</span>
                       </Label>
                       <div className="relative">
                         <Input required type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
@@ -225,10 +247,57 @@ export default function SignUpForm() {
                     </div>
                     <div>
                       <Label>
-                        Confirm Password<span className="text-error-500">*</span>
+                        Nhập lại mật khẩu<span className="text-error-500">*</span>
                       </Label>
                       <Input required type="password" name="confirmPassword" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
                     </div>
+                    {role.value != "USER" && (
+                      <div>
+                        <Label>
+                          Ảnh căn cước công dân<span className="text-error-500">*</span>
+                        </Label>
+                        <span className="text-gray-400 text-xs">(đối với tài khoản giao hàng và người bán chúng tôi cần thu thập thêm CCCD để hợp tác 1 cách minh bạch)</span>
+                        <div className="flex flex-col gap-4 mt-4">
+                          <div>
+                            <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">Mặt trước</p>
+                            <input
+                              required
+                              type="file"
+                              name="citizenIdFront"
+                              accept="image/*"
+                              onChange={(e) => handleImageChange(e, "front")}
+                              className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
+                            />
+                            {previewFront && (
+                              <img
+                                src={previewFront}
+                                alt="Preview mặt trước"
+                                className="mt-2 w-1/2 h-auto rounded-lg border border-gray-200 dark:border-gray-600"
+                              />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">Mặt trước</p>
+                            <input
+                              required
+                              type="file"
+                              name="citizenIdFront"
+                              accept="image/*"
+                              onChange={(e) => handleImageChange(e, "back")}
+                              className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
+                            />
+                            {previewBack && (
+                              <img
+                                src={previewBack}
+                                alt="Preview mặt trước"
+                                className="mt-2 w-1/2 h-auto rounded-lg border border-gray-200 dark:border-gray-600"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex items-center gap-3">
                       <Checkbox className="w-5 h-5" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
                       <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
@@ -239,7 +308,7 @@ export default function SignUpForm() {
                       </p>
                     </div>
                     <div>
-                      <button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                      <button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-orange-500 shadow-theme-xs hover:bg-orange-600">
                         Đăng ký
                       </button>
                     </div>
