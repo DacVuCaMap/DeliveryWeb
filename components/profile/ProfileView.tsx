@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store, ListRestart, Bike, LogOut } from "lucide-react";
+import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store, ListRestart, Bike, LogOut, Zap, Package2 } from "lucide-react";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +17,7 @@ type UserInfo = {
 export default function ProfileView() {
   const { user } = useUser();
   const [clientUser, setClientUser] = useState<UserInfo | null>(null);
-  const {logout} = useUser();
+  const { logout } = useUser();
   const router = useRouter();
   useEffect(() => {
     setClientUser(user);
@@ -37,7 +37,7 @@ export default function ProfileView() {
     }
   }
   return (
-    <div className="min-w-sreen flex flex-col gap-4 py-4 bg-white">
+    <div className="min-w-sreen flex flex-col gap-4 py-4 bg-white dark:bg-black">
       {/* Header */}
       <div className="flex items-center justify-end px-2">
         {/* <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center gap-2">
@@ -79,7 +79,7 @@ export default function ProfileView() {
       </div>
 
       {/* Đơn mua */}
-      <Card className="rounded-none">
+      <Card className="rounded-none dark:bg-black dark:border-none">
         <CardContent>
           <h3 className="font-medium mb-4">Đơn mua</h3>
           <div className="grid grid-cols-4 gap-2 text-center text-xs">
@@ -105,7 +105,7 @@ export default function ProfileView() {
 
 
       {/* Đơn mua */}
-      <Card className="rounded-none">
+      <Card className="rounded-none dark:bg-black dark:border-none">
         <CardContent>
           <h3 className="font-medium mb-4">Quản lý chung</h3>
           <div className="grid grid-cols-4 gap-2 text-center text-sm">
@@ -130,28 +130,28 @@ export default function ProfileView() {
       </Card>
 
       {/* 15.4 Sale Giữa Tháng */}
-      <Card className="rounded-none">
+      <Card className="rounded-none dark:bg-black dark:border-none">
         <CardContent className="p-4">
           <h3 className="font-medium mb-2">Tiện ích</h3>
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="bg-blue-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">⚡</div>
-              <p className="text-sm mt-1">Đặt đơn nhanh</p>
-            </div>
-            <div>
-              <div className="bg-red-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">COD</div>
-              <p className="text-sm mt-1">Gợi ý ship COD</p>
-            </div>
-            <div>
-              <div className="bg-orange-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">TV</div>
-              <p className="text-sm mt-1">Đặt ship gần bạn</p>
-            </div>
+            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
+              <Zap size={30} />
+              <span>Đặt đơn</span>
+            </Link>
+            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
+              <span className="text-xl font-bold">COD</span>
+              <span>Gợi ý ship COD</span>
+            </Link>
+            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
+              <Package2 size={30} />
+              <span>Gợi ý ship COD</span>
+            </Link>
           </div>
         </CardContent>
       </Card>
 
       <div className="p-4 mb-6">
-        <button onClick={handleLogout} className="outline w-full p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
+        <button onClick={handleLogout} className="outline w-full p-2 rounded-2xl text-gray-400 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
           <LogOut />
           <span>Đăng xuất</span>
         </button>
