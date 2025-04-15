@@ -22,7 +22,6 @@ export default function SignInForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(email, password);
     setIsLoading(true);
     try {
       const response = await loginUser(email, password);
@@ -41,7 +40,8 @@ export default function SignInForm() {
         setUser(userInfo); // Context
         localStorage.setItem('userInfo', JSON.stringify(userInfo)); // localStorage
 
-        router.push(userRole === 'ADMIN' || userRole === 'EMP' || userRole === 'PARTNER' ? '/admin' : '/home');
+        // router.push(userRole === 'ADMIN' || userRole === 'EMP' || userRole === 'PARTNER' ? '/admin' : '/home');
+        window.location.href="/home"
       } else {
         toast.error(response.message);
       }
