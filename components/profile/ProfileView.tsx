@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store } from "lucide-react";
+import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store, ListRestart, Bike, LogOut } from "lucide-react";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,13 +20,13 @@ export default function ProfileView() {
   }, [user]);
 
   return (
-    <div className="min-w-sreen flex flex-col gap-4 lg:px-4 py-4 bg-white">
+    <div className="min-w-sreen flex flex-col gap-4 py-4 bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center gap-2">
+      <div className="flex items-center justify-end px-2">
+        {/* <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center gap-2">
           <Store/>
           <span className="text-sm">Trở thành người bán</span>
-        </Link>
+        </Link> */}
         <div className="flex space-x-4">
           <ShoppingCart className="w-6 h-6" />
           <MessageSquare className="w-6 h-6" />
@@ -35,7 +35,7 @@ export default function ProfileView() {
       </div>
 
       {/* Profile */}
-      <Card className="bg-orange-500">
+      <Card className="bg-orange-500 rounded-none">
         <CardContent className="flex items-center space-x-4 py-4 ">
           <div className="bg-gray-300 w-12 h-12 rounded-full overflow-hidden" >
             <Image
@@ -62,7 +62,7 @@ export default function ProfileView() {
       </div>
 
       {/* Đơn mua */}
-      <Card>
+      <Card className="rounded-none">
         <CardContent>
           <h3 className="font-medium mb-4">Đơn mua</h3>
           <div className="grid grid-cols-4 gap-2 text-center text-xs">
@@ -86,47 +86,59 @@ export default function ProfileView() {
         </CardContent>
       </Card>
 
-      {/* 15.4 Sale Giữa Tháng */}
-      <Card>
-        <CardContent className="p-4">
-          <h3 className="font-medium mb-2">15.4 Sale Giữa Tháng</h3>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="bg-yellow-300 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">15.4</div>
-              <p className="text-sm mt-1">Trang chính</p>
-            </div>
-            <div>
-              <div className="bg-blue-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">⚡</div>
-              <p className="text-sm mt-1">Khung Giờ Săn Sale</p>
-            </div>
-            <div>
-              <div className="bg-orange-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">TV</div>
-              <p className="text-sm mt-1">Live & Video</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Đơn mua */}
-      <Card>
+      <Card className="rounded-none">
         <CardContent>
           <h3 className="font-medium mb-4">Quản lý chung</h3>
-          <div className="grid grid-cols-3 gap-2 text-center text-sm">
+          <div className="grid grid-cols-4 gap-2 text-center text-sm">
             <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
               <History size={30} />
-              <span>Lịch sử đơn hàng</span>
+              <span>Lịch sử mua hàng</span>
+            </Link>
+            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
+              <Bike size={30} />
+              <span>Lịch sử ship</span>
+            </Link>
+            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
+              <ListRestart size={30} />
+              <span>Lịch sử COD</span>
             </Link>
             <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
               <Heart size={30} />
               <span>Video đã thích</span>
             </Link>
-            <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
-              <Bell size={30} />
-              <span>Thông báo</span>
-            </Link>
           </div>
         </CardContent>
       </Card>
+
+      {/* 15.4 Sale Giữa Tháng */}
+      <Card className="rounded-none">
+        <CardContent className="p-4">
+          <h3 className="font-medium mb-2">Tiện ích</h3>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="bg-blue-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">⚡</div>
+              <p className="text-sm mt-1">Đặt đơn nhanh</p>
+            </div>
+            <div>
+              <div className="bg-red-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">COD</div>
+              <p className="text-sm mt-1">Gợi ý ship COD</p>
+            </div>
+            <div>
+              <div className="bg-orange-500 text-white font-bold rounded-full w-12 h-12 mx-auto flex items-center justify-center">TV</div>
+              <p className="text-sm mt-1">Đặt ship gần bạn</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+        
+      <div className="p-4 mb-6">
+        <button className="outline w-full p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
+          <LogOut/>
+          <span>Đăng xuất</span>
+        </button>
+      </div>
     </div>
   );
 }
