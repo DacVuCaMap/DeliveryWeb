@@ -11,7 +11,7 @@ import { logoutUser } from "@/utils/api";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const {user} = useUser();
+  const { user } = useUser();
   const { logout } = useUser();
   const router = useRouter();
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -26,12 +26,17 @@ export default function UserDropdown() {
     e.preventDefault();
     const response = await logoutUser();
     console.log(response);
-    logout();
-    // Hiển thị thông báo thành công
-    toast.success('Đã đăng xuất thành công');
+    if (response && response.success) {
+      logout();
+      // Hiển thị thông báo thành công
+      toast.success('Đã đăng xuất thành công');
+      // Chuyển hướng về trang đăng nhập
+      router.push('/signin');
+    }
+    else {
+      toast.error('Đăng xuất thất bại');
+    }
 
-    // Chuyển hướng về trang đăng nhập
-    router.push('/signin');
   }
   return (
     <div className="relative">

@@ -7,6 +7,9 @@ import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck,
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import Link from "next/link";
+import { logoutUser } from "@/utils/api";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 type UserInfo = {
   name: string,
   email: string
@@ -14,11 +17,25 @@ type UserInfo = {
 export default function ProfileView() {
   const { user } = useUser();
   const [clientUser, setClientUser] = useState<UserInfo | null>(null);
-
+  const {logout} = useUser();
+  const router = useRouter();
   useEffect(() => {
     setClientUser(user);
   }, [user]);
-
+  const handleLogout = async () => {
+    const response = await logoutUser();
+    console.log(response);
+    if (response && response.success) {
+      logout();
+      // Hiển thị thông báo thành công
+      toast.success('Đã đăng xuất thành công');
+      // Chuyển hướng về trang đăng nhập
+      router.push('/signin');
+    }
+    else {
+      toast.error('Đăng xuất thất bại');
+    }
+  }
   return (
     <div className="min-w-sreen flex flex-col gap-4 py-4 bg-white">
       {/* Header */}
@@ -132,10 +149,10 @@ export default function ProfileView() {
           </div>
         </CardContent>
       </Card>
-        
+
       <div className="p-4 mb-6">
-        <button className="outline w-full p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
-          <LogOut/>
+        <button onClick={handleLogout} className="outline w-full p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
+          <LogOut />
           <span>Đăng xuất</span>
         </button>
       </div>
