@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store, ListRestart, Bike, LogOut, Zap, Package2 } from "lucide-react";
+import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store, ListRestart, Bike, LogOut, Zap, Package2, Rocket } from "lucide-react";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -136,15 +136,15 @@ export default function ProfileView() {
           <div className="grid grid-cols-3 gap-4 text-center">
             <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
               <Zap size={30} />
-              <span>Đặt đơn</span>
+              <span>Đơn hàng gần bạn</span>
             </Link>
             <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
               <span className="text-xl font-bold">COD</span>
-              <span>Gợi ý ship COD</span>
+              <span>Top COD</span>
             </Link>
             <Link href={"/"} className="flex flex-col items-center justify-center gap-2 hover:text-orange-500">
-              <Package2 size={30} />
-              <span>Gợi ý ship COD</span>
+              <Rocket size={30} />
+              <span>Shipper gần bạn</span>
             </Link>
           </div>
         </CardContent>
