@@ -41,6 +41,7 @@ export const config = {
     matcher: [
         '/admin/:path*',  // Bảo vệ tất cả route bắt đầu bằng /admin
         '/signin',        // Route signin
-        '/signup'         // Route signup
+        '/signup',
+        '/profile'         // Route signup
     ],
 }

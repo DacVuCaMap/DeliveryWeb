@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart } from "lucide-react";
+import { Bell, ShoppingCart, MessageSquare, Settings, Inbox, PackageOpen, Truck, Star, History, Heart, Store } from "lucide-react";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,7 +23,10 @@ export default function ProfileView() {
     <div className="min-w-sreen flex flex-col gap-4 lg:px-4 py-4 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Button variant="outline">Trở thành người bán</Button>
+        <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row gap-2">
+          <Store/>
+          <span>Trở thành người bán</span>
+        </Link>
         <div className="flex space-x-4">
           <ShoppingCart className="w-6 h-6" />
           <MessageSquare className="w-6 h-6" />
