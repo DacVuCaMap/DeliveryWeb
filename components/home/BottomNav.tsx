@@ -20,7 +20,7 @@ export function BottomNav() {
                 <Store className="w-5 h-5" strokeWidth={3}/>
                 <span className="text-xs">Cửa hàng</span>
             </button>
-            <button className="relative w-[60px] h-[40px] cursor-pointer">
+            <button className="relative w-[60px] h-[40px] cursor-pointer mx-2">
                 {/* Background cyan
                 <div className="absolute left-0 top-0 w-full h-full rounded-xl bg-cyan-400 -translate-x-1 z-0" />
                 {/* Background pink */}

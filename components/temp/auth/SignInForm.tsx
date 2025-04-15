@@ -41,7 +41,7 @@ export default function SignInForm() {
         setUser(userInfo); // Context
         localStorage.setItem('userInfo', JSON.stringify(userInfo)); // localStorage
 
-        router.push(userRole === 'ADMIN' || userRole === 'EMP' || userRole === 'PARTNER' ? '/admin' : '/home');
+        // router.push(userRole === 'ADMIN' || userRole === 'EMP' || userRole === 'PARTNER' ? '/admin' : '/home');
       } else {
         toast.error(response.message);
       }

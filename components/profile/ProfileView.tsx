@@ -23,9 +23,9 @@ export default function ProfileView() {
     <div className="min-w-sreen flex flex-col gap-4 lg:px-4 py-4 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row gap-2">
+        <Link href={"/signup"} className="outline p-2 rounded-2xl text-gray-600 hover:underline flex flex-row items-center gap-2">
           <Store/>
-          <span>Trở thành người bán</span>
+          <span className="text-sm">Trở thành người bán</span>
         </Link>
         <div className="flex space-x-4">
           <ShoppingCart className="w-6 h-6" />
