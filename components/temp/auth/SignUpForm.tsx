@@ -34,7 +34,7 @@ export default function SignUpForm() {
   const roleList: RoleRegister[] = [
     { value: "USER", name: "Người dùng", description: "Trải nghiệm mua bán khắp mọi nơi", src: "/snapgoimg/userAvt.png" },
     { value: "PARTNER", name: "Người bán", description: "Trở thành đối tác cùng snapgo.vn", src: "/snapgoimg/partnerAvt.png" },
-    { value: "SHIPPER", name: "Người giao hàng", description: "Vận chuyển những đơn hàng của chúng tôi", src: "/snapgoimg/shipperAvt.png" }];
+    { value: "SHIPPER", name: "Người giao hàng", description: "Vận chuyển đơn hàng của chúng tôi", src: "/snapgoimg/shipperAvt.png" }];
   const [role, setRole] = useState<RoleRegister | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -160,7 +160,7 @@ export default function SignUpForm() {
                           className="object-cover"
                         />
                       </div>
-                      <div className="flex flex-col ml-4 items-start">
+                      <div className="flex flex-col ml-2 items-start ">
                         <span className="text-lg font-bold">{role.name}</span>
                         <span className="text-sm text-gray-500">{role.description}</span>
                       </div>
@@ -299,7 +299,7 @@ export default function SignUpForm() {
                         </div>
                         <div className="flex flex-col ml-4 items-start">
                           <span className="text-lg font-bold">{item.name}</span>
-                          <span className="text-sm text-gray-500">{item.description}</span>
+                          <span className="lg:text-sm text-xs text-gray-500">{item.description}</span>
                         </div>
                       </button>
                     ))}
@@ -323,6 +323,8 @@ export default function SignUpForm() {
           }
         </div>
       </div>
+
+      
     </div>
   );
 }
