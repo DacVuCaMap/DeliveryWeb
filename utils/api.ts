@@ -30,3 +30,13 @@ export const loginUser = async (email: string, password: string) => {
         throw error.response?.data || "Lỗi không xác định";
     }
 };
+
+export const logoutUser = async ()=>{
+    try {
+        const response = await api.post("api/auth/logout");
+        return response.data;
+    } catch (error:any) {
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
+    }
+}

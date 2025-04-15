@@ -136,10 +136,10 @@ const AppHeader: React.FC = () => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          {/* <UserDropdown />  */}
-          <Link href="/signin" className="hidden underline lg:block text-sm font-medium text-gray-500 dark:text-gray-400 px-4">
+          <UserDropdown /> 
+          {/* <Link href="/signin" className="hidden underline lg:block text-sm font-medium text-gray-500 dark:text-gray-400 px-4">
             Đăng nhập
-          </Link>
+          </Link> */}
         </div>
       </div>
     </header>

@@ -6,6 +6,7 @@ interface UserInfo {
     name: string;
     avt: string;
     role: string;
+    email:string;
 }
 
 interface UserContextType {

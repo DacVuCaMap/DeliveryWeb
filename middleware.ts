@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
+import { useUser } from './context/userContext'
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
     // Lấy JWT token từ cookie
     const token = request.cookies.get('jwt')?.value
-
     // Đường dẫn hiện tại
     const pathname = request.nextUrl.pathname
 
@@ -18,7 +17,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Nếu là route admin
-    if (pathname.startsWith('/admin') || pathname.startsWith('/EMP') || pathname.startsWith('/SHIPPER') || pathname.startsWith('/PARTNER')) {
+    if (pathname.startsWith('/admin') || pathname.startsWith('/profile') || pathname.startsWith('/SHIPPER') || pathname.startsWith('/PARTNER')) {
         // Kiểm tra token
         if (!token) {
             // Nếu không có token, redirect về signin
