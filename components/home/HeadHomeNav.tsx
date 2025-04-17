@@ -11,7 +11,7 @@ export default function HeadHomeNav() {
     const rootPath = "/" + path.split('/')[1];
     return (
         <div>
-            <div className="fixed lg:hidden top-0 w-screen text-gray-300 flex flex-row justify-around items-center z-50 py-4">
+            <div className="fixed lg:hidden top-0 w-screen text-gray-800 flex flex-row justify-around items-center z-50 py-4">
                 <Link href={"/home/shipper"} className={`${path === "/home/shipper" ? "border-b-2 border-orange-500 font-bold text-black" : ""} `}>
                     <span>Shipper</span>
                 </Link>
