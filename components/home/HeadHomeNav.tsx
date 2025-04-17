@@ -3,20 +3,24 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { Home, MessageCircle, PlusSquare, Search } from 'lucide-react'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 export default function HeadHomeNav() {
+    const path = usePathname();
+    const rootPath = "/" + path.split('/')[1];
     return (
         <div>
             <div className="fixed lg:hidden top-0 w-screen text-gray-300 flex flex-row justify-around items-center z-50 py-4">
-                <button className="flex flex-col items-center ">
+                <Link href={"/home/shipper"} className={`${path === "/home/shipper" ? "border-b-2 border-orange-500 font-bold text-black" : ""} `}>
                     <span>Shipper</span>
-                </button>
+                </Link>
                 <button className="flex flex-col items-center ">
                     <span>Đã follow</span>
                 </button>
-                <button className="flex flex-col items-center border-b-2 border-orange-500 text-white">
+                <Link href={"/home"} className={`${path === "/home" ? "border-b-2 border-orange-500 font-bold text-black" : ""} `}>
                     <span>Đề xuất</span>
-                </button>
+                </Link>
                 <button className='text-white'>
                     <Search />
                 </button>
@@ -50,15 +54,15 @@ export default function HeadHomeNav() {
                         <input type="search" id="default-search" className="block w-full px-4 py-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-2xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tìm kiếm" required />
                     </div>
                 </form>
-                <button className="border-b-2 text-black dark:text-white font-bold border-orange-500">
+                <Link href={"/home"} className={`${path === "/home" ? "border-b-2 border-orange-500 font-bold text-black" : "text-gray-500"} `}>
                     <span>Đề xuất</span>
-                </button>
+                </Link>
                 <button className="text-gray-500">
                     <span>Đã follow</span>
                 </button>
-                <button className="text-gray-500">
+                <Link href={"/home/shipper"} className={`${path === "/home/shipper" ? "border-b-2 border-orange-500 font-bold text-black" : "text-gray-500"} `}>
                     <span>Shipper</span>
-                </button>
+                </Link>
 
             </div>
         </div>

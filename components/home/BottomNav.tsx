@@ -9,7 +9,6 @@ export function BottomNav() {
     const router = useRouter();
     const path = usePathname();
     const rootPath = "/"+path.split('/')[1]; 
-    console.log(rootPath)
     return (
         <div className="w-full bg-black dark:bg-white dark:text-black text-white flex flex-row justify-center items-center z-50 fixed bottom-0">
             <Link href={"/home"} className={`flex-1 flex flex-col items-center hover:bg-orange-500 hover:text-white py-1 ${rootPath==="/home" && "text-orange-400"}`}>
