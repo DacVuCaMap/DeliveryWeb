@@ -53,7 +53,7 @@ export default function DeliveryMap() {
       container: mapContainer.current,
       style: `https://maps.vietmap.vn/mt/tm/style.json?apikey=${vietMapToken}`,
       center: userLocation,
-      zoom: 15,
+      zoom: 12,
     })
 
     markerRef.current = new vietmapgl.Marker()
