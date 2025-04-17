@@ -9,6 +9,24 @@ export default function DeliveryMap() {
   const vietMapToken = process.env.NEXT_PUBLIC_VIETMAP_TOKEN
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
 
+  // Khởi tạo bản đồ NGAY từ đầu
+  useEffect(() => {
+    const vietmapgl = (window as any).vietmapgl
+    if (!mapContainer.current || !vietmapgl || mapRef.current) return
+
+    console.log('✅ Creating map...')
+    const defaultCenter: [number, number] = [105.8544441, 21.028511] // Hà Nội
+
+    mapRef.current = new vietmapgl.Map({
+      container: mapContainer.current,
+      style: `https://maps.vietmap.vn/mt/tm/style.json?apikey=${vietMapToken}`,
+      center: defaultCenter,
+      zoom: 12,
+    })
+
+    markerRef.current = new vietmapgl.Marker().setLngLat(defaultCenter).addTo(mapRef.current)
+  }, [])
+
   // Theo dõi vị trí liên tục
   useEffect(() => {
     let watchId: number
@@ -37,38 +55,14 @@ export default function DeliveryMap() {
     }
   }, [])
 
-  // Khởi tạo map lần đầu
+  // Cập nhật marker và center khi có userLocation
   useEffect(() => {
-    if (!mapContainer.current || !userLocation) return
-
-    const vietmapgl = (window as any).vietmapgl
-    if (!vietmapgl) return
-
-    // ✅ Nếu đã có map thì chỉ update center và marker, KHÔNG tạo lại
-    if (mapRef.current) return
-
-    console.log('✅ Creating map...')
-
-    mapRef.current = new vietmapgl.Map({
-      container: mapContainer.current,
-      style: `https://maps.vietmap.vn/mt/tm/style.json?apikey=${vietMapToken}`,
-      center: userLocation,
-      zoom: 12,
-    })
-
-    markerRef.current = new vietmapgl.Marker()
-      .setLngLat(userLocation)
-      .addTo(mapRef.current)
-
-    // ❗ KHÔNG remove map ở đây nữa, vì ta chỉ muốn khởi tạo 1 lần duy nhất
-  }, [userLocation])
-
-  useEffect(() => {
-    if (!userLocation || !markerRef.current || !mapRef.current) return
+    if (!userLocation || !mapRef.current || !markerRef.current) return
 
     markerRef.current.setLngLat(userLocation)
-    mapRef.current.setCenter(userLocation)
+    mapRef.current.flyTo({ center: userLocation })
   }, [userLocation])
+
   return (
     <div className="w-full h-full bg-gray-100 lg:ml-72">
       <div ref={mapContainer} className="w-full h-full" />
