@@ -3,9 +3,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { ArrowDownUp, ArrowRightLeft, X } from 'lucide-react';
+import TypeFastShip from './delivery/TypeFastShip';
+import axios from 'axios';
+import polyline from '@mapbox/polyline'
 type Opencard = {
   bottomCard: boolean;
   fastShip: boolean;
+}
+type Location = {
+  lat: number | null;
+  lng: number | null;
 }
 export default function DeliveryMap() {
   const y = useMotionValue(0);
@@ -15,8 +22,10 @@ export default function DeliveryMap() {
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const vietMapToken = process.env.NEXT_PUBLIC_VIETMAP_TOKEN
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
-
+  const [userLocation, setUserLocation] = useState<Location | null>(null)
+  const [fastShip, setFastShip] = useState<Location[]>([]);
+  const hasFlownToUserRef = useRef(false)
+  const fastShipMarkerRef = useRef<any>([]);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
@@ -43,7 +52,7 @@ export default function DeliveryMap() {
       watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          setUserLocation([longitude, latitude])
+          setUserLocation({ lat: latitude, lng: longitude })
         },
         (error) => {
           console.error('❌ Error watching user location:', error)
@@ -63,14 +72,162 @@ export default function DeliveryMap() {
     }
   }, [])
 
-  // Cập nhật marker và center khi có userLocation
+  // Cập nhật marker và center khi có userLocation (chỉ flyTo 1 lần)
   useEffect(() => {
     if (!userLocation || !mapRef.current || !markerRef.current) return
 
+    // Cập nhật marker vị trí người dùng
     markerRef.current.setLngLat(userLocation)
-    mapRef.current.flyTo({ center: userLocation })
+
+    // Chỉ flyTo khi chưa từng thực hiện
+    if (!hasFlownToUserRef.current) {
+      mapRef.current.flyTo({ center: userLocation })
+      hasFlownToUserRef.current = true
+    }
   }, [userLocation])
 
+  // useEffect(() => {
+  //   if (!mapRef.current || fastShip.length === 0) return
+
+  //   const vietmapgl = (window as any).vietmapgl
+
+  //   // Xoá các marker cũ (nếu có)
+  //   fastShipMarkerRef.current.forEach((marker: any) => marker.remove())
+  //   fastShipMarkerRef.current = []
+
+  //   // Tạo lại các marker mới từ fastShip
+  //   fastShip.forEach((location) => {
+  //     if (location.lat !== null && location.lng !== null) {
+  //       const newMarker = new vietmapgl.Marker({ color: '#f97316' }) // màu cam
+  //         .setLngLat([location.lng, location.lat])
+  //         .addTo(mapRef.current)
+
+  //       fastShipMarkerRef.current.push(newMarker)
+  //     }
+  //   })
+  // }, [fastShip])
+  useEffect(() => {
+    if (!mapRef.current || fastShip.length === 0) return
+
+    const vietmapgl = (window as any).vietmapgl
+
+    // Xoá các marker cũ
+    fastShipMarkerRef.current.forEach((marker: any) => marker.remove())
+    fastShipMarkerRef.current = []
+
+    fastShip.forEach((location, index) => {
+      if (location.lat != null && location.lng != null) {
+        // Tạo custom DOM element cho marker
+        const el = document.createElement('div')
+        el.className = 'custom-marker'
+        el.style.width = '32px'
+        el.style.height = '32px'
+        el.style.backgroundSize = 'cover'
+
+        if (location !=userLocation) {
+          if (index === 0) {
+            // Marker bắt đầu
+            el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/684/684908.png)' // icon đơn hàng bắt đầu (xe máy)
+          } else if (index === 1) {
+            // Marker kết thúc
+            el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/953/953803.png)' // icon đích đến (cờ đích)
+          }
+        }
+        const marker = new vietmapgl.Marker({ element: el })
+          .setLngLat([location.lng, location.lat])
+          .addTo(mapRef.current)
+
+        fastShipMarkerRef.current.push(marker)
+      }
+    })
+
+    if (!mapRef.current || !fastShip[0] || !fastShip[1]) return
+
+    const start = `${fastShip[0].lat},${fastShip[0].lng}`
+    const end = `${fastShip[1].lat},${fastShip[1].lng}`
+    const url = `https://maps.vietmap.vn/api/route?api-version=1.1&apikey=${vietMapToken}&point=${start}&point=${end}&vehicle=bike`
+    console.log(url);
+
+    const fetchRouteAndDraw = async () => {
+      try {
+        const res = await axios(url)
+        const encoded = res.data.paths[0].points
+        const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
+
+        // Convert thành GeoJSON LineString
+        const geoJson = {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
+          },
+        }
+
+        // Xoá source/line cũ nếu có
+        if (mapRef.current.getLayer('routeLine')) {
+          mapRef.current.removeLayer('routeLine')
+        }
+        if (mapRef.current.getSource('route')) {
+          mapRef.current.removeSource('route')
+        }
+
+        mapRef.current.addSource('route', {
+          type: 'geojson',
+          data: geoJson,
+        })
+
+        mapRef.current.addLayer({
+          id: 'routeLine',
+          type: 'line',
+          source: 'route',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round',
+          },
+          paint: {
+            'line-color': '#7602fa',
+            'line-width': 4,
+          },
+        })
+
+        console.log('🛣️ Vẽ route thành công!')
+      } catch (err) {
+        console.error('❌ Lỗi khi fetch hoặc vẽ route:', err)
+      }
+    }
+
+    fetchRouteAndDraw()
+
+
+  }, [fastShip])
+  useEffect(() => {
+    if (!mapRef.current || !fastShip[0]) return
+
+    const { lat, lng } = fastShip[0]
+    if (lat !== null && lng !== null) {
+      mapRef.current.flyTo({
+        center: [lng, lat],
+        zoom: 16, // bạn có thể thay đổi mức zoom tùy ý
+        speed: 1.2, // tốc độ di chuyển
+        curve: 1.5, // độ cong
+        essential: true,
+      })
+    }
+  }, [fastShip[0]])
+  useEffect(() => {
+    if (!mapRef.current || !fastShip[1]) return
+
+    const { lat, lng } = fastShip[1]
+    if (lat !== null && lng !== null) {
+      mapRef.current.flyTo({
+        center: [lng, lat],
+        zoom: 16, // bạn có thể thay đổi mức zoom tùy ý
+        speed: 1.2, // tốc độ di chuyển
+        curve: 1.5, // độ cong
+        essential: true,
+      })
+    }
+  }, [fastShip[1]])
   return (
     <div className="relative w-screen h-screen">
       {/* Header Tìm kiếm */}
@@ -80,8 +237,11 @@ export default function DeliveryMap() {
           <input
             type="text"
             placeholder="Tìm kiếm ở đây"
-            className="w-full bg-transparent outline-none px-4"
+            className=" flex-1 bg-transparent outline-none px-4"
           />
+          <button onClick={e => setOpenCard({ ...openCard, fastShip: true })} className="px-4 bg-orange-500 rounded-xl text-white py-1 text-xs">
+            Tìm shipper ngay
+          </button>
           <div className="ml-2 w-8 h-8 rounded-full bg-gray-300"></div>
         </div>
       </div>
@@ -91,41 +251,7 @@ export default function DeliveryMap() {
 
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
       {openCard.fastShip &&
-        (<div className="absolute bottom-20 left-4 right-4 z-10">
-          <div className="relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4">
-            <button onClick={e=>setOpenCard({...openCard,fastShip:false})} className='absolute top-2 right-4'><X /></button>
-            {/* <span className="inline-block w-fit self-start bg-gray-600 text-white text-sm px-3 py-1 rounded-full">
-              Đặt chuyến ship siêu tốc cho bạn
-            </span> */}
-            <div className='flex lg:flex-row flex-col items-center gap-6'>
-              <div className='flex flex-col w-full'>
-                <span className='text-gray-500'>Bạn hãy nhập địa chỉ đơn hàng bắt đầu</span>
-                <input
-                  type="text"
-                  placeholder="Chọn địa chỉ nhận hàng"
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
-              </div>
-              {/* <div className='px-20 lg:mt-6 lg:block hidden py-4'>
-                <ArrowRightLeft />
-              </div>
-              <div className='px-20 lg:hidden py-4'>
-                <ArrowDownUp />
-              </div> */}
-              <div className='flex flex-col w-full'>
-                <span className='text-gray-500'>Bạn hãy nhập địa chỉ đơn hàng kết thúc</span>
-                <input
-                  type="text"
-                  placeholder="Chọn địa chỉ nhận hàng"
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
-              </div>
-            </div>
-            <button className='w-full bg-orange-500 rounded-xl text-white py-2'>
-              Tìm shipper ngay
-            </button>
-          </div>
-        </div>)
+        (<TypeFastShip setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} />)
       }
 
       {/* Thẻ trắng bên dưới */}
