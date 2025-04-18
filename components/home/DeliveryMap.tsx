@@ -94,10 +94,10 @@ export default function DeliveryMap() {
         (<div className="absolute bottom-20 left-4 right-4 z-10">
           <div className="relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4">
             <button onClick={e=>setOpenCard({...openCard,fastShip:false})} className='absolute top-2 right-4'><X /></button>
-            <span className="inline-block w-fit self-start bg-gray-600 text-white text-sm px-3 py-1 rounded-full">
+            {/* <span className="inline-block w-fit self-start bg-gray-600 text-white text-sm px-3 py-1 rounded-full">
               Đặt chuyến ship siêu tốc cho bạn
-            </span>
-            <div className='flex lg:flex-row flex-col items-center '>
+            </span> */}
+            <div className='flex lg:flex-row flex-col items-center gap-6'>
               <div className='flex flex-col w-full'>
                 <span className='text-gray-500'>Bạn hãy nhập địa chỉ đơn hàng bắt đầu</span>
                 <input
@@ -106,12 +106,12 @@ export default function DeliveryMap() {
                   className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
                 />
               </div>
-              <div className='px-20 lg:mt-6 lg:block hidden py-4'>
+              {/* <div className='px-20 lg:mt-6 lg:block hidden py-4'>
                 <ArrowRightLeft />
               </div>
               <div className='px-20 lg:hidden py-4'>
                 <ArrowDownUp />
-              </div>
+              </div> */}
               <div className='flex flex-col w-full'>
                 <span className='text-gray-500'>Bạn hãy nhập địa chỉ đơn hàng kết thúc</span>
                 <input
@@ -122,7 +122,7 @@ export default function DeliveryMap() {
               </div>
             </div>
             <button className='w-full bg-orange-500 rounded-xl text-white py-2'>
-              Tìm ship ngay
+              Tìm shipper ngay
             </button>
           </div>
         </div>)
