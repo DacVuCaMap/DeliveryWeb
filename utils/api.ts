@@ -40,3 +40,13 @@ export const logoutUser = async ()=>{
         throw error.response?.data || "Lỗi không xác định";
     }
 }
+
+/// get near shipper
+export const getNearShipper = async (lat:number,lng:number,status:number) =>{
+    try {
+        const response = await api.get(`/api/location/shipper-locations/near?lat=${lat}&lng=${lng}&status=${status}`);
+        return response.data;
+    } catch (error) {
+        
+    }
+}

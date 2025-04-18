@@ -26,13 +26,13 @@ export default function DeliveryMap() {
   const [fastShip, setFastShip] = useState<Location[]>([]);
   const hasFlownToUserRef = useRef(false)
   const fastShipMarkerRef = useRef<any>([]);
+  const [distance,setDistance] = useState<number>(0);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
     if (!mapContainer.current || !vietmapgl || mapRef.current) return
 
-    console.log('✅ Creating map...')
-    const defaultCenter: [number, number] = [105.8544441, 21.028511] // Hà Nội
+    const defaultCenter: [number, number] = [105.8544441, 21.028511]
 
     mapRef.current = new vietmapgl.Map({
       container: mapContainer.current,
@@ -86,26 +86,6 @@ export default function DeliveryMap() {
     }
   }, [userLocation])
 
-  // useEffect(() => {
-  //   if (!mapRef.current || fastShip.length === 0) return
-
-  //   const vietmapgl = (window as any).vietmapgl
-
-  //   // Xoá các marker cũ (nếu có)
-  //   fastShipMarkerRef.current.forEach((marker: any) => marker.remove())
-  //   fastShipMarkerRef.current = []
-
-  //   // Tạo lại các marker mới từ fastShip
-  //   fastShip.forEach((location) => {
-  //     if (location.lat !== null && location.lng !== null) {
-  //       const newMarker = new vietmapgl.Marker({ color: '#f97316' }) // màu cam
-  //         .setLngLat([location.lng, location.lat])
-  //         .addTo(mapRef.current)
-
-  //       fastShipMarkerRef.current.push(newMarker)
-  //     }
-  //   })
-  // }, [fastShip])
   useEffect(() => {
     if (!mapRef.current || fastShip.length === 0) return
 
@@ -124,7 +104,7 @@ export default function DeliveryMap() {
         el.style.height = '32px'
         el.style.backgroundSize = 'cover'
 
-        if (location !=userLocation) {
+        if (location != userLocation) {
           if (index === 0) {
             // Marker bắt đầu
             el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/684/684908.png)' // icon đơn hàng bắt đầu (xe máy)
@@ -146,14 +126,14 @@ export default function DeliveryMap() {
     const start = `${fastShip[0].lat},${fastShip[0].lng}`
     const end = `${fastShip[1].lat},${fastShip[1].lng}`
     const url = `https://maps.vietmap.vn/api/route?api-version=1.1&apikey=${vietMapToken}&point=${start}&point=${end}&vehicle=bike`
-    console.log(url);
 
     const fetchRouteAndDraw = async () => {
       try {
         const res = await axios(url)
         const encoded = res.data.paths[0].points
         const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
-
+        console.log(res);
+        setDistance(res.data.paths[0].distance);
         // Convert thành GeoJSON LineString
         const geoJson = {
           type: 'Feature',
@@ -185,11 +165,20 @@ export default function DeliveryMap() {
             'line-join': 'round',
           },
           paint: {
-            'line-color': '#7602fa',
-            'line-width': 4,
+            'line-color': '#02fa1b',
+            'line-width': 7,
           },
         })
-
+        // 🔍 Fit bounds
+        const bounds = new (window as any).vietmapgl.LngLatBounds()
+        decoded.forEach(([lat, lng]) => {
+          bounds.extend([lng, lat])
+        })
+        mapRef.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 17,
+          duration: 1000,
+        })
         console.log('🛣️ Vẽ route thành công!')
       } catch (err) {
         console.error('❌ Lỗi khi fetch hoặc vẽ route:', err)
@@ -236,12 +225,12 @@ export default function DeliveryMap() {
           <span className="font-bold text-xl dark:text-white text-orange-600 border-r pr-4">snapgo.vn</span>
           <input
             type="text"
-            placeholder="Tìm kiếm ở đây"
+            placeholder="Tìm kiếm cửa hàng"
             className=" flex-1 bg-transparent outline-none px-4"
           />
-          <button onClick={e => setOpenCard({ ...openCard, fastShip: true })} className="px-4 bg-orange-500 rounded-xl text-white py-1 text-xs">
+          {/* <button onClick={e => setOpenCard({ ...openCard, fastShip: true })} className="px-4 bg-orange-500 rounded-xl text-white py-1 text-xs">
             Tìm shipper ngay
-          </button>
+          </button> */}
           <div className="ml-2 w-8 h-8 rounded-full bg-gray-300"></div>
         </div>
       </div>
@@ -251,7 +240,7 @@ export default function DeliveryMap() {
 
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
       {openCard.fastShip &&
-        (<TypeFastShip setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} />)
+        (<TypeFastShip fastShip={fastShip} mapRef={mapRef} setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} distance={distance} />)
       }
 
       {/* Thẻ trắng bên dưới */}

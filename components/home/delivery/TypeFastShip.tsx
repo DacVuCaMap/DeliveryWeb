@@ -1,8 +1,10 @@
 "use client";
 import axios from "axios";
 import { X } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './TypeFastShip.css'
+import { getNearShipper } from "@/utils/api";
+import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 // Define types
 type OpenCard = {
   bottomCard: boolean;
@@ -24,12 +26,25 @@ type Props = {
   setOpenCard: React.Dispatch<React.SetStateAction<OpenCard>>;
   openCard: OpenCard;
   setFastShip: React.Dispatch<React.SetStateAction<Location[]>>;
-  userLocation:Location | null;
+  userLocation: Location | null;
+  distance: number;
+  mapRef: any;
+  fastShip: Location[];
 };
 type Location = {
   lat: number | null;
   lng: number | null;
 }
+type NearShipper = {
+  avatar: any;
+  distance: number;
+  firstName: string;
+  lastName: string;
+  latitude: number;
+  longitude: number;
+  phoneNumber: string;
+  shipperId: number;
+};
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -48,11 +63,16 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function TypeFastShip(props: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+  const y = useMotionValue(isOpen ? 200 : 500);
+  const opacity = useTransform(y, [-50, 0], [1, 0.95]);
+  const nearShipRef = useRef<any>([]);
   const [isFocused1, setFocused1] = useState(false);
   const [isFocused2, setFocused2] = useState(false);
   const defaultLoc: MapInfo = { address: "Vị trí hiện tại của bạn", display: "", ref_id: "" };
   const [suggestList, setSuggestList] = useState<MapInfo[]>([defaultLoc]);
   const [inputInfo, setInputInfo] = useState<InputInfo>({ input1: null, input2: null });
+  const [listNearShipper, setListNearShipper] = useState<NearShipper[]>([]);
 
   // Debounce input values (1.5 seconds delay)
   const debouncedInput1 = useDebounce(inputInfo.input1?.address || "", 500);
@@ -121,7 +141,7 @@ export default function TypeFastShip(props: Props) {
 
   const handleSetFastShip = async (item: MapInfo, ind: number) => {
     if (item.address === "Vị trí hiện tại của bạn" && props.userLocation) {
-      const newLoc : Location = props.userLocation;
+      const newLoc: Location = props.userLocation;
       props.setFastShip((prev) => {
         const newFastShip = [...prev];
         newFastShip[ind] = newLoc;
@@ -144,6 +164,72 @@ export default function TypeFastShip(props: Props) {
       console.error("Error fetching suggestions:", error);
     }
   }
+  const calTime = () => {
+    const distanceKm = props.distance / 1000
+    const averageSpeedKmH = 40
+
+    const timeHours = distanceKm / averageSpeedKmH
+    const hours = Math.floor(timeHours)
+    const minutes = Math.round((timeHours - hours) * 60)
+
+    if (hours === 0 && minutes === 0) {
+      return 'ít hơn 1 phút'
+    } else if (hours === 0) {
+      return `${minutes} phút`
+    } else if (minutes === 0) {
+      return `${hours} giờ`
+    } else {
+      return `${hours} giờ ${minutes} phút`
+    }
+  }
+  const handleFindShipper = async () => {
+    if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) return;
+    const response = await getNearShipper(props.fastShip[0].lat, props.fastShip[0].lng, 0);
+    console.log(response);
+    if (response && response.value && response.success && Array.isArray(response.value)) {
+      const newList: NearShipper[] = response.value.map((item: any) => {
+        return {
+          avatar: item.avatar,
+          distance: item.distance,
+          firstName: item.firstName,
+          lastName: item.lastName,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          phoneNumber: item.phoneNumber,
+          shipperId: item.shipperId
+        };
+      })
+      setListNearShipper(newList);
+      setIsOpen(!isOpen);
+      animate(y, isOpen ? 100 : 100, { // Sử dụng animate để tạo animation
+        duration: 0.3,
+        ease: 'easeInOut',
+      });
+    }
+
+  }
+  const setMarkerShip = (item:NearShipper) =>{
+    console.log(item)
+    const vietmapgl = (window as any).vietmapgl
+    const el = document.createElement('div')
+    el.className = 'custom-marker'
+    el.style.width = '32px'
+    el.style.height = '32px'
+    el.style.backgroundSize = 'cover'
+    const marker = new vietmapgl.Marker({ element: el })
+    .setLngLat([item.longitude, item.latitude])
+    .addTo(props.mapRef.current)
+    props.mapRef.current.flyTo({
+      center: [item.longitude, item.latitude],
+      zoom: 16, // bạn có thể thay đổi mức zoom tùy ý
+      speed: 1.2, // tốc độ di chuyển
+      curve: 1.5, // độ cong
+      essential: true,
+    })
+    nearShipRef.current.push(marker)
+  }
+
+
   return (
     <div className="absolute bottom-20 left-4 right-4 z-10">
       <div className="relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4">
@@ -222,10 +308,56 @@ export default function TypeFastShip(props: Props) {
             )}
           </div>
         </div>
-        <button className="w-full bg-orange-500 rounded-xl text-white py-2">
+        {inputInfo.input1 && inputInfo.input2 && (
+          <div className="flex flex-row gap-4">
+            <span>Quãng đường: {(props.distance / 1000).toFixed(2)}km</span>
+            <span>Thời gian: {calTime()}</span>
+          </div>
+        )}
+        <button onClick={e => handleFindShipper()} className="w-full bg-orange-500 rounded-xl text-white py-2">
           Tìm shipper ngay
         </button>
       </div>
+
+
+      <motion.div
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 500 }}
+        style={{ y, opacity }}
+        className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-3xl shadow-lg p-4 pb-64"
+      >
+        <div className="w-12 h-1.5 bg-gray-400 mx-auto rounded-full mb-4" />
+        <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
+        <p className="text-gray-500">Danh sách shipper</p>
+        <div className="mt-4 flex flex-col space-y-4">
+          {listNearShipper.map((item: NearShipper) => (
+            <div onClick={e=>setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 rounded-lg shadow-sm bg-white">
+              {/* Avatar hình tròn */}
+              <div className="w-12 h-12 rounded-full overflow-hidden">
+                {item.avatar ? (
+                  <img src={item.avatar} alt={`${item.firstName} ${item.lastName}`} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+                    {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
+                    {item.firstName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+
+              {/* Thông tin shipper */}
+              <div className="flex-grow">
+                <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
+                <p className="text-gray-500 text-sm">ID: {item.shipperId}</p>
+                <p className="text-blue-500 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
+                <p className="text-gray-600 text-sm">SĐT: {item.phoneNumber}</p>
+                {/* Thêm các thông tin khác bạn muốn hiển thị */}
+              </div>
+
+              {/* Thao tác (nếu cần) */}
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }

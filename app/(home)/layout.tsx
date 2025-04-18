@@ -16,7 +16,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                 href="https://unpkg.com/@vietmap/vietmap-gl-js@4.2.0/vietmap-gl.css"
                 rel="stylesheet"
             />
-            <div className='flex-1'>
+            <div className='flex-1 overflow-hidden'>
                 {children}
             </div>
 

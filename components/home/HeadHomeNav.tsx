@@ -13,7 +13,7 @@ export default function HeadHomeNav() {
         <div>
             <div className="fixed lg:hidden top-0 w-screen text-gray-800 flex flex-row justify-around items-center z-50 py-4">
                 <Link href={"/home/shipper"} className={`${path === "/home/shipper" ? "border-b-2 border-orange-500 font-bold text-black" : ""} `}>
-                    <span>Shipper</span>
+                    <span>Nổi bật</span>
                 </Link>
                 <button className="flex flex-col items-center ">
                     <span>Đã follow</span>
@@ -61,7 +61,7 @@ export default function HeadHomeNav() {
                     <span>Đã follow</span>
                 </button>
                 <Link href={"/home/shipper"} className={`${path === "/home/shipper" ? "border-b-2 border-orange-500 font-bold text-black" : "text-gray-500"} `}>
-                    <span>Shipper</span>
+                    <span>Nổi bật</span>
                 </Link>
 
             </div>
