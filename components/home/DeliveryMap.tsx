@@ -27,6 +27,7 @@ export default function DeliveryMap() {
   const hasFlownToUserRef = useRef(false)
   const fastShipMarkerRef = useRef<any>([]);
   const [distance,setDistance] = useState<number>(0);
+  const [nearShipper,setNearShipper] = useState<Location | null>(null);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
@@ -217,6 +218,31 @@ export default function DeliveryMap() {
       })
     }
   }, [fastShip[1]])
+  useEffect(() => {
+    if (!mapRef.current || !nearShipper) return;
+  
+    // Nếu đã có marker cũ thì remove
+    if (markerRef.current?.nearShipperMarker) {
+      markerRef.current.nearShipperMarker.remove();
+    }
+    const vietmapgl = (window as any).vietmapgl
+    // Tạo marker mới
+    const marker = new vietmapgl.Marker({ color: 'red' }) // hoặc dùng icon tùy chỉnh
+      .setLngLat([nearShipper.lng, nearShipper.lat])
+      .addTo(mapRef.current);
+  
+    // Lưu lại marker để sau này remove
+    markerRef.current.nearShipperMarker = marker;
+  
+    // Optional: zoom đến vị trí gần nhất
+    mapRef.current.flyTo({
+      center: [nearShipper.lng, nearShipper.lat],
+      zoom: 14,
+      speed: 1.2,
+    });
+  
+  }, [nearShipper]);
+  
   return (
     <div className="relative w-screen h-screen">
       {/* Header Tìm kiếm */}
@@ -240,7 +266,7 @@ export default function DeliveryMap() {
 
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
       {openCard.fastShip &&
-        (<TypeFastShip fastShip={fastShip} mapRef={mapRef} setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} distance={distance} />)
+        (<TypeFastShip setNearShipper={setNearShipper} fastShip={fastShip} mapRef={mapRef} setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} distance={distance} />)
       }
 
       {/* Thẻ trắng bên dưới */}

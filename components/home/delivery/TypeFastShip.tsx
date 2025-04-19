@@ -30,6 +30,7 @@ type Props = {
   distance: number;
   mapRef: any;
   fastShip: Location[];
+  setNearShipper:React.Dispatch<React.SetStateAction<Location|null>>
 };
 type Location = {
   lat: number | null;
@@ -201,32 +202,15 @@ export default function TypeFastShip(props: Props) {
       })
       setListNearShipper(newList);
       setIsOpen(!isOpen);
-      animate(y, isOpen ? 100 : 100, { // Sử dụng animate để tạo animation
+      animate(y, isOpen ? 200 : 200, { // Sử dụng animate để tạo animation
         duration: 0.3,
         ease: 'easeInOut',
       });
     }
 
   }
-  const setMarkerShip = (item:NearShipper) =>{
-    console.log(item)
-    const vietmapgl = (window as any).vietmapgl
-    const el = document.createElement('div')
-    el.className = 'custom-marker'
-    el.style.width = '32px'
-    el.style.height = '32px'
-    el.style.backgroundSize = 'cover'
-    const marker = new vietmapgl.Marker({ element: el })
-    .setLngLat([item.longitude, item.latitude])
-    .addTo(props.mapRef.current)
-    props.mapRef.current.flyTo({
-      center: [item.longitude, item.latitude],
-      zoom: 16, // bạn có thể thay đổi mức zoom tùy ý
-      speed: 1.2, // tốc độ di chuyển
-      curve: 1.5, // độ cong
-      essential: true,
-    })
-    nearShipRef.current.push(marker)
+  const setMarkerShip = (item: NearShipper) => {
+    props.setNearShipper({lat:item.latitude,lng:item.longitude});
   }
 
 
@@ -331,7 +315,7 @@ export default function TypeFastShip(props: Props) {
         <p className="text-gray-500">Danh sách shipper</p>
         <div className="mt-4 flex flex-col space-y-4">
           {listNearShipper.map((item: NearShipper) => (
-            <div onClick={e=>setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 rounded-lg shadow-sm bg-white">
+            <div onClick={e => setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 rounded-lg shadow-sm bg-white">
               {/* Avatar hình tròn */}
               <div className="w-12 h-12 rounded-full overflow-hidden">
                 {item.avatar ? (
