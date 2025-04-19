@@ -1,5 +1,6 @@
 
 import axios from "axios";
+import { toast } from "sonner";
 
 // Tạo một instance của axios để tái sử dụng
 const api = axios.create({
@@ -46,7 +47,20 @@ export const getNearShipper = async (lat:number,lng:number,status:number) =>{
     try {
         const response = await api.get(`/api/location/shipper-locations/near?lat=${lat}&lng=${lng}&status=${status}`);
         return response.data;
-    } catch (error) {
-        
+    } catch (error:any) {
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
     }
 }
+
+export const updateShipperLocation = async (postData:any) =>{
+    try {
+        const response = await api.post(`/api/location/shipper-locations/update`,postData);
+        return response.data;
+    } catch (error:any) {
+        toast.error("Lỗi server")
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
+    }
+}
+

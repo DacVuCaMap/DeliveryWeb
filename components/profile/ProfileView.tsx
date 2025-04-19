@@ -12,15 +12,27 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 type UserInfo = {
   name: string,
-  email: string
+  email: string,
+  role:string
 }
 export default function ProfileView() {
   const { user } = useUser();
   const [clientUser, setClientUser] = useState<UserInfo | null>(null);
   const { logout } = useUser();
   const router = useRouter();
+  let userRoleBand = "";
   useEffect(() => {
-    setClientUser(user);
+    if (user) {
+      userRoleBand = user.role==="USER" ? "Người dùng" : userRoleBand;
+      userRoleBand = user.role==="SHIPPER" ? "Shipper" : userRoleBand;
+      userRoleBand = user.role==="PARTNER" ? "Đối tác bán hàng" : userRoleBand; 
+    }
+    console.log(userRoleBand);
+    setClientUser({
+      name: user?.name || "Unknown",
+      email: user?.email || "No email provided",
+      role: userRoleBand
+    });
   }, [user]);
   const handleLogout = async () => {
     const response = await logoutUser();
@@ -66,7 +78,7 @@ export default function ProfileView() {
           <div>
             <Link href={"/"} className="flex items-center space-x-2 ">
               <h2 className="font-semibold text-white text-xl hover:underline">{clientUser?.name}</h2>
-              <Badge>Người dùng</Badge>
+              <Badge>{clientUser?.role}</Badge>
             </Link>
             <p className="text-sm text-gray-100">{clientUser?.email}</p>
           </div>

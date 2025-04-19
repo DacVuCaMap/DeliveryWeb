@@ -27,8 +27,8 @@ export default function SignInForm() {
       const response = await loginUser(email, password);
       if (response.success) {
         toast.success("Đăng nhập thành công");
-        const { role, name, avt,email,token } = response.value || {};
-        const userRole = role || 'USER';
+        const { roleName, name, avt,email,token } = response.value || {};
+        const userRole = roleName || 'USER';
         const userInfo = {
           name: name || 'Unknown',
           avt: avt || '/default-avatar.png',
