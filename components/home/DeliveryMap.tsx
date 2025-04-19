@@ -128,9 +128,9 @@ export default function DeliveryMap() {
 
     // Tạo phần tử HTML tùy chỉnh cho marker
     const markerElement = document.createElement('div');
-    markerElement.style.width = '50px'; // Kích thước icon
-    markerElement.style.height = '50px';
-    markerElement.style.backgroundImage = 'url(/images/mark1.png)'; // Thay bằng URL ảnh của bạn
+    markerElement.style.width = '40px'; // Kích thước icon
+    markerElement.style.height = '40px';
+    markerElement.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/684/684908.png)'; // Thay bằng URL ảnh của bạn
     markerElement.style.backgroundSize = 'contain';
     markerElement.style.backgroundRepeat = 'no-repeat';
     markerElement.style.backgroundPosition = 'center';
@@ -296,12 +296,11 @@ export default function DeliveryMap() {
   
     // Tạo phần tử HTML tùy chỉnh cho marker
     const markerElement = document.createElement('div');
-    markerElement.style.width = '50px'; // Tăng kích thước để chứa ảnh
-    markerElement.style.height = '50px';
+    markerElement.style.width = '60px'; // Tăng kích thước để chứa ảnh
+    markerElement.style.height = '60px';
     markerElement.style.backgroundColor = 'transparent'; // Trong suốt
-    markerElement.style.border = '5px solid #00ff00'; // Viền xanh lá cây
+    markerElement.style.border = '3px solid #0022ff'; // Viền xanh lá cây
     markerElement.style.borderRadius = '50%'; // Hình tròn
-    markerElement.style.boxShadow = '0 0 5px rgba(0, 255, 0, 0.5)'; // Đổ bóng xanh nhẹ
     markerElement.style.cursor = 'pointer'; // Con trỏ chuột
     markerElement.style.display = 'flex'; // Để căn giữa ảnh
     markerElement.style.alignItems = 'center';
@@ -311,8 +310,8 @@ export default function DeliveryMap() {
     // Tạo phần tử ảnh bên trong
     const imageElement = document.createElement('img');
     imageElement.src = '/images/shipper1.png'; // Thay bằng URL ảnh của bạn
-    imageElement.style.width = '50px'; // Kích thước ảnh nhỏ hơn vòng tròn
-    imageElement.style.height = '50px';
+    imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
+    imageElement.style.height = '60px';
     imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
   
     // Thêm ảnh vào marker
