@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import './TypeFastShip.css'
 import { fetchAutoCompleteVietMap, fetchPlaceVietMap, getNearShipper } from "@/utils/api";
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
+import Image from "next/image";
 // Define types
 type OpenCard = {
   bottomCard: boolean;
@@ -323,10 +324,11 @@ export default function TypeFastShip(props: Props) {
                 {item.avatar ? (
                   <img src={item.avatar} alt={`${item.firstName} ${item.lastName}`} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
-                    {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
-                    {item.firstName.charAt(0).toUpperCase()}
-                  </div>
+                  // <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+                  //   {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
+                  //   {item.firstName.charAt(0).toUpperCase()}
+                  // </div>
+                  <Image src={"/images/shipper1.png"} width={50} height={50} alt={""}></Image>
                 )}
               </div>
 

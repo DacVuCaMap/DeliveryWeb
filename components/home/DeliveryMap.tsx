@@ -285,27 +285,56 @@ export default function DeliveryMap() {
   }, [fastShip[1]])
   useEffect(() => {
     if (!mapRef.current || !nearShipper) return;
-
+  
     // Nếu đã có marker cũ thì remove
     if (markerRef.current?.nearShipperMarker) {
       markerRef.current.nearShipperMarker.remove();
+      markerRef.current.nearShipperMarker = null; // Đặt lại tham chiếu
     }
-    const vietmapgl = (window as any).vietmapgl
-    // Tạo marker mới
-    const marker = new vietmapgl.Marker({ color: 'red' }) // hoặc dùng icon tùy chỉnh
+  
+    const vietmapgl = (window as any).vietmapgl;
+  
+    // Tạo phần tử HTML tùy chỉnh cho marker
+    const markerElement = document.createElement('div');
+    markerElement.style.width = '50px'; // Tăng kích thước để chứa ảnh
+    markerElement.style.height = '50px';
+    markerElement.style.backgroundColor = 'transparent'; // Trong suốt
+    markerElement.style.border = '5px solid #00ff00'; // Viền xanh lá cây
+    markerElement.style.borderRadius = '50%'; // Hình tròn
+    markerElement.style.boxShadow = '0 0 5px rgba(0, 255, 0, 0.5)'; // Đổ bóng xanh nhẹ
+    markerElement.style.cursor = 'pointer'; // Con trỏ chuột
+    markerElement.style.display = 'flex'; // Để căn giữa ảnh
+    markerElement.style.alignItems = 'center';
+    markerElement.style.justifyContent = 'center';
+    markerElement.style.overflow = 'hidden';
+  
+    // Tạo phần tử ảnh bên trong
+    const imageElement = document.createElement('img');
+    imageElement.src = '/images/shipper1.png'; // Thay bằng URL ảnh của bạn
+    imageElement.style.width = '50px'; // Kích thước ảnh nhỏ hơn vòng tròn
+    imageElement.style.height = '50px';
+    imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
+  
+    // Thêm ảnh vào marker
+    markerElement.appendChild(imageElement);
+  
+    // Tạo marker mới với phần tử tùy chỉnh
+    const marker = new vietmapgl.Marker({
+      element: markerElement,
+      anchor: 'center', // Đặt tâm của marker
+    })
       .setLngLat([nearShipper.lng, nearShipper.lat])
       .addTo(mapRef.current);
-
+  
     // Lưu lại marker để sau này remove
     markerRef.current.nearShipperMarker = marker;
-
-    // Optional: zoom đến vị trí gần nhất
+  
+    // Zoom đến vị trí gần nhất
     mapRef.current.flyTo({
       center: [nearShipper.lng, nearShipper.lat],
       zoom: 14,
       speed: 1.2,
     });
-
   }, [nearShipper]);
 
   return (
