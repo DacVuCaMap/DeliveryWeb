@@ -16,8 +16,6 @@ type Location = {
   lng: number | null;
 }
 export default function DeliveryMap() {
-  const y = useMotionValue(0);
-  const opacity = useTransform(y, [-100, 0], [1, 0.8]);
   const [openCard, setOpenCard] = useState<Opencard>({ bottomCard: false, fastShip: true });
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
@@ -27,8 +25,8 @@ export default function DeliveryMap() {
   const [fastShip, setFastShip] = useState<Location[]>([]);
   const hasFlownToUserRef = useRef(false)
   const fastShipMarkerRef = useRef<any>([]);
-  const [distance,setDistance] = useState<number>(0);
-  const [nearShipper,setNearShipper] = useState<Location | null>(null);
+  const [distance, setDistance] = useState<number>(0);
+  const [nearShipper, setNearShipper] = useState<Location | null>(null);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
@@ -38,11 +36,11 @@ export default function DeliveryMap() {
 
     mapRef.current = new vietmapgl.Map({
       container: mapContainer.current,
-      style: process.env.NEXT_PUBLIC_API_URL+`/api/vietmap/style`,
+      style: process.env.NEXT_PUBLIC_API_URL + `/api/vietmap/style`,
       center: defaultCenter,
       zoom: 15,
     })
-    
+
 
     markerRef.current = new vietmapgl.Marker().setLngLat(defaultCenter).addTo(mapRef.current)
   }, [])
@@ -51,10 +49,10 @@ export default function DeliveryMap() {
       const res = await axios(process.env.NEXT_PUBLIC_API_URL + `/api/vietmap/style`);
       console.log(res);
     };
-  
+
     checkStyleResponse();
   }, []);
-  
+
   // Theo dõi vị trí liên tục
   useEffect(() => {
     let watchId: number
@@ -84,18 +82,76 @@ export default function DeliveryMap() {
   }, [])
 
   // Cập nhật marker và center khi có userLocation (chỉ flyTo 1 lần)
+  // useEffect(() => {
+  //   if (!userLocation || !mapRef.current || !markerRef.current) return
+
+  //   // // Cập nhật marker vị trí người dùng
+  //   // markerRef.current.setLngLat(userLocation)
+
+  //   const vietmapgl = (window as any).vietmapgl;
+
+  //   if (!markerRef.current) {
+  //     const el = document.createElement('div');
+  //     el.style.width = '40px';
+  //     el.style.height = '40px';
+  //     el.style.backgroundImage = 'url("/images/mark1.png")';
+  //     el.style.backgroundSize = 'contain';
+  //     el.style.backgroundRepeat = 'no-repeat';
+  //     el.style.backgroundPosition = 'center';
+  //     el.style.border = '2px solid transparent'; // thêm để dễ thấy, có thể xoá
+
+  //     markerRef.current = new vietmapgl.Marker({ element: el })
+  //       .setLngLat(userLocation)
+  //       .addTo(mapRef.current);
+
+  //     console.log("✅ Custom marker created");
+  //   } else {
+  //     markerRef.current.setLngLat(userLocation);
+  //   }
+
+  //   // Chỉ flyTo khi chưa từng thực hiện
+  //   if (!hasFlownToUserRef.current) {
+  //     mapRef.current.flyTo({ center: userLocation })
+  //     hasFlownToUserRef.current = true
+  //   }
+  // }, [userLocation])
+
   useEffect(() => {
-    if (!userLocation || !mapRef.current || !markerRef.current) return
+    if (!userLocation || !mapRef.current) return;
+    const vietmapgl = (window as any).vietmapgl;
 
-    // Cập nhật marker vị trí người dùng
-    markerRef.current.setLngLat(userLocation)
-
-    // Chỉ flyTo khi chưa từng thực hiện
-    if (!hasFlownToUserRef.current) {
-      mapRef.current.flyTo({ center: userLocation })
-      hasFlownToUserRef.current = true
+    // Xóa marker cũ nếu tồn tại
+    if (markerRef.current) {
+      markerRef.current.remove();
+      markerRef.current = null; // Đặt lại tham chiếu
     }
-  }, [userLocation])
+
+    // Tạo phần tử HTML tùy chỉnh cho marker
+    const markerElement = document.createElement('div');
+    markerElement.style.width = '50px'; // Kích thước icon
+    markerElement.style.height = '50px';
+    markerElement.style.backgroundImage = 'url(/images/mark1.png)'; // Thay bằng URL ảnh của bạn
+    markerElement.style.backgroundSize = 'contain';
+    markerElement.style.backgroundRepeat = 'no-repeat';
+    markerElement.style.backgroundPosition = 'center';
+    markerElement.style.cursor = 'pointer';
+
+    // Tạo marker mới với phần tử tùy chỉnh
+    markerRef.current = new vietmapgl.Marker({
+      element: markerElement,
+    })
+      .setLngLat([userLocation.lng, userLocation.lat]) // Đảm bảo đúng định dạng [lng, lat]
+      .addTo(mapRef.current);
+
+    // FlyTo lần đầu nếu chưa thực hiện
+    if (!hasFlownToUserRef.current) {
+      mapRef.current.flyTo({
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 15,
+      });
+      hasFlownToUserRef.current = true;
+    }
+  }, [userLocation]);
 
   useEffect(() => {
     if (!mapRef.current || fastShip.length === 0) return
@@ -139,7 +195,7 @@ export default function DeliveryMap() {
 
     const fetchRouteAndDraw = async () => {
       try {
-        const res = await fetchRouteVietMap(start,end);
+        const res = await fetchRouteVietMap(start, end);
         const encoded = res.data.paths[0].points
         const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
         console.log(res);
@@ -229,7 +285,7 @@ export default function DeliveryMap() {
   }, [fastShip[1]])
   useEffect(() => {
     if (!mapRef.current || !nearShipper) return;
-  
+
     // Nếu đã có marker cũ thì remove
     if (markerRef.current?.nearShipperMarker) {
       markerRef.current.nearShipperMarker.remove();
@@ -239,19 +295,19 @@ export default function DeliveryMap() {
     const marker = new vietmapgl.Marker({ color: 'red' }) // hoặc dùng icon tùy chỉnh
       .setLngLat([nearShipper.lng, nearShipper.lat])
       .addTo(mapRef.current);
-  
+
     // Lưu lại marker để sau này remove
     markerRef.current.nearShipperMarker = marker;
-  
+
     // Optional: zoom đến vị trí gần nhất
     mapRef.current.flyTo({
       center: [nearShipper.lng, nearShipper.lat],
       zoom: 14,
       speed: 1.2,
     });
-  
+
   }, [nearShipper]);
-  
+
   return (
     <div className="relative w-screen h-screen">
       {/* Header Tìm kiếm */}
@@ -276,28 +332,7 @@ export default function DeliveryMap() {
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
       {openCard.fastShip &&
         (<TypeFastShip setNearShipper={setNearShipper} fastShip={fastShip} mapRef={mapRef} setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} distance={distance} />)
-      }
-
-      {/* Thẻ trắng bên dưới */}
-
-      {openCard.bottomCard &&
-        (<motion.div
-          drag="y"
-          dragConstraints={{ top: -300, bottom: 0 }}
-          style={{ y, opacity }}
-          className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-3xl shadow-lg p-4 pb-64"
-        >
-          <div className="w-12 h-1.5 bg-gray-400 mx-auto rounded-full mb-4" />
-          <h2 className="text-lg font-semibold">Mỹ Đình 2</h2>
-          <p className="text-gray-500">Địa điểm mang tính biểu tượng</p>
-          <div className="mt-2 flex space-x-2 overflow-x-auto">
-            {/* Ảnh ví dụ */}
-            <div className="w-32 h-20 bg-gray-200 rounded-xl shrink-0" />
-            <div className="w-32 h-20 bg-gray-200 rounded-xl shrink-0" />
-            <div className="w-32 h-20 bg-gray-200 rounded-xl shrink-0" />
-          </div>
-        </motion.div>)
-      }
+      }s
     </div>
   )
 }
