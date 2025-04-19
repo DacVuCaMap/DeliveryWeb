@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Nếu là route admin
-    if (pathname.startsWith('/admin') || pathname.startsWith('/profile') || pathname.startsWith('/SHIPPER') || pathname.startsWith('/PARTNER')) {
+    if (pathname.startsWith('/admin') || pathname.startsWith('/profile') || pathname.startsWith('/shipper') || pathname.startsWith('/PARTNER')) {
         // Kiểm tra token
         if (!token) {
             // Nếu không có token, redirect về signin
@@ -42,6 +42,7 @@ export const config = {
         '/admin/:path*',  // Bảo vệ tất cả route bắt đầu bằng /admin
         '/signin',        // Route signin
         '/signup',
-        '/profile'         // Route signup
+        '/profile',         // Route signup
+        '/shipper'
     ],
 }
