@@ -64,3 +64,35 @@ export const updateShipperLocation = async (postData:any) =>{
     }
 }
 
+/// vietmap from be
+export const fetchRouteVietMap=async (start:string,end:string)=>{
+    try {
+        const response = await api.get(`/api/vietmap/route?start=${start}&end=${end}`)
+        return response;
+    } catch (error:any) {
+        toast.error("Lỗi server")
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
+    }
+}
+/// vietmap from be
+export const fetchPlaceVietMap=async (refId:string)=>{
+    try {
+        const response = await api.get(`/api/vietmap/place?refId=${refId}`)
+        return response;
+    } catch (error:any) {
+        toast.error("Lỗi server")
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
+    }
+}
+export const fetchAutoCompleteVietMap=async (text:string)=>{
+    try {
+        const response = await api.get(`/api/vietmap/autocomplete?text=${text}`)
+        return response;
+    } catch (error:any) {
+        toast.error("Lỗi server")
+        console.error("Lỗi khi đăng nhập:", error);
+        throw error.response?.data || "Lỗi không xác định";
+    }
+}

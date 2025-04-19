@@ -6,6 +6,7 @@ import { ArrowDownUp, ArrowRightLeft, X } from 'lucide-react';
 import TypeFastShip from './delivery/TypeFastShip';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'
+import { fetchRouteVietMap } from '@/utils/api';
 type Opencard = {
   bottomCard: boolean;
   fastShip: boolean;
@@ -37,14 +38,23 @@ export default function DeliveryMap() {
 
     mapRef.current = new vietmapgl.Map({
       container: mapContainer.current,
-      style: `https://maps.vietmap.vn/mt/tm/style.json?apikey=${vietMapToken}`,
+      style: process.env.NEXT_PUBLIC_API_URL+`/api/vietmap/style`,
       center: defaultCenter,
       zoom: 15,
     })
+    
 
     markerRef.current = new vietmapgl.Marker().setLngLat(defaultCenter).addTo(mapRef.current)
   }, [])
-
+  useEffect(() => {
+    const checkStyleResponse = async () => {
+      const res = await axios(process.env.NEXT_PUBLIC_API_URL + `/api/vietmap/style`);
+      console.log(res);
+    };
+  
+    checkStyleResponse();
+  }, []);
+  
   // Theo dõi vị trí liên tục
   useEffect(() => {
     let watchId: number
@@ -126,11 +136,10 @@ export default function DeliveryMap() {
 
     const start = `${fastShip[0].lat},${fastShip[0].lng}`
     const end = `${fastShip[1].lat},${fastShip[1].lng}`
-    const url = `https://maps.vietmap.vn/api/route?api-version=1.1&apikey=${vietMapToken}&point=${start}&point=${end}&vehicle=bike`
 
     const fetchRouteAndDraw = async () => {
       try {
-        const res = await axios(url)
+        const res = await fetchRouteVietMap(start,end);
         const encoded = res.data.paths[0].points
         const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
         console.log(res);

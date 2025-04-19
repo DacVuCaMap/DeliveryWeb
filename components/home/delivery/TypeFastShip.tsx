@@ -3,7 +3,7 @@ import axios from "axios";
 import { X } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import './TypeFastShip.css'
-import { getNearShipper } from "@/utils/api";
+import { fetchAutoCompleteVietMap, fetchPlaceVietMap, getNearShipper } from "@/utils/api";
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 // Define types
 type OpenCard = {
@@ -90,7 +90,8 @@ export default function TypeFastShip(props: Props) {
       }
 
       try {
-        const response = await axios.get(`https://maps.vietmap.vn/api/autocomplete/v3?apikey=${API_KEY}&text=${encodeURIComponent(query)}`)
+        // const response = await axios.get(`https://maps.vietmap.vn/api/autocomplete/v3?apikey=${API_KEY}&text=${encodeURIComponent(query)}`)
+        const response =await fetchAutoCompleteVietMap(query);
         if (response.data && Array.isArray(response.data)) {
           const listResponse = response.data.filter((item, index) => index < 3);
           const suggests: MapInfo[] = listResponse.map((item) => {
@@ -151,7 +152,8 @@ export default function TypeFastShip(props: Props) {
       return;
     }
     try {
-      const response = await axios.get(`https://maps.vietmap.vn/api/place/v3?apikey=${API_KEY}&refid=${encodeURIComponent(item.ref_id)}`)
+      // const response = await axios.get(`https://maps.vietmap.vn/api/place/v3?apikey=${API_KEY}&refid=${encodeURIComponent(item.ref_id)}`)
+      const response = await fetchPlaceVietMap(item.ref_id);
       console.log(response)
       if (response.data && response.data.lat && response.data.lng) {
         const newLoc: Location = { lat: response.data.lat, lng: response.data.lng };
