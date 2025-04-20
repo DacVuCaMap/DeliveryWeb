@@ -6,7 +6,7 @@ import { ArrowDownUp, ArrowRightLeft, X } from 'lucide-react';
 import TypeFastShip from './delivery/TypeFastShip';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'
-import { fetchRouteVietMap } from '@/utils/api';
+import { fetchRouteVietMap, getNearShipper } from '@/utils/api';
 type Opencard = {
   bottomCard: boolean;
   fastShip: boolean;
@@ -20,13 +20,14 @@ export default function DeliveryMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
-  const vietMapToken = process.env.NEXT_PUBLIC_VIETMAP_TOKEN
   const [userLocation, setUserLocation] = useState<Location | null>(null)
   const [fastShip, setFastShip] = useState<Location[]>([]);
   const hasFlownToUserRef = useRef(false)
   const fastShipMarkerRef = useRef<any>([]);
   const [distance, setDistance] = useState<number>(0);
   const [nearShipper, setNearShipper] = useState<Location | null>(null);
+  const [nearListShipper, setNearListShipper] = useState<Location[]>([]);
+  const shipperMarkersRef = useRef<any[]>([]);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
@@ -115,8 +116,8 @@ export default function DeliveryMap() {
   //     hasFlownToUserRef.current = true
   //   }
   // }, [userLocation])
-
   useEffect(() => {
+
     if (!userLocation || !mapRef.current) return;
     const vietmapgl = (window as any).vietmapgl;
 
@@ -128,19 +129,36 @@ export default function DeliveryMap() {
 
     // Tạo phần tử HTML tùy chỉnh cho marker
     const markerElement = document.createElement('div');
-    markerElement.style.width = '40px'; // Kích thước icon
-    markerElement.style.height = '40px';
-    markerElement.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/684/684908.png)'; // Thay bằng URL ảnh của bạn
+    markerElement.style.width = '65px'; // Kích thước marker
+    markerElement.style.height = '65px';
+    markerElement.style.backgroundImage = 'url(/images/map-marker1.png)'; // Icon ghim bản đồ
     markerElement.style.backgroundSize = 'contain';
     markerElement.style.backgroundRepeat = 'no-repeat';
     markerElement.style.backgroundPosition = 'center';
     markerElement.style.cursor = 'pointer';
+    markerElement.style.display = 'flex'; // Để căn giữa avatar
+    markerElement.style.alignItems = 'center';
+    markerElement.style.justifyContent = 'center';
 
+    // Tạo phần tử ảnh avatar người dùng
+    // Tạo phần tử ảnh avatar người dùng
+    const avatarElement = document.createElement('img');
+    avatarElement.src = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80'; // Placeholder avatar
+    avatarElement.style.width = '40px'; // Kích thước avatar
+    avatarElement.style.height = '40px';
+    avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+    avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+    avatarElement.style.position = 'absolute';
+    avatarElement.style.top = '4px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+    avatarElement.style.left = '50%';
+    avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
+    markerElement.appendChild(avatarElement);
     // Tạo marker mới với phần tử tùy chỉnh
     markerRef.current = new vietmapgl.Marker({
       element: markerElement,
+      anchor: 'center', // Đặt tâm của marker
     })
-      .setLngLat([userLocation.lng, userLocation.lat]) // Đảm bảo đúng định dạng [lng, lat]
+      .setLngLat([userLocation.lng, userLocation.lat])
       .addTo(mapRef.current);
 
     // FlyTo lần đầu nếu chưa thực hiện
@@ -152,6 +170,27 @@ export default function DeliveryMap() {
       hasFlownToUserRef.current = true;
     }
   }, [userLocation]);
+  useEffect(() => {
+    if (!userLocation || !mapRef.current) return;
+    /// check userlocation ton tai de hien shipper xung quanh luon
+    const fetchNearListShipper = async () => {
+      if (userLocation.lat && userLocation.lng) {
+        const response = await getNearShipper(userLocation.lat, userLocation.lng, 0);
+        if (response && response.value && response.success && Array.isArray(response.value)) {
+          const newList: Location[] = response.value.map((item: any) => {
+            return {
+              lat: item.latitude,
+              lng: item.longitude,
+            };
+          })
+          setNearListShipper(newList);
+        }
+      }
+    }
+    fetchNearListShipper();
+  }, [userLocation])
+
+
 
   useEffect(() => {
     if (!mapRef.current || fastShip.length === 0) return
@@ -166,20 +205,31 @@ export default function DeliveryMap() {
       if (location.lat != null && location.lng != null) {
         // Tạo custom DOM element cho marker
         const el = document.createElement('div')
-        el.className = 'custom-marker'
-        el.style.width = '32px'
-        el.style.height = '32px'
-        el.style.backgroundSize = 'cover'
+        el.style.width = '60px'; // Tăng kích thước để chứa ảnh
+        el.style.height = '60px';
+        el.style.backgroundColor = 'transparent'; // Trong suốt
+        el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
+        el.style.borderRadius = '50%'; // Hình tròn
+        el.style.cursor = 'pointer'; // Con trỏ chuột
+        el.style.display = 'flex'; // Để căn giữa ảnh
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.overflow = 'hidden';
+        const imageElement = document.createElement('img');
 
+        imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
+        imageElement.style.height = '60px';
+        imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
         if (location != userLocation) {
           if (index === 0) {
             // Marker bắt đầu
-            el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/684/684908.png)' // icon đơn hàng bắt đầu (xe máy)
+            imageElement.src = '/images/start-ship1.png';
           } else if (index === 1) {
             // Marker kết thúc
-            el.style.backgroundImage = 'url(https://cdn-icons-png.flaticon.com/512/953/953803.png)' // icon đích đến (cờ đích)
+            imageElement.src = '/images/start-ship2.png';
           }
         }
+        el.appendChild(imageElement);
         const marker = new vietmapgl.Marker({ element: el })
           .setLngLat([location.lng, location.lat])
           .addTo(mapRef.current)
@@ -285,15 +335,15 @@ export default function DeliveryMap() {
   }, [fastShip[1]])
   useEffect(() => {
     if (!mapRef.current || !nearShipper) return;
-  
+
     // Nếu đã có marker cũ thì remove
     if (markerRef.current?.nearShipperMarker) {
       markerRef.current.nearShipperMarker.remove();
       markerRef.current.nearShipperMarker = null; // Đặt lại tham chiếu
     }
-  
+
     const vietmapgl = (window as any).vietmapgl;
-  
+
     // Tạo phần tử HTML tùy chỉnh cho marker
     const markerElement = document.createElement('div');
     markerElement.style.width = '60px'; // Tăng kích thước để chứa ảnh
@@ -306,17 +356,17 @@ export default function DeliveryMap() {
     markerElement.style.alignItems = 'center';
     markerElement.style.justifyContent = 'center';
     markerElement.style.overflow = 'hidden';
-  
+
     // Tạo phần tử ảnh bên trong
     const imageElement = document.createElement('img');
     imageElement.src = '/images/shipper1.png'; // Thay bằng URL ảnh của bạn
     imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
     imageElement.style.height = '60px';
     imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
-  
+
     // Thêm ảnh vào marker
     markerElement.appendChild(imageElement);
-  
+
     // Tạo marker mới với phần tử tùy chỉnh
     const marker = new vietmapgl.Marker({
       element: markerElement,
@@ -324,10 +374,10 @@ export default function DeliveryMap() {
     })
       .setLngLat([nearShipper.lng, nearShipper.lat])
       .addTo(mapRef.current);
-  
+
     // Lưu lại marker để sau này remove
     markerRef.current.nearShipperMarker = marker;
-  
+
     // Zoom đến vị trí gần nhất
     mapRef.current.flyTo({
       center: [nearShipper.lng, nearShipper.lat],
@@ -336,6 +386,41 @@ export default function DeliveryMap() {
     });
   }, [nearShipper]);
 
+
+  useEffect(() => {
+    if (mapRef.current && nearListShipper.length > 0) {
+      const vietmapgl = (window as any).vietmapgl;
+
+      // Xóa các marker shipper cũ
+      shipperMarkersRef.current.forEach((marker) => marker.remove());
+      shipperMarkersRef.current = []; // Reset mảng lưu trữ marker
+      console.log(nearListShipper);
+      // Tạo marker cho từng shipper trong danh sách
+      nearListShipper.forEach((shipperLocation) => {
+
+        // Tạo một DOM element cho marker của shipper (có thể tùy chỉnh)
+        const shipperMarkerElement = document.createElement('div');
+        shipperMarkerElement.style.width = '30px';
+        shipperMarkerElement.style.height = '30px';
+        shipperMarkerElement.style.backgroundImage = 'url(/images/shipper2.png)';
+        shipperMarkerElement.style.backgroundSize = 'contain'; // Đảm bảo ảnh không bị méo
+        shipperMarkerElement.style.backgroundRepeat = 'no-repeat'; // Không lặp lại ảnh
+        shipperMarkerElement.style.backgroundPosition = 'center'; // Căn giữa ảnh
+        shipperMarkerElement.style.borderRadius = '50%';
+        shipperMarkerElement.style.cursor = 'pointer';
+        const shipperMarker = new vietmapgl.Marker({
+          element: shipperMarkerElement,
+          anchor: 'center',
+        })
+          .setLngLat([shipperLocation.lng, shipperLocation.lat])
+          .addTo(mapRef.current);
+
+        shipperMarkersRef.current.push(shipperMarker); // Lưu trữ marker mới
+      });
+    }
+  }, [nearListShipper]);
+
+  /// lay vi tri near shipper ban dau so voi userlocation
   return (
     <div className="relative w-screen h-screen">
       {/* Header Tìm kiếm */}

@@ -1,0 +1,39 @@
+      <motion.div
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 500 }}
+        style={{ y, opacity }}
+        className="absolute bottom-0 left-0 right-0 z-10 bg-white w-full shadow-lg p-4 pb-64"
+      >
+        <div className="w-12 h-1.5 bg-gray-400 mx-auto rounded-full mb-4" />
+        <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
+        <p className="text-gray-500">Danh sách shipper</p>
+        <div className="mt-4 flex flex-col space-y-4">
+          {listNearShipper.map((item: NearShipper) => (
+            <div onClick={e => setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 rounded-lg shadow-sm bg-white">
+              {/* Avatar hình tròn */}
+              <div className="w-12 h-12 rounded-full overflow-hidden">
+                {item.avatar ? (
+                  <img src={item.avatar} alt={`${item.firstName} ${item.lastName}`} className="w-full h-full object-cover" />
+                ) : (
+                  // <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+                  //   {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
+                  //   {item.firstName.charAt(0).toUpperCase()}
+                  // </div>
+                  <Image src={"/images/shipper1.png"} width={50} height={50} alt={""}></Image>
+                )}
+              </div>
+
+              {/* Thông tin shipper */}
+              <div className="flex-grow">
+                <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
+                <p className="text-gray-500 text-sm">ID: {item.shipperId}</p>
+                <p className="text-blue-500 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
+                <p className="text-gray-600 text-sm">SĐT: {item.phoneNumber}</p>
+                {/* Thêm các thông tin khác bạn muốn hiển thị */}
+              </div>
+
+              {/* Thao tác (nếu cần) */}
+            </div>
+          ))}
+        </div>
+      </motion.div>

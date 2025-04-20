@@ -31,7 +31,7 @@ type Props = {
   distance: number;
   mapRef: any;
   fastShip: Location[];
-  setNearShipper:React.Dispatch<React.SetStateAction<Location|null>>
+  setNearShipper: React.Dispatch<React.SetStateAction<Location | null>>
 };
 type Location = {
   lat: number | null;
@@ -75,7 +75,7 @@ export default function TypeFastShip(props: Props) {
   const [suggestList, setSuggestList] = useState<MapInfo[]>([defaultLoc]);
   const [inputInfo, setInputInfo] = useState<InputInfo>({ input1: null, input2: null });
   const [listNearShipper, setListNearShipper] = useState<NearShipper[]>([]);
-
+  const [searchShipCard, setSearchShipCard] = useState(false);
   // Debounce input values (1.5 seconds delay)
   const debouncedInput1 = useDebounce(inputInfo.input1?.address || "", 500);
   const debouncedInput2 = useDebounce(inputInfo.input2?.address || "", 500);
@@ -92,7 +92,7 @@ export default function TypeFastShip(props: Props) {
 
       try {
         // const response = await axios.get(`https://maps.vietmap.vn/api/autocomplete/v3?apikey=${API_KEY}&text=${encodeURIComponent(query)}`)
-        const response =await fetchAutoCompleteVietMap(query);
+        const response = await fetchAutoCompleteVietMap(query);
         if (response.data && Array.isArray(response.data)) {
           const listResponse = response.data.filter((item, index) => index < 3);
           const suggests: MapInfo[] = listResponse.map((item) => {
@@ -203,6 +203,8 @@ export default function TypeFastShip(props: Props) {
           shipperId: item.shipperId
         };
       })
+
+      setSearchShipCard(true);
       setListNearShipper(newList);
       setIsOpen(!isOpen);
       animate(y, isOpen ? 200 : 200, { // Sử dụng animate để tạo animation
@@ -213,13 +215,13 @@ export default function TypeFastShip(props: Props) {
 
   }
   const setMarkerShip = (item: NearShipper) => {
-    props.setNearShipper({lat:item.latitude,lng:item.longitude});
+    props.setNearShipper({ lat: item.latitude, lng: item.longitude });
   }
 
 
   return (
     <div className="absolute bottom-20 left-4 right-4 z-10">
-      <div className="relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4">
+      <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
         <button
           onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
           className="absolute top-2 right-4"
@@ -307,45 +309,48 @@ export default function TypeFastShip(props: Props) {
       </div>
 
 
-      <motion.div
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 500 }}
-        style={{ y, opacity }}
-        className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-3xl shadow-lg p-4 pb-64"
-      >
-        <div className="w-12 h-1.5 bg-gray-400 mx-auto rounded-full mb-4" />
-        <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
-        <p className="text-gray-500">Danh sách shipper</p>
-        <div className="mt-4 flex flex-col space-y-4">
-          {listNearShipper.map((item: NearShipper) => (
-            <div onClick={e => setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 rounded-lg shadow-sm bg-white">
-              {/* Avatar hình tròn */}
-              <div className="w-12 h-12 rounded-full overflow-hidden">
-                {item.avatar ? (
-                  <img src={item.avatar} alt={`${item.firstName} ${item.lastName}`} className="w-full h-full object-cover" />
-                ) : (
-                  // <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
-                  //   {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
-                  //   {item.firstName.charAt(0).toUpperCase()}
-                  // </div>
-                  <Image src={"/images/shipper1.png"} width={50} height={50} alt={""}></Image>
-                )}
-              </div>
 
-              {/* Thông tin shipper */}
-              <div className="flex-grow">
-                <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
-                <p className="text-gray-500 text-sm">ID: {item.shipperId}</p>
-                <p className="text-blue-500 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
-                <p className="text-gray-600 text-sm">SĐT: {item.phoneNumber}</p>
-                {/* Thêm các thông tin khác bạn muốn hiển thị */}
-              </div>
+      {searchShipCard && (
+        <div className="bg-white/50 absolute bottom-[-50px] w-full min-h-[400px] pt-4 px-6 backdrop-blur-md">
+          <button
+            onClick={e=>setSearchShipCard(false)}
+            className="absolute top-2 right-4"
+          >
+            <X />
+          </button>
+          <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
+          <p className="text-gray-500">Danh sách shipper</p>
+          <div className="mt-4 flex flex-col space-y-4">
+            {listNearShipper.map((item: NearShipper) => (
+              <div onClick={e => setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 border-b border-gray-300 hover:shadow-md">
+                {/* Avatar hình tròn */}
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  {item.avatar ? (
+                    <img src={item.avatar} alt={`${item.firstName} ${item.lastName}`} className="w-full h-full object-cover" />
+                  ) : (
+                    // <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+                    //   {/* Có thể hiển thị chữ cái đầu hoặc icon mặc định nếu không có avatar */}
+                    //   {item.firstName.charAt(0).toUpperCase()}
+                    // </div>
+                    <Image src={"/images/shipper1.png"} width={50} height={50} alt={""}></Image>
+                  )}
+                </div>
 
-              {/* Thao tác (nếu cần) */}
-            </div>
-          ))}
+                {/* Thông tin shipper */}
+                <div className="flex-grow">
+                  <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
+                  <p className="text-gray-500 text-sm">ID: {item.shipperId}</p>
+                  <p className="text-blue-500 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
+                  <p className="text-gray-600 text-sm">SĐT: {item.phoneNumber}</p>
+                  {/* Thêm các thông tin khác bạn muốn hiển thị */}
+                </div>
+
+                {/* Thao tác (nếu cần) */}
+              </div>
+            ))}
+          </div>
         </div>
-      </motion.div>
+      )}
     </div>
   );
 }
