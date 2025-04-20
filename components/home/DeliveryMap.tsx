@@ -104,7 +104,7 @@ export default function DeliveryMap() {
     const markerElement = document.createElement('div');
     markerElement.style.width = '65px'; // Kích thước marker
     markerElement.style.height = '65px';
-    markerElement.style.backgroundImage = 'url(/images/map-marker1.png)'; // Icon ghim bản đồ
+    markerElement.style.backgroundImage = 'url(/images/map/vitringuoidung.png)'; // Icon ghim bản đồ
     markerElement.style.backgroundSize = 'contain';
     markerElement.style.backgroundRepeat = 'no-repeat';
     markerElement.style.backgroundPosition = 'center';
@@ -182,7 +182,7 @@ export default function DeliveryMap() {
       const el = document.createElement('div');
       el.style.width = '65px'; // Kích thước marker
       el.style.height = '65px';
-      el.style.backgroundImage = 'url(/images/start-ship1-mark.png)'; // Icon ghim bản đồ
+
       el.style.backgroundSize = 'contain';
       el.style.backgroundRepeat = 'no-repeat';
       el.style.backgroundPosition = 'center';
@@ -205,9 +205,11 @@ export default function DeliveryMap() {
       if (location != userLocation) {
         if (index === 0) {
           // Marker bắt đầu
+          el.style.backgroundImage = 'url(/images/map/batdaudonhang.png)'; // Icon ghim bản đồ
           imageElement.src = '/images/start-ship1.png';
         } else if (index === 1) {
           // Marker kết thúc
+          el.style.backgroundImage = 'url(/images/map/cuoidonhang.png)'; // Icon ghim bản đồ
           imageElement.src = '/images/start-ship2.png';
         }
       }
@@ -536,7 +538,7 @@ export default function DeliveryMap() {
     const markerElement = document.createElement('div');
     markerElement.style.width = '65px'; // Kích thước marker
     markerElement.style.height = '65px';
-    markerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
+    markerElement.style.backgroundImage = 'url(/images/map/vitrishipper.png)'; // Icon ghim bản đồ
     markerElement.style.backgroundSize = 'contain';
     markerElement.style.backgroundRepeat = 'no-repeat';
     markerElement.style.backgroundPosition = 'center';
@@ -675,7 +677,7 @@ export default function DeliveryMap() {
       const shipperMarkerElement = document.createElement('div');
       shipperMarkerElement.style.width = '65px'; // Kích thước marker
       shipperMarkerElement.style.height = '65px';
-      shipperMarkerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
+      shipperMarkerElement.style.backgroundImage = 'url(/images/map/vitrishipper.png)'; // Icon ghim bản đồ
       shipperMarkerElement.style.backgroundSize = 'contain';
       shipperMarkerElement.style.backgroundRepeat = 'no-repeat';
       shipperMarkerElement.style.backgroundPosition = 'center';
