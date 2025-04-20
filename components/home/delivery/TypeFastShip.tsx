@@ -120,8 +120,9 @@ export default function TypeFastShip(props: Props) {
 
   // Handle input changes
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string) => {
-    const value = e.target.value;
+    let value = e.target.value;
     if (key2 === "phone") {
+      value = value.replace(/\D/g, "");
       setInputInfo((prev) => ({
         ...prev,
         [key]: prev[key] ? { ...prev[key], phoneNumber: value } : { phoneNumber: value, refId: "" },
@@ -231,7 +232,7 @@ export default function TypeFastShip(props: Props) {
 
 
   return (
-    <div className="absolute bottom-20 left-4 right-4 z-10">
+    <div className="absolute bottom-20 lg:left-4 lg:right-4 z-10 w-full">
       <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
         <button
           onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
