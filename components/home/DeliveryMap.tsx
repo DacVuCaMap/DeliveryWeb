@@ -204,22 +204,46 @@ export default function DeliveryMap() {
     fastShip.forEach((location, index) => {
       if (location.lat == null || location.lng == null || location.lat === userLocation?.lat || location.lng === userLocation?.lng) return;
       // Tạo custom DOM element cho marker
-      const el = document.createElement('div')
-      el.style.width = '60px'; // Tăng kích thước để chứa ảnh
-      el.style.height = '60px';
-      el.style.backgroundColor = 'transparent'; // Trong suốt
-      el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
-      el.style.borderRadius = '50%'; // Hình tròn
-      el.style.cursor = 'pointer'; // Con trỏ chuột
-      el.style.display = 'flex'; // Để căn giữa ảnh
+      // const el = document.createElement('div')
+      // el.style.width = '60px'; // Tăng kích thước để chứa ảnh
+      // el.style.height = '60px';
+      // el.style.backgroundColor = 'transparent'; // Trong suốt
+      // el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
+      // el.style.borderRadius = '50%'; // Hình tròn
+      // el.style.cursor = 'pointer'; // Con trỏ chuột
+      // el.style.display = 'flex'; // Để căn giữa ảnh
+      // el.style.alignItems = 'center';
+      // el.style.justifyContent = 'center';
+      // el.style.overflow = 'hidden';
+      // const imageElement = document.createElement('img');
+
+      // imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
+      // imageElement.style.height = '60px';
+      // imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
+      // Tạo phần tử HTML tùy chỉnh cho marker
+      const el = document.createElement('div');
+      el.style.width = '65px'; // Kích thước marker
+      el.style.height = '65px';
+      el.style.backgroundImage = 'url(/images/start-ship1-mark.png)'; // Icon ghim bản đồ
+      el.style.backgroundSize = 'contain';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.backgroundPosition = 'center';
+      el.style.cursor = 'pointer';
+      el.style.display = 'flex'; // Để căn giữa avatar
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.overflow = 'hidden';
-      const imageElement = document.createElement('img');
 
-      imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
-      imageElement.style.height = '60px';
-      imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
+      // Tạo phần tử ảnh avatar người dùng
+      // Tạo phần tử ảnh avatar người dùng
+      const imageElement = document.createElement('img');
+      imageElement.style.width = '30px'; // Kích thước avatar
+      imageElement.style.height = '30px';
+      imageElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+      imageElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+      imageElement.style.position = 'absolute';
+      imageElement.style.top = '10px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+      imageElement.style.left = '50%';
+      imageElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
       if (location != userLocation) {
         if (index === 0) {
           // Marker bắt đầu
@@ -396,16 +420,34 @@ export default function DeliveryMap() {
       console.log(nearListShipper);
       // Tạo marker cho từng shipper trong danh sách
       nearListShipper.forEach((shipperLocation) => {
-
-        // Tạo một DOM element cho marker của shipper (có thể tùy chỉnh)
+        // Tạo phần tử HTML tùy chỉnh cho marker
         const shipperMarkerElement = document.createElement('div');
-        shipperMarkerElement.style.width = '30px';
-        shipperMarkerElement.style.height = '30px';
-        shipperMarkerElement.style.backgroundImage = 'url(/images/shipper2.png)';
-        shipperMarkerElement.style.backgroundSize = 'contain'; // Đảm bảo ảnh không bị méo
-        shipperMarkerElement.style.backgroundRepeat = 'no-repeat'; // Không lặp lại ảnh
-        shipperMarkerElement.style.backgroundPosition = 'center'; // Căn giữa ảnh
+        shipperMarkerElement.style.width = '65px'; // Kích thước marker
+        shipperMarkerElement.style.height = '65px';
+        shipperMarkerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
+        shipperMarkerElement.style.backgroundSize = 'contain';
+        shipperMarkerElement.style.backgroundRepeat = 'no-repeat';
+        shipperMarkerElement.style.backgroundPosition = 'center';
         shipperMarkerElement.style.cursor = 'pointer';
+        shipperMarkerElement.style.display = 'flex'; // Để căn giữa avatar
+        shipperMarkerElement.style.alignItems = 'center';
+        shipperMarkerElement.style.justifyContent = 'center';
+
+        // Tạo phần tử ảnh avatar người dùng
+        // Tạo phần tử ảnh avatar người dùng
+        const avatarElement = document.createElement('img');
+        avatarElement.src = '/images/shipper2.png';
+        avatarElement.style.width = '30px'; // Kích thước avatar
+        avatarElement.style.height = '30px';
+        avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+        avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+        avatarElement.style.position = 'absolute';
+        avatarElement.style.top = '10px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+        avatarElement.style.left = '50%';
+        avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
+        shipperMarkerElement.appendChild(avatarElement);
+
+
         const shipperMarker = new vietmapgl.Marker({
           element: shipperMarkerElement,
           anchor: 'center',
