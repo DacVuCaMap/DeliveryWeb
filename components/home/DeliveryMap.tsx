@@ -344,7 +344,7 @@ export default function DeliveryMap() {
             'line-join': 'round',
           },
           paint: {
-            'line-color': '#bdffc7', // Màu xanh lá cây nhạt (màu gốc)
+            'line-color': '#b0ecf5', 
             'line-width': 7,
             'line-opacity': 1 // Có thể giảm độ mờ để thấy rõ animation hơn
           },
@@ -373,7 +373,8 @@ export default function DeliveryMap() {
             'line-join': 'round'
           },
           paint: {
-            'line-color': '#00de21',
+            // 'line-color': '#00de21',
+            'line-color': '#1e7e8c',
             'line-width': 10,
             'line-opacity': 1
           }
@@ -623,7 +624,7 @@ export default function DeliveryMap() {
               'line-join': 'round',
             },
             paint: {
-              'line-color': '#8b9efc',
+              'line-color': '#ff7f20',
               'line-width': 5,
             },
           });
@@ -631,7 +632,7 @@ export default function DeliveryMap() {
           if (mapRef.current.getLayer('routeLine') && mapRef.current.getLayer(routeLayerId)) {
             mapRef.current.moveLayer('routeLine', routeLayerId);
           }
-
+          console.log('Thứ tự layer sau khi thêm và di chuyển:', mapRef.current.getStyle().layers.map((layer:any) => layer.id));
           // 🔍 Fit bounds để hiển thị cả điểm đầu và cuối của route
           const bounds = new (window as any).vietmapgl.LngLatBounds();
           bounds.extend([nearShipper.lng, nearShipper.lat]);
