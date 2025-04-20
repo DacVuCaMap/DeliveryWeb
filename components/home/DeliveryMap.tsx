@@ -16,6 +16,12 @@ type Location = {
   lng: number | null;
 }
 export default function DeliveryMap() {
+
+  //animation route
+  const animationFrameId = useRef<number | null>(null);
+  const routeCoordinates = useRef<[number, number][]>([]); // Lưu trữ tọa độ [lng, lat]
+  const animationStartTime = useRef<number | null>(null);
+
   const [openCard, setOpenCard] = useState<Opencard>({ bottomCard: false, fastShip: true });
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
@@ -83,39 +89,6 @@ export default function DeliveryMap() {
   }, [])
 
   // Cập nhật marker và center khi có userLocation (chỉ flyTo 1 lần)
-  // useEffect(() => {
-  //   if (!userLocation || !mapRef.current || !markerRef.current) return
-
-  //   // // Cập nhật marker vị trí người dùng
-  //   // markerRef.current.setLngLat(userLocation)
-
-  //   const vietmapgl = (window as any).vietmapgl;
-
-  //   if (!markerRef.current) {
-  //     const el = document.createElement('div');
-  //     el.style.width = '40px';
-  //     el.style.height = '40px';
-  //     el.style.backgroundImage = 'url("/images/mark1.png")';
-  //     el.style.backgroundSize = 'contain';
-  //     el.style.backgroundRepeat = 'no-repeat';
-  //     el.style.backgroundPosition = 'center';
-  //     el.style.border = '2px solid transparent'; // thêm để dễ thấy, có thể xoá
-
-  //     markerRef.current = new vietmapgl.Marker({ element: el })
-  //       .setLngLat(userLocation)
-  //       .addTo(mapRef.current);
-
-  //     console.log("✅ Custom marker created");
-  //   } else {
-  //     markerRef.current.setLngLat(userLocation);
-  //   }
-
-  //   // Chỉ flyTo khi chưa từng thực hiện
-  //   if (!hasFlownToUserRef.current) {
-  //     mapRef.current.flyTo({ center: userLocation })
-  //     hasFlownToUserRef.current = true
-  //   }
-  // }, [userLocation])
   useEffect(() => {
 
     if (!userLocation || !mapRef.current) return;
@@ -171,8 +144,9 @@ export default function DeliveryMap() {
     }
   }, [userLocation]);
   useEffect(() => {
-    if (!userLocation || !mapRef.current) return;
+    if (!userLocation || !mapRef.current || nearShipper) return;
     /// check userlocation ton tai de hien shipper xung quanh luon
+    // console.log("fetch near list")
     const fetchNearListShipper = async () => {
       if (userLocation.lat && userLocation.lng) {
         const response = await getNearShipper(userLocation.lat, userLocation.lng, 0);
@@ -203,23 +177,7 @@ export default function DeliveryMap() {
 
     fastShip.forEach((location, index) => {
       if (location.lat == null || location.lng == null || location.lat === userLocation?.lat || location.lng === userLocation?.lng) return;
-      // Tạo custom DOM element cho marker
-      // const el = document.createElement('div')
-      // el.style.width = '60px'; // Tăng kích thước để chứa ảnh
-      // el.style.height = '60px';
-      // el.style.backgroundColor = 'transparent'; // Trong suốt
-      // el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
-      // el.style.borderRadius = '50%'; // Hình tròn
-      // el.style.cursor = 'pointer'; // Con trỏ chuột
-      // el.style.display = 'flex'; // Để căn giữa ảnh
-      // el.style.alignItems = 'center';
-      // el.style.justifyContent = 'center';
-      // el.style.overflow = 'hidden';
-      // const imageElement = document.createElement('img');
 
-      // imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
-      // imageElement.style.height = '60px';
-      // imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
       // Tạo phần tử HTML tùy chỉnh cho marker
       const el = document.createElement('div');
       el.style.width = '65px'; // Kích thước marker
@@ -236,12 +194,12 @@ export default function DeliveryMap() {
       // Tạo phần tử ảnh avatar người dùng
       // Tạo phần tử ảnh avatar người dùng
       const imageElement = document.createElement('img');
-      imageElement.style.width = '30px'; // Kích thước avatar
-      imageElement.style.height = '30px';
+      imageElement.style.width = '40px'; // Kích thước avatar
+      imageElement.style.height = '40px';
       imageElement.style.borderRadius = '50%'; // Hình tròn cho avatar
       imageElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
       imageElement.style.position = 'absolute';
-      imageElement.style.top = '10px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+      imageElement.style.top = '5px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
       imageElement.style.left = '50%';
       imageElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
       if (location != userLocation) {
@@ -263,38 +221,120 @@ export default function DeliveryMap() {
 
     if (!mapRef.current || !fastShip[0] || !fastShip[1]) return
 
-    const start = `${fastShip[0].lat},${fastShip[0].lng}`
-    const end = `${fastShip[1].lat},${fastShip[1].lng}`
+    // const start = `${fastShip[0].lat},${fastShip[0].lng}`
+    // const end = `${fastShip[1].lat},${fastShip[1].lng}`
+
+    // const fetchRouteAndDraw = async () => {
+    //   try {
+    //     const res = await fetchRouteVietMap(start, end);
+    //     const encoded = res.data.paths[0].points
+    //     const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
+    //     setDistance(res.data.paths[0].distance);
+    //     // Convert thành GeoJSON LineString
+    //     const geoJson = {
+    //       type: 'Feature',
+    //       geometry: {
+    //         type: 'LineString',
+    //         coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
+    //       },
+    //     }
+
+    //     // Xoá source/line cũ nếu có
+    //     if (mapRef.current.getLayer('routeLine')) {
+    //       mapRef.current.removeLayer('routeLine')
+    //     }
+    //     if (mapRef.current.getSource('route')) {
+    //       mapRef.current.removeSource('route')
+    //     }
+
+    //     mapRef.current.addSource('route', {
+    //       type: 'geojson',
+    //       data: geoJson,
+    //     })
+
+    //     mapRef.current.addLayer({
+    //       id: 'routeLine',
+    //       type: 'line',
+    //       source: 'route',
+    //       layout: {
+    //         'line-cap': 'round',
+    //         'line-join': 'round',
+    //       },
+    //       paint: {
+    //         'line-color': '#02fa1b',
+    //         'line-width': 7,
+    //       },
+    //     })
+    //     // 🔍 Fit bounds
+    //     const bounds = new (window as any).vietmapgl.LngLatBounds()
+    //     decoded.forEach(([lat, lng]) => {
+    //       bounds.extend([lng, lat])
+    //     })
+    //     mapRef.current.fitBounds(bounds, {
+    //       padding: 50,
+    //       maxZoom: 17,
+    //       duration: 1000,
+    //     })
+    //     console.log('🛣️ Vẽ route thành công!')
+    //   } catch (err) {
+    //     console.error('❌ Lỗi khi fetch hoặc vẽ route:', err)
+    //   }
+    // }
+
+    // fetchRouteAndDraw()
+
+    const start = `${fastShip[0].lat},${fastShip[0].lng}`;
+    const end = `${fastShip[1].lat},${fastShip[1].lng}`;
+    const animationDuration = 4000; // Thời gian animation (ms), ví dụ 4 giây
 
     const fetchRouteAndDraw = async () => {
       try {
         const res = await fetchRouteVietMap(start, end);
-        const encoded = res.data.paths[0].points
-        const decoded = polyline.decode(encoded) // Trả về mảng [lat, lng]
-        console.log(res);
+        if (!res.data.paths || res.data.paths.length === 0) {
+          console.error('❌ No route found');
+          return;
+        }
+        const encoded = res.data.paths[0].points;
+        const decodedLatLng = polyline.decode(encoded); // Mảng [lat, lng]
+        routeCoordinates.current = decodedLatLng.map(([lat, lng]) => [lng, lat]); // Đảo ngược thành [lng, lat] cho GeoJSON
+
         setDistance(res.data.paths[0].distance);
-        // Convert thành GeoJSON LineString
-        const geoJson = {
+
+        // Convert thành GeoJSON LineString cho route chính
+        const mainRouteGeoJson = {
           type: 'Feature',
           geometry: {
             type: 'LineString',
-            coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
+            coordinates: routeCoordinates.current,
           },
-        }
+        };
 
-        // Xoá source/line cũ nếu có
+        // --- Vẽ Route Chính (Màu xanh lá cây) ---
+        // Xoá source/layer cũ nếu có
         if (mapRef.current.getLayer('routeLine')) {
-          mapRef.current.removeLayer('routeLine')
+          mapRef.current.removeLayer('routeLine');
+        }
+        if (mapRef.current.getLayer('animatedRouteLine')) { // Xóa cả layer animation cũ
+          mapRef.current.removeLayer('animatedRouteLine');
         }
         if (mapRef.current.getSource('route')) {
-          mapRef.current.removeSource('route')
+          mapRef.current.removeSource('route');
+        }
+        if (mapRef.current.getSource('animatedRoute')) { // Xóa cả source animation cũ
+          mapRef.current.removeSource('animatedRoute');
+        }
+        // Hủy animation cũ nếu đang chạy
+        if (animationFrameId.current) {
+          cancelAnimationFrame(animationFrameId.current);
+          animationFrameId.current = null;
         }
 
+
+        // Thêm source và layer cho route chính
         mapRef.current.addSource('route', {
           type: 'geojson',
-          data: geoJson,
-        })
-
+          data: mainRouteGeoJson,
+        });
         mapRef.current.addLayer({
           id: 'routeLine',
           type: 'line',
@@ -304,29 +344,147 @@ export default function DeliveryMap() {
             'line-join': 'round',
           },
           paint: {
-            'line-color': '#02fa1b',
+            'line-color': '#bdffc7', // Màu xanh lá cây nhạt (màu gốc)
             'line-width': 7,
+            'line-opacity': 0.8 // Có thể giảm độ mờ để thấy rõ animation hơn
           },
-        })
-        // 🔍 Fit bounds
-        const bounds = new (window as any).vietmapgl.LngLatBounds()
-        decoded.forEach(([lat, lng]) => {
-          bounds.extend([lng, lat])
-        })
+        });
+
+        // --- Chuẩn bị cho Animation ---
+        const animatedRouteGeoJson = { // Source cho animation, bắt đầu rỗng
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: routeCoordinates.current.length > 0 ? [routeCoordinates.current[0]] : [] // Bắt đầu từ điểm đầu tiên
+          }
+        };
+
+        mapRef.current.addSource('animatedRoute', {
+          type: 'geojson',
+          data: animatedRouteGeoJson
+        });
+
+        mapRef.current.addLayer({
+          id: 'animatedRouteLine',
+          type: 'line',
+          source: 'animatedRoute',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round'
+          },
+          paint: {
+            'line-color': '#00de21', 
+            'line-width': 10,       
+            'line-opacity': 1      
+          }
+        }, 'routeLine'); // Vẽ layer animation *trước* layer route chính (hoặc sau tùy ý)
+
+        // --- Bắt đầu Animation ---
+        animationStartTime.current = performance.now(); // Sử dụng performance.now() cho độ chính xác cao hơn Date.now()
+        animateLine();
+
+        console.log('🛣️ Vẽ route chính thành công! Bắt đầu animation.');
+
+        // --- Fit Bounds ---
+        const bounds = new (window as any).vietmapgl.LngLatBounds();
+        routeCoordinates.current.forEach((coord) => {
+          bounds.extend(coord);
+        });
         mapRef.current.fitBounds(bounds, {
           padding: 50,
           maxZoom: 17,
           duration: 1000,
-        })
-        console.log('🛣️ Vẽ route thành công!')
+        });
+
       } catch (err) {
-        console.error('❌ Lỗi khi fetch hoặc vẽ route:', err)
+        console.error('❌ Lỗi khi fetch hoặc vẽ route:', err);
       }
-    }
+    };
 
-    fetchRouteAndDraw()
+    const animateLine = (timestamp?: number) => {
+      // --- Phần kiểm tra ban đầu giữ nguyên ---
+      if (!mapRef.current || !routeCoordinates.current || routeCoordinates.current.length < 2) {
+        console.warn("Animation stopped: Map or route data not ready.");
+        animationFrameId.current = null; // Đảm bảo dừng hẳn nếu có lỗi dữ liệu
+        animationStartTime.current = null;
+        return;
+      }
+
+      // Khởi tạo thời gian bắt đầu nếu chưa có (cho lần chạy đầu tiên)
+      if (!animationStartTime.current) {
+        animationStartTime.current = timestamp || performance.now();
+      }
+
+      const currentTimestamp = timestamp || performance.now();
+      let elapsed = currentTimestamp - animationStartTime.current;
+      let progress = elapsed / animationDuration;
+
+      // --- Logic Lặp lại ---
+      if (progress >= 1) {
+        // Đã đi hết 1 vòng, reset để bắt đầu vòng mới
+        //   console.log('✅ Animation loop completed, restarting...'); // Có thể bỏ log này nếu không muốn thấy liên tục
+        const remainder = elapsed % animationDuration; // Tính phần dư thời gian để vòng lặp mượt hơn
+        animationStartTime.current = currentTimestamp - remainder; // Reset startTime dựa trên phần dư
+        progress = remainder / animationDuration; // Tính lại progress cho frame hiện tại dựa trên phần dư
+        elapsed = remainder; // Cập nhật elapsed cho đúng
+
+        // Nếu muốn nhảy ngay về 0 thay vì tính phần dư:
+        // animationStartTime.current = currentTimestamp;
+        // progress = 0;
+      }
+      // Đảm bảo progress không bao giờ lớn hơn 1 (quan trọng khi tính toán index)
+      progress = Math.min(progress, 1);
 
 
+      // --- Phần tính toán và cập nhật setData giữ nguyên ---
+      const targetIndex = Math.floor(progress * (routeCoordinates.current.length - 1));
+      const currentPathSegment = routeCoordinates.current.slice(0, targetIndex + 1);
+
+      // Log (tùy chọn, có thể xóa bớt để tránh spam console)
+      // console.log(`Animating Frame - Progress: ${progress.toFixed(2)}, Points: ${currentPathSegment.length}`);
+
+
+      // Cập nhật source của layer animation
+      const animatedSource = mapRef.current.getSource('animatedRoute');
+      if (animatedSource && typeof animatedSource.setData === 'function') {
+        animatedSource.setData({
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: currentPathSegment.length < 2 ? (currentPathSegment.length === 1 ? [currentPathSegment[0], currentPathSegment[0]] : []) : currentPathSegment
+          }
+        });
+      } else {
+        // Chỉ log cảnh báo một lần thôi để tránh spam
+        if (!(window as any).animatedSourceWarned) {
+          console.warn("Animated source/setData not available.");
+          (window as any).animatedSourceWarned = true; // Đánh dấu đã cảnh báo
+        }
+      }
+
+      animationFrameId.current = requestAnimationFrame(animateLine);
+    };
+
+    fetchRouteAndDraw();
+
+    // Cleanup function khi component unmount hoặc dependency thay đổi
+    return () => {
+      console.log("Cleaning up animation frame (Looping)");
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = null;
+      }
+      animationStartTime.current = null; // Reset cả startTime
+      (window as any).animatedSourceWarned = false; // Reset cờ cảnh báo
+
+      // Cũng nên xóa các layer/source đã thêm khi cleanup
+      if (mapRef.current) {
+        if (mapRef.current.getLayer('routeLine')) mapRef.current.removeLayer('routeLine');
+        if (mapRef.current.getLayer('animatedRouteLine')) mapRef.current.removeLayer('animatedRouteLine');
+        if (mapRef.current.getSource('route')) mapRef.current.removeSource('route');
+        if (mapRef.current.getSource('animatedRoute')) mapRef.current.removeSource('animatedRoute');
+      }
+    };
   }, [fastShip])
   useEffect(() => {
     if (!mapRef.current || !fastShip[0]) return
@@ -365,6 +523,7 @@ export default function DeliveryMap() {
       markerRef.current.nearShipperMarker = null; // Đặt lại tham chiếu
     }
 
+    setNearListShipper([]);
     const vietmapgl = (window as any).vietmapgl;
 
     // Tạo phần tử HTML tùy chỉnh cho marker
@@ -411,53 +570,50 @@ export default function DeliveryMap() {
 
 
   useEffect(() => {
-    if (mapRef.current && nearListShipper.length > 0) {
-      const vietmapgl = (window as any).vietmapgl;
+    const vietmapgl = (window as any).vietmapgl;
+    // console.log("get near list ship", nearListShipper)
+    // Xóa các marker shipper cũ
+    shipperMarkersRef.current.forEach((marker) => marker.remove());
+    shipperMarkersRef.current = []; // Reset mảng lưu trữ marker
+    // Tạo marker cho từng shipper trong danh sách
+    nearListShipper.forEach((shipperLocation) => {
+      // Tạo phần tử HTML tùy chỉnh cho marker
+      const shipperMarkerElement = document.createElement('div');
+      shipperMarkerElement.style.width = '65px'; // Kích thước marker
+      shipperMarkerElement.style.height = '65px';
+      shipperMarkerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
+      shipperMarkerElement.style.backgroundSize = 'contain';
+      shipperMarkerElement.style.backgroundRepeat = 'no-repeat';
+      shipperMarkerElement.style.backgroundPosition = 'center';
+      shipperMarkerElement.style.cursor = 'pointer';
+      shipperMarkerElement.style.display = 'flex'; // Để căn giữa avatar
+      shipperMarkerElement.style.alignItems = 'center';
+      shipperMarkerElement.style.justifyContent = 'center';
 
-      // Xóa các marker shipper cũ
-      shipperMarkersRef.current.forEach((marker) => marker.remove());
-      shipperMarkersRef.current = []; // Reset mảng lưu trữ marker
-      console.log(nearListShipper);
-      // Tạo marker cho từng shipper trong danh sách
-      nearListShipper.forEach((shipperLocation) => {
-        // Tạo phần tử HTML tùy chỉnh cho marker
-        const shipperMarkerElement = document.createElement('div');
-        shipperMarkerElement.style.width = '65px'; // Kích thước marker
-        shipperMarkerElement.style.height = '65px';
-        shipperMarkerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
-        shipperMarkerElement.style.backgroundSize = 'contain';
-        shipperMarkerElement.style.backgroundRepeat = 'no-repeat';
-        shipperMarkerElement.style.backgroundPosition = 'center';
-        shipperMarkerElement.style.cursor = 'pointer';
-        shipperMarkerElement.style.display = 'flex'; // Để căn giữa avatar
-        shipperMarkerElement.style.alignItems = 'center';
-        shipperMarkerElement.style.justifyContent = 'center';
-
-        // Tạo phần tử ảnh avatar người dùng
-        // Tạo phần tử ảnh avatar người dùng
-        const avatarElement = document.createElement('img');
-        avatarElement.src = '/images/shipper2.png';
-        avatarElement.style.width = '30px'; // Kích thước avatar
-        avatarElement.style.height = '30px';
-        avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
-        avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
-        avatarElement.style.position = 'absolute';
-        avatarElement.style.top = '10px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
-        avatarElement.style.left = '50%';
-        avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
-        shipperMarkerElement.appendChild(avatarElement);
+      // Tạo phần tử ảnh avatar người dùng
+      // Tạo phần tử ảnh avatar người dùng
+      const avatarElement = document.createElement('img');
+      avatarElement.src = '/images/shipper2.png';
+      avatarElement.style.width = '40px'; // Kích thước avatar
+      avatarElement.style.height = '40px';
+      avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+      avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+      avatarElement.style.position = 'absolute';
+      avatarElement.style.top = '5px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+      avatarElement.style.left = '50%';
+      avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
+      shipperMarkerElement.appendChild(avatarElement);
 
 
-        const shipperMarker = new vietmapgl.Marker({
-          element: shipperMarkerElement,
-          anchor: 'center',
-        })
-          .setLngLat([shipperLocation.lng, shipperLocation.lat])
-          .addTo(mapRef.current);
+      const shipperMarker = new vietmapgl.Marker({
+        element: shipperMarkerElement,
+        anchor: 'center',
+      })
+        .setLngLat([shipperLocation.lng, shipperLocation.lat])
+        .addTo(mapRef.current);
 
-        shipperMarkersRef.current.push(shipperMarker); // Lưu trữ marker mới
-      });
-    }
+      shipperMarkersRef.current.push(shipperMarker); // Lưu trữ marker mới
+    });
   }, [nearListShipper]);
 
   /// lay vi tri near shipper ban dau so voi userlocation

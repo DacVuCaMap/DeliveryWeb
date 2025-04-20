@@ -16,6 +16,7 @@ type MapInfo = {
   address: string;
   ref_id: string;
   display: string;
+  phoneNumber?: string;
 };
 
 type InputInfo = {
@@ -71,7 +72,7 @@ export default function TypeFastShip(props: Props) {
   const nearShipRef = useRef<any>([]);
   const [isFocused1, setFocused1] = useState(false);
   const [isFocused2, setFocused2] = useState(false);
-  const defaultLoc: MapInfo = { address: "Vị trí hiện tại của bạn", display: "", ref_id: "" };
+  const defaultLoc: MapInfo = { address: "Vị trí hiện tại của bạn", display: "", ref_id: "", phoneNumber: "" };
   const [suggestList, setSuggestList] = useState<MapInfo[]>([defaultLoc]);
   const [inputInfo, setInputInfo] = useState<InputInfo>({ input1: null, input2: null });
   const [listNearShipper, setListNearShipper] = useState<NearShipper[]>([]);
@@ -93,7 +94,7 @@ export default function TypeFastShip(props: Props) {
       try {
         // const response = await axios.get(`https://maps.vietmap.vn/api/autocomplete/v3?apikey=${API_KEY}&text=${encodeURIComponent(query)}`)
         if (!props.userLocation || !props.userLocation.lat || !props.userLocation.lng) return;
-        const response = await fetchAutoCompleteVietMap(query,props.userLocation?.lat,props.userLocation?.lng);
+        const response = await fetchAutoCompleteVietMap(query, props.userLocation?.lat, props.userLocation?.lng);
         if (response.data && Array.isArray(response.data)) {
           const listResponse = response.data.filter((item, index) => index < 3);
           const suggests: MapInfo[] = listResponse.map((item) => {
@@ -118,12 +119,21 @@ export default function TypeFastShip(props: Props) {
   }, [debouncedInput1, debouncedInput2, isFocused1, isFocused2]);
 
   // Handle input changes
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string) => {
     const value = e.target.value;
-    setInputInfo((prev) => ({
-      ...prev,
-      [key]: prev[key] ? { ...prev[key], address: value } : { address: value, refId: "" },
-    }));
+    if (key2 === "phone") {
+      setInputInfo((prev) => ({
+        ...prev,
+        [key]: prev[key] ? { ...prev[key], phoneNumber: value } : { phoneNumber: value, refId: "" },
+      }));
+      return;
+    } else {
+      setInputInfo((prev) => ({
+        ...prev,
+        [key]: prev[key] ? { ...prev[key], address: value } : { address: value, refId: "" },
+      }));
+      return;
+    }
   };
 
   // Handle suggestion selection
@@ -231,16 +241,32 @@ export default function TypeFastShip(props: Props) {
         </button>
         <div className="flex lg:flex-row flex-col items-start gap-6">
           <div className="flex flex-col w-full">
-            <span className="text-gray-500">Nhập địa chỉ nhận hàng</span>
-            <input
-              value={inputInfo.input1?.address || ""}
-              onChange={(e) => handleInput(e, "input1")}
-              onFocus={() => setFocused1(true)}
-              onBlur={() => setTimeout(() => setFocused1(false), 100)}
-              type="text"
-              placeholder="Chọn địa chỉ nhận hàng"
-              className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-            />
+            <div className="flex flex-row gap-2">
+              <div className="w-2/3">
+                <span className="text-gray-500 text-sm">Nhập địa chỉ nhận hàng</span>
+                <input
+                  value={inputInfo.input1?.address || ""}
+                  onChange={(e) => handleInput(e, "input1")}
+                  onFocus={() => setFocused1(true)}
+                  onBlur={() => setTimeout(() => setFocused1(false), 100)}
+                  type="text"
+                  placeholder="Chọn địa chỉ nhận hàng"
+                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                />
+              </div>
+              <div className="w-1/3">
+                <span className="text-gray-500 text-sm">Nhập SDT người gửi</span>
+                <input
+                  value={inputInfo.input1?.phoneNumber || ""}
+                  onChange={(e) => handleInput(e, "input1","phone")}
+                  onFocus={() => setFocused1(true)}
+                  onBlur={() => setTimeout(() => setFocused1(false), 100)}
+                  type="text"
+                  placeholder="Nhập số điện thoại"
+                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                />
+              </div>
+            </div>
             {isFocused1 && (
               <div
                 className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused1 ? "animate-slideDown" : "animate-slideUp"
@@ -265,16 +291,32 @@ export default function TypeFastShip(props: Props) {
           </div>
 
           <div className="flex flex-col w-full">
-            <span className="text-gray-500">Nhập địa chỉ giao hàng</span>
-            <input
-              value={inputInfo.input2?.address || ""}
-              onChange={(e) => handleInput(e, "input2")}
-              onFocus={() => setFocused2(true)}
-              onBlur={() => setTimeout(() => setFocused2(false), 100)}
-              type="text"
-              placeholder="Chọn địa chỉ nhận hàng"
-              className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-            />
+            <div className="flex flex-row gap-2">
+              <div className="w-2/3">
+                <span className="text-gray-500 text-sm">Nhập địa chỉ giao hàng</span>
+                <input
+                  value={inputInfo.input2?.address || ""}
+                  onChange={(e) => handleInput(e, "input2")}
+                  onFocus={() => setFocused2(true)}
+                  onBlur={() => setTimeout(() => setFocused2(false), 100)}
+                  type="text"
+                  placeholder="Chọn địa chỉ nhận hàng"
+                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                />
+              </div>
+              <div className="w-1/3">
+                <span className="text-gray-500 text-sm">Nhập SDT người nhận</span>
+                <input
+                  value={inputInfo.input2?.phoneNumber || ""}
+                  onChange={(e) => handleInput(e, "input2", "phone")}
+                  onFocus={() => setFocused2(true)}
+                  onBlur={() => setTimeout(() => setFocused2(false), 100)}
+                  type="text"
+                  placeholder="Nhấp số điện thoại"
+                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                />
+              </div>
+            </div>
             {isFocused2 && (
               <div
                 className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused2 ? "animate-slideDown" : "animate-slideUp"
@@ -314,7 +356,7 @@ export default function TypeFastShip(props: Props) {
       {searchShipCard && (
         <div className="bg-white/50 absolute bottom-[-50px] w-full min-h-[400px] pt-4 px-6 backdrop-blur-md">
           <button
-            onClick={e=>setSearchShipCard(false)}
+            onClick={e => setSearchShipCard(false)}
             className="absolute top-2 right-4"
           >
             <X />
