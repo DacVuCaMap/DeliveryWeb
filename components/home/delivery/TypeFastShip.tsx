@@ -232,7 +232,7 @@ export default function TypeFastShip(props: Props) {
 
 
   return (
-    <div className="absolute bottom-20 lg:left-4 lg:right-4 z-10 w-full">
+    <div className="absolute bottom-20 lg:left-4 lg:right-4 z-10">
       <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
         <button
           onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
@@ -256,12 +256,10 @@ export default function TypeFastShip(props: Props) {
                 />
               </div>
               <div className="w-1/3">
-                <span className="text-gray-500 text-sm">SDT người gửi</span>
+                <span className="text-gray-500 text-xs">SDT người gửi</span>
                 <input
                   value={inputInfo.input1?.phoneNumber || ""}
                   onChange={(e) => handleInput(e, "input1","phone")}
-                  onFocus={() => setFocused1(true)}
-                  onBlur={() => setTimeout(() => setFocused1(false), 100)}
                   type="text"
                   placeholder="09..."
                   className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
@@ -306,12 +304,10 @@ export default function TypeFastShip(props: Props) {
                 />
               </div>
               <div className="w-1/3">
-                <span className="text-gray-500 text-sm">SDT người nhận</span>
+                <span className="text-gray-500 text-xs">SDT người nhận</span>
                 <input
                   value={inputInfo.input2?.phoneNumber || ""}
                   onChange={(e) => handleInput(e, "input2", "phone")}
-                  onFocus={() => setFocused2(true)}
-                  onBlur={() => setTimeout(() => setFocused2(false), 100)}
                   type="text"
                   placeholder="09..."
                   className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
