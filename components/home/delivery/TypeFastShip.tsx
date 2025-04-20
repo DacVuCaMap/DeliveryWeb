@@ -231,7 +231,7 @@ export default function TypeFastShip(props: Props) {
         </button>
         <div className="flex lg:flex-row flex-col items-start gap-6">
           <div className="flex flex-col w-full">
-            <span className="text-gray-500">Bạn hãy nhập địa chỉ đơn hàng bắt đầu</span>
+            <span className="text-gray-500">Nhập địa chỉ đơn hàng bắt đầu</span>
             <input
               value={inputInfo.input1?.address || ""}
               onChange={(e) => handleInput(e, "input1")}
@@ -265,7 +265,7 @@ export default function TypeFastShip(props: Props) {
           </div>
 
           <div className="flex flex-col w-full">
-            <span className="text-gray-500">Bạn hãy nhập địa chỉ đơn hàng kết thúc</span>
+            <span className="text-gray-500">Nhập địa chỉ đơn hàng kết thúc</span>
             <input
               value={inputInfo.input2?.address || ""}
               onChange={(e) => handleInput(e, "input2")}

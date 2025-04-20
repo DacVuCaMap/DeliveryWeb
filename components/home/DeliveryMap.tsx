@@ -202,40 +202,39 @@ export default function DeliveryMap() {
     fastShipMarkerRef.current = []
 
     fastShip.forEach((location, index) => {
-      if (location.lat != null && location.lng != null) {
-        // Tạo custom DOM element cho marker
-        const el = document.createElement('div')
-        el.style.width = '60px'; // Tăng kích thước để chứa ảnh
-        el.style.height = '60px';
-        el.style.backgroundColor = 'transparent'; // Trong suốt
-        el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
-        el.style.borderRadius = '50%'; // Hình tròn
-        el.style.cursor = 'pointer'; // Con trỏ chuột
-        el.style.display = 'flex'; // Để căn giữa ảnh
-        el.style.alignItems = 'center';
-        el.style.justifyContent = 'center';
-        el.style.overflow = 'hidden';
-        const imageElement = document.createElement('img');
+      if (location.lat == null || location.lng == null || location.lat === userLocation?.lat || location.lng === userLocation?.lng) return;
+      // Tạo custom DOM element cho marker
+      const el = document.createElement('div')
+      el.style.width = '60px'; // Tăng kích thước để chứa ảnh
+      el.style.height = '60px';
+      el.style.backgroundColor = 'transparent'; // Trong suốt
+      el.style.border = '3px solid #ff8000'; // Viền xanh lá cây
+      el.style.borderRadius = '50%'; // Hình tròn
+      el.style.cursor = 'pointer'; // Con trỏ chuột
+      el.style.display = 'flex'; // Để căn giữa ảnh
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.overflow = 'hidden';
+      const imageElement = document.createElement('img');
 
-        imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
-        imageElement.style.height = '60px';
-        imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
-        if (location != userLocation) {
-          if (index === 0) {
-            // Marker bắt đầu
-            imageElement.src = '/images/start-ship1.png';
-          } else if (index === 1) {
-            // Marker kết thúc
-            imageElement.src = '/images/start-ship2.png';
-          }
+      imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
+      imageElement.style.height = '60px';
+      imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
+      if (location != userLocation) {
+        if (index === 0) {
+          // Marker bắt đầu
+          imageElement.src = '/images/start-ship1.png';
+        } else if (index === 1) {
+          // Marker kết thúc
+          imageElement.src = '/images/start-ship2.png';
         }
-        el.appendChild(imageElement);
-        const marker = new vietmapgl.Marker({ element: el })
-          .setLngLat([location.lng, location.lat])
-          .addTo(mapRef.current)
-
-        fastShipMarkerRef.current.push(marker)
       }
+      el.appendChild(imageElement);
+      const marker = new vietmapgl.Marker({ element: el })
+        .setLngLat([location.lng, location.lat])
+        .addTo(mapRef.current)
+
+      fastShipMarkerRef.current.push(marker)
     })
 
     if (!mapRef.current || !fastShip[0] || !fastShip[1]) return
@@ -406,7 +405,6 @@ export default function DeliveryMap() {
         shipperMarkerElement.style.backgroundSize = 'contain'; // Đảm bảo ảnh không bị méo
         shipperMarkerElement.style.backgroundRepeat = 'no-repeat'; // Không lặp lại ảnh
         shipperMarkerElement.style.backgroundPosition = 'center'; // Căn giữa ảnh
-        shipperMarkerElement.style.borderRadius = '50%';
         shipperMarkerElement.style.cursor = 'pointer';
         const shipperMarker = new vietmapgl.Marker({
           element: shipperMarkerElement,
