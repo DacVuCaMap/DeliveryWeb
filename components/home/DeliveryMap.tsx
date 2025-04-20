@@ -346,7 +346,7 @@ export default function DeliveryMap() {
           paint: {
             'line-color': '#bdffc7', // Màu xanh lá cây nhạt (màu gốc)
             'line-width': 7,
-            'line-opacity': 0.8 // Có thể giảm độ mờ để thấy rõ animation hơn
+            'line-opacity': 1 // Có thể giảm độ mờ để thấy rõ animation hơn
           },
         });
 
@@ -382,8 +382,6 @@ export default function DeliveryMap() {
         // --- Bắt đầu Animation ---
         animationStartTime.current = performance.now(); // Sử dụng performance.now() cho độ chính xác cao hơn Date.now()
         animateLine();
-
-        console.log('🛣️ Vẽ route chính thành công! Bắt đầu animation.');
 
         // --- Fit Bounds ---
         const bounds = new (window as any).vietmapgl.LngLatBounds();
@@ -534,29 +532,31 @@ export default function DeliveryMap() {
 
     setNearListShipper([]);
 
-    // Tạo phần tử HTML tùy chỉnh cho marker
     const markerElement = document.createElement('div');
-    markerElement.style.width = '60px'; // Tăng kích thước để chứa ảnh
-    markerElement.style.height = '60px';
-    markerElement.style.backgroundColor = 'transparent'; // Trong suốt
-    markerElement.style.border = '3px solid #0022ff'; // Viền xanh lá cây
-    markerElement.style.borderRadius = '50%'; // Hình tròn
-    markerElement.style.cursor = 'pointer'; // Con trỏ chuột
-    markerElement.style.display = 'flex'; // Để căn giữa ảnh
+    markerElement.style.width = '65px'; // Kích thước marker
+    markerElement.style.height = '65px';
+    markerElement.style.backgroundImage = 'url(/images/shipper-mark1.png)'; // Icon ghim bản đồ
+    markerElement.style.backgroundSize = 'contain';
+    markerElement.style.backgroundRepeat = 'no-repeat';
+    markerElement.style.backgroundPosition = 'center';
+    markerElement.style.cursor = 'pointer';
+    markerElement.style.display = 'flex'; // Để căn giữa avatar
     markerElement.style.alignItems = 'center';
     markerElement.style.justifyContent = 'center';
-    markerElement.style.overflow = 'hidden';
 
-    // Tạo phần tử ảnh bên trong
-    const imageElement = document.createElement('img');
-    imageElement.src = '/images/shipper1.png'; // Thay bằng URL ảnh của bạn
-    imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
-    imageElement.style.height = '60px';
-    imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
-
-    // Thêm ảnh vào marker
-    markerElement.appendChild(imageElement);
-
+    // Tạo phần tử ảnh avatar người dùng
+    // Tạo phần tử ảnh avatar người dùng
+    const avatarElement = document.createElement('img');
+    avatarElement.src = '/images/shipper2.png';
+    avatarElement.style.width = '40px'; // Kích thước avatar
+    avatarElement.style.height = '40px';
+    avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+    avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+    avatarElement.style.position = 'absolute';
+    avatarElement.style.top = '5px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+    avatarElement.style.left = '50%';
+    avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
+    markerElement.appendChild(avatarElement);
     // Tạo marker mới với phần tử tùy chỉnh
     const marker = new vietmapgl.Marker({
       element: markerElement,
@@ -623,10 +623,14 @@ export default function DeliveryMap() {
               'line-join': 'round',
             },
             paint: {
-              'line-color': '#a1a1a1',
-              'line-width': 7,
+              'line-color': '#8b9efc',
+              'line-width': 5,
             },
           });
+          // di chuyen routeLine len routeLayerId
+          if (mapRef.current.getLayer('routeLine') && mapRef.current.getLayer(routeLayerId)) {
+            mapRef.current.moveLayer('routeLine', routeLayerId);
+          }
 
           // 🔍 Fit bounds để hiển thị cả điểm đầu và cuối của route
           const bounds = new (window as any).vietmapgl.LngLatBounds();
