@@ -92,7 +92,8 @@ export default function TypeFastShip(props: Props) {
 
       try {
         // const response = await axios.get(`https://maps.vietmap.vn/api/autocomplete/v3?apikey=${API_KEY}&text=${encodeURIComponent(query)}`)
-        const response = await fetchAutoCompleteVietMap(query);
+        if (!props.userLocation || !props.userLocation.lat || !props.userLocation.lng) return;
+        const response = await fetchAutoCompleteVietMap(query,props.userLocation?.lat,props.userLocation?.lng);
         if (response.data && Array.isArray(response.data)) {
           const listResponse = response.data.filter((item, index) => index < 3);
           const suggests: MapInfo[] = listResponse.map((item) => {

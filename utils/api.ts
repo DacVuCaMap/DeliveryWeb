@@ -86,9 +86,9 @@ export const fetchPlaceVietMap=async (refId:string)=>{
         throw error.response?.data || "Lỗi không xác định";
     }
 }
-export const fetchAutoCompleteVietMap=async (text:string)=>{
+export const fetchAutoCompleteVietMap=async (text:string,lat:number,lng:number)=>{
     try {
-        const response = await api.get(`/api/vietmap/autocomplete?text=${text}`)
+        const response = await api.get(`/api/vietmap/autocomplete?text=${text}&lat=${lat}&lng=${lng}`)
         return response;
     } catch (error:any) {
         toast.error("Lỗi server")
