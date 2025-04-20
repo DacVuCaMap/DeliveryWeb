@@ -515,59 +515,6 @@ export default function DeliveryMap() {
     }
   }, [fastShip[1]])
 
-  // useEffect(() => {
-  //   if (!mapRef.current || !nearShipper) return;
-
-  //   // Nếu đã có marker cũ thì remove
-  //   if (markerRef.current?.nearShipperMarker) {
-  //     markerRef.current.nearShipperMarker.remove();
-  //     markerRef.current.nearShipperMarker = null; // Đặt lại tham chiếu
-  //   }
-
-  //   setNearListShipper([]);
-  //   const vietmapgl = (window as any).vietmapgl;
-
-  //   // Tạo phần tử HTML tùy chỉnh cho marker
-  //   const markerElement = document.createElement('div');
-  //   markerElement.style.width = '60px'; // Tăng kích thước để chứa ảnh
-  //   markerElement.style.height = '60px';
-  //   markerElement.style.backgroundColor = 'transparent'; // Trong suốt
-  //   markerElement.style.border = '3px solid #0022ff'; // Viền xanh lá cây
-  //   markerElement.style.borderRadius = '50%'; // Hình tròn
-  //   markerElement.style.cursor = 'pointer'; // Con trỏ chuột
-  //   markerElement.style.display = 'flex'; // Để căn giữa ảnh
-  //   markerElement.style.alignItems = 'center';
-  //   markerElement.style.justifyContent = 'center';
-  //   markerElement.style.overflow = 'hidden';
-
-  //   // Tạo phần tử ảnh bên trong
-  //   const imageElement = document.createElement('img');
-  //   imageElement.src = '/images/shipper1.png'; // Thay bằng URL ảnh của bạn
-  //   imageElement.style.width = '60px'; // Kích thước ảnh nhỏ hơn vòng tròn
-  //   imageElement.style.height = '60px';
-  //   imageElement.style.objectFit = 'contain'; // Đảm bảo ảnh không bị méo
-
-  //   // Thêm ảnh vào marker
-  //   markerElement.appendChild(imageElement);
-
-  //   // Tạo marker mới với phần tử tùy chỉnh
-  //   const marker = new vietmapgl.Marker({
-  //     element: markerElement,
-  //     anchor: 'center', // Đặt tâm của marker
-  //   })
-  //     .setLngLat([nearShipper.lng, nearShipper.lat])
-  //     .addTo(mapRef.current);
-
-  //   // Lưu lại marker để sau này remove
-  //   markerRef.current.nearShipperMarker = marker;
-
-  //   // Zoom đến vị trí gần nhất
-  //   mapRef.current.flyTo({
-  //     center: [nearShipper.lng, nearShipper.lat],
-  //     zoom: 14,
-  //     speed: 1.2,
-  //   });
-  // }, [nearShipper]);
 
   // tim list near shipper
 
@@ -652,16 +599,16 @@ export default function DeliveryMap() {
               coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
             },
           };
-
-          // // Xoá source/line cũ nếu có
-          // if (mapRef.current.getLayer('routeLine')) {
-          //   mapRef.current.removeLayer('routeLine');
-          // }
-          // if (mapRef.current.getSource('route')) {
-          //   mapRef.current.removeSource('route');
-          // }
           const routeSourceId = `route-1`;
           const routeLayerId = `routeLine-1`;
+          // Xoá source/line cũ nếu có
+          if (mapRef.current.getLayer(routeLayerId)) {
+            mapRef.current.removeLayer(routeLayerId);
+          }
+          if (mapRef.current.getSource(routeSourceId)) {
+            mapRef.current.removeSource(routeSourceId);
+          }
+
           mapRef.current.addSource(routeSourceId, {
             type: 'geojson',
             data: geoJson,

@@ -232,7 +232,7 @@ export default function TypeFastShip(props: Props) {
 
 
   return (
-    <div className="absolute bottom-20 lg:left-4 lg:right-4 z-10">
+    <div className="absolute bottom-20 lg:left-4 lg:right-4 left-0 right-0 z-10">
       <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
         <button
           onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
