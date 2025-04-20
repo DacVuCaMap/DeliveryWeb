@@ -255,14 +255,14 @@ export default function TypeFastShip(props: Props) {
                 />
               </div>
               <div className="w-1/3">
-                <span className="text-gray-500 text-sm">Nhập SDT người gửi</span>
+                <span className="text-gray-500 text-sm">SDT người gửi</span>
                 <input
                   value={inputInfo.input1?.phoneNumber || ""}
                   onChange={(e) => handleInput(e, "input1","phone")}
                   onFocus={() => setFocused1(true)}
                   onBlur={() => setTimeout(() => setFocused1(false), 100)}
                   type="text"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="09..."
                   className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
                 />
               </div>
@@ -305,14 +305,14 @@ export default function TypeFastShip(props: Props) {
                 />
               </div>
               <div className="w-1/3">
-                <span className="text-gray-500 text-sm">Nhập SDT người nhận</span>
+                <span className="text-gray-500 text-sm">SDT người nhận</span>
                 <input
                   value={inputInfo.input2?.phoneNumber || ""}
                   onChange={(e) => handleInput(e, "input2", "phone")}
                   onFocus={() => setFocused2(true)}
                   onBlur={() => setTimeout(() => setFocused2(false), 100)}
                   type="text"
-                  placeholder="Nhấp số điện thoại"
+                  placeholder="09..."
                   className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
                 />
               </div>
