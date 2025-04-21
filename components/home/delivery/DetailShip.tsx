@@ -20,6 +20,7 @@ type InputInfo = {
 
 type Props = {
     setDetailCard: React.Dispatch<React.SetStateAction<boolean>>;
+    handleInput: (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string)=>void;
     inputInfo: InputInfo;
     distance: number;
     handleFindShipper: () => Promise<void>;
@@ -56,13 +57,10 @@ export default function DetailShip(props: Props) {
                         <Input className="cursor-pointer" onClick={e => props.setDetailCard(false)} readOnly value={props.inputInfo.input2?.address === "Vị trí hiện tại của bạn" ? "Vị trí hiện tại của bạn" : props.inputInfo.input2?.display} id="address" placeholder="Địa chỉ người nhận" />
                     </div>
                     <div>
-                        <Input placeholder="Thêm mô tả nhận hàng" />
-                    </div>
-                    <div>
                         <Input placeholder="Tên người nhận" required />
                     </div>
                     <div>
-                        <Input value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
+                        <Input onChange={e=>props.handleInput(e,"input2","phone")} value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
                     </div>
                     <div className="flex lg:flex-row gap-4 flex-col">
                         <div className="lg:w-1/2">

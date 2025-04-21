@@ -181,7 +181,7 @@ export default function DeliveryMap() {
     fastShipMarkerRef.current = []
 
     fastShip.forEach((location, index) => {
-      if (location.lat == null || location.lng == null || location.lat === userLocation?.lat || location.lng === userLocation?.lng) return;
+      if (!location || location.lat == null || location.lng == null || location.lat === userLocation?.lat || location.lng === userLocation?.lng) return;
 
       // Tạo phần tử HTML tùy chỉnh cho marker
       const el = document.createElement('div');

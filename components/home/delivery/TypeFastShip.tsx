@@ -338,7 +338,7 @@ export default function TypeFastShip(props: Props) {
             </div>
           )}
           <button onClick={e => openDetailCard()} className="w-full bg-orange-500 rounded-xl text-white py-2">
-            Tìm shipper ngay
+            Tiếp tục
           </button>
         </div>
       )}
@@ -387,7 +387,7 @@ export default function TypeFastShip(props: Props) {
         </div>
       )}
 
-      {detailCard && <DetailShip handleFindShipper={handleFindShipper} distance={props.distance} inputInfo={inputInfo} setDetailCard={setDetailCard} />}
+      {detailCard && <DetailShip handleInput={handleInput} handleFindShipper={handleFindShipper} distance={props.distance} inputInfo={inputInfo} setDetailCard={setDetailCard} />}
     </div>
   );
 }
