@@ -17,6 +17,11 @@ type Location = {
 }
 export default function DeliveryMap() {
 
+  //animation ship route
+  const animationFrameShipId = useRef<number | null>(null);
+  const routeCoordinatesShip = useRef<[number, number][]>([]); // Lưu trữ tọa độ [lng, lat]
+  const animationStartTimeShip = useRef<number | null>(null);
+
   //animation route
   const animationFrameId = useRef<number | null>(null);
   const routeCoordinates = useRef<[number, number][]>([]); // Lưu trữ tọa độ [lng, lat]
@@ -346,7 +351,7 @@ export default function DeliveryMap() {
             'line-join': 'round',
           },
           paint: {
-            'line-color': '#b0ecf5', 
+            'line-color': '#b0ecf5',
             'line-width': 7,
             'line-opacity': 1 // Có thể giảm độ mờ để thấy rõ animation hơn
           },
@@ -580,43 +585,134 @@ export default function DeliveryMap() {
 
     // Bắt đầu logic vẽ route nếu có fastShip[0]
     if (fastShip[0]?.lat && fastShip[0]?.lng) {
+      // const start = `${nearShipper.lat},${nearShipper.lng}`;
+      // const end = `${fastShip[0].lat},${fastShip[0].lng}`;
+
+      // const fetchRouteAndDraw = async () => {
+      //   try {
+      //     const res = await fetchRouteVietMap(start, end);
+      //     if (!res?.data?.paths || res.data.paths.length === 0) {
+      //       console.warn('⚠️ Không tìm thấy đường đi.');
+      //       return;
+      //     }
+      //     const encoded = res.data.paths[0].points;
+      //     const decoded = polyline.decode(encoded); // Trả về mảng [lat, lng]
+      //     setDistance(res.data.paths[0].distance);
+
+      //     // Convert thành GeoJSON LineString
+      //     const geoJson = {
+      //       type: 'Feature',
+      //       geometry: {
+      //         type: 'LineString',
+      //         coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
+      //       },
+      //     };
+      //     const routeSourceId = `route-1`;
+      //     const routeLayerId = `routeLine-1`;
+      //     // Xoá source/line cũ nếu có
+      //     if (mapRef.current.getLayer(routeLayerId)) {
+      //       mapRef.current.removeLayer(routeLayerId);
+      //     }
+      //     if (mapRef.current.getSource(routeSourceId)) {
+      //       mapRef.current.removeSource(routeSourceId);
+      //     }
+
+      //     mapRef.current.addSource(routeSourceId, {
+      //       type: 'geojson',
+      //       data: geoJson,
+      //     });
+
+      //     mapRef.current.addLayer({
+      //       id: routeLayerId,
+      //       type: 'line',
+      //       source: routeSourceId,
+      //       layout: {
+      //         'line-cap': 'round',
+      //         'line-join': 'round',
+      //       },
+      //       paint: {
+      //         'line-color': '#ff7f20',
+      //         'line-width': 5,
+      //       },
+      //     });
+      //     // di chuyen routeLine len routeLayerId
+      //     if (mapRef.current.getLayer('routeLine') && mapRef.current.getLayer(routeLayerId)) {
+      //       mapRef.current.moveLayer('routeLine', routeLayerId);
+      //     }
+      //     console.log('Thứ tự layer sau khi thêm và di chuyển:', mapRef.current.getStyle().layers.map((layer:any) => layer.id));
+      //     // 🔍 Fit bounds để hiển thị cả điểm đầu và cuối của route
+      //     const bounds = new (window as any).vietmapgl.LngLatBounds();
+      //     bounds.extend([nearShipper.lng, nearShipper.lat]);
+      //     bounds.extend([fastShip[0].lng, fastShip[0].lat]);
+      //     decoded.forEach(([lat, lng]) => {
+      //       bounds.extend([lng, lat]);
+      //     });
+      //     mapRef.current.fitBounds(bounds, {
+      //       padding: 50,
+      //       maxZoom: 17,
+      //       duration: 1000,
+      //     });
+      //     console.log('🛣️ Vẽ route thành công!');
+      //   } catch (err) {
+      //     console.error('❌ Lỗi khi fetch hoặc vẽ route:', err);
+      //   }
+      // };
+
+      // fetchRouteAndDraw();
+      const routeSourceId = `route-1`;
+      const routeLayerId = `routeLine-1`;
       const start = `${nearShipper.lat},${nearShipper.lng}`;
       const end = `${fastShip[0].lat},${fastShip[0].lng}`;
+      const animationDuration = 4000; // Thời gian animation (ms), ví dụ 4 giây
 
       const fetchRouteAndDraw = async () => {
         try {
           const res = await fetchRouteVietMap(start, end);
-          if (!res?.data?.paths || res.data.paths.length === 0) {
-            console.warn('⚠️ Không tìm thấy đường đi.');
+          if (!res.data.paths || res.data.paths.length === 0) {
+            console.error('❌ No route found');
             return;
           }
           const encoded = res.data.paths[0].points;
-          const decoded = polyline.decode(encoded); // Trả về mảng [lat, lng]
+          const decodedLatLng = polyline.decode(encoded); // Mảng [lat, lng]
+          routeCoordinatesShip.current = decodedLatLng.map(([lat, lng]) => [lng, lat]); // Đảo ngược thành [lng, lat] cho GeoJSON
+
           setDistance(res.data.paths[0].distance);
 
-          // Convert thành GeoJSON LineString
-          const geoJson = {
+          // Convert thành GeoJSON LineString cho route chính
+          const mainRouteGeoJson = {
             type: 'Feature',
             geometry: {
               type: 'LineString',
-              coordinates: decoded.map(([lat, lng]) => [lng, lat]), // Đảo ngược lat/lng
+              coordinates: routeCoordinatesShip.current,
             },
           };
-          const routeSourceId = `route-1`;
-          const routeLayerId = `routeLine-1`;
-          // Xoá source/line cũ nếu có
+
+          // --- Vẽ Route Chính (Màu xanh lá cây) ---
+          // Xoá source/layer cũ nếu có
           if (mapRef.current.getLayer(routeLayerId)) {
             mapRef.current.removeLayer(routeLayerId);
+          }
+          if (mapRef.current.getLayer('animatedRouteLine-1')) { // Xóa cả layer animation cũ
+            mapRef.current.removeLayer('animatedRouteLine-1');
           }
           if (mapRef.current.getSource(routeSourceId)) {
             mapRef.current.removeSource(routeSourceId);
           }
+          if (mapRef.current.getSource('animatedRoute-1')) { // Xóa cả source animation cũ
+            mapRef.current.removeSource('animatedRoute-1');
+          }
+          // // Hủy animation cũ nếu đang chạy
+          if (animationFrameShipId.current) {
+            cancelAnimationFrame(animationFrameShipId.current);
+            animationFrameShipId.current = null;
+          }
 
+
+          // Thêm source và layer cho route chính
           mapRef.current.addSource(routeSourceId, {
             type: 'geojson',
-            data: geoJson,
+            data: mainRouteGeoJson,
           });
-
           mapRef.current.addLayer({
             id: routeLayerId,
             type: 'line',
@@ -626,34 +722,148 @@ export default function DeliveryMap() {
               'line-join': 'round',
             },
             paint: {
-              'line-color': '#ff7f20',
+              'line-color': '#f5b17f',
               'line-width': 5,
+              'line-opacity': 0.5 // Có thể giảm độ mờ để thấy rõ animation hơn
             },
           });
-          // di chuyen routeLine len routeLayerId
-          if (mapRef.current.getLayer('routeLine') && mapRef.current.getLayer(routeLayerId)) {
-            mapRef.current.moveLayer('routeLine', routeLayerId);
-          }
-          console.log('Thứ tự layer sau khi thêm và di chuyển:', mapRef.current.getStyle().layers.map((layer:any) => layer.id));
-          // 🔍 Fit bounds để hiển thị cả điểm đầu và cuối của route
+
+          // --- Chuẩn bị cho Animation ---
+          const animatedRouteGeoJson = { // Source cho animation, bắt đầu rỗng
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: routeCoordinatesShip.current.length > 0 ? [routeCoordinatesShip.current[0]] : [] // Bắt đầu từ điểm đầu tiên
+            }
+          };
+
+          mapRef.current.addSource('animatedRoute-1', {
+            type: 'geojson',
+            data: animatedRouteGeoJson
+          });
+
+          mapRef.current.addLayer({
+            id: 'animatedRouteLine-1',
+            type: 'line',
+            source: 'animatedRoute-1',
+            layout: {
+              'line-cap': 'round',
+              'line-join': 'round'
+            },
+            paint: {
+              // 'line-color': '#00de21',
+              'line-color': '#ff7f20',
+              'line-width': 7,
+              'line-opacity': 0.5
+            }
+          }, routeLayerId); // Vẽ layer animation *trước* layer route chính (hoặc sau tùy ý)
+
+          // --- Bắt đầu Animation ---
+          animationStartTimeShip.current = performance.now(); // Sử dụng performance.now() cho độ chính xác cao hơn Date.now()
+          animateLine();
+
+          // --- Fit Bounds ---
           const bounds = new (window as any).vietmapgl.LngLatBounds();
-          bounds.extend([nearShipper.lng, nearShipper.lat]);
-          bounds.extend([fastShip[0].lng, fastShip[0].lat]);
-          decoded.forEach(([lat, lng]) => {
-            bounds.extend([lng, lat]);
+          routeCoordinatesShip.current.forEach((coord) => {
+            bounds.extend(coord);
           });
           mapRef.current.fitBounds(bounds, {
             padding: 50,
             maxZoom: 17,
             duration: 1000,
           });
-          console.log('🛣️ Vẽ route thành công!');
+
         } catch (err) {
           console.error('❌ Lỗi khi fetch hoặc vẽ route:', err);
         }
       };
 
+      const animateLine = (timestamp?: number) => {
+        // --- Phần kiểm tra ban đầu giữ nguyên ---
+        if (!mapRef.current || !routeCoordinatesShip.current || routeCoordinatesShip.current.length < 2) {
+          console.warn("Animation stopped: Map or route data not ready.");
+          animationFrameShipId.current = null; // Đảm bảo dừng hẳn nếu có lỗi dữ liệu
+          animationStartTimeShip.current = null;
+          return;
+        }
+
+        // Khởi tạo thời gian bắt đầu nếu chưa có (cho lần chạy đầu tiên)
+        if (!animationStartTimeShip.current) {
+          animationStartTimeShip.current = timestamp || performance.now();
+        }
+
+        const currentTimestamp = timestamp || performance.now();
+        let elapsed = currentTimestamp - animationStartTimeShip.current;
+        let progress = elapsed / animationDuration;
+
+        // --- Logic Lặp lại ---
+        if (progress >= 1) {
+          // Đã đi hết 1 vòng, reset để bắt đầu vòng mới
+          //   console.log('✅ Animation loop completed, restarting...'); // Có thể bỏ log này nếu không muốn thấy liên tục
+          const remainder = elapsed % animationDuration; // Tính phần dư thời gian để vòng lặp mượt hơn
+          animationStartTime.current = currentTimestamp - remainder; // Reset startTime dựa trên phần dư
+          progress = remainder / animationDuration; // Tính lại progress cho frame hiện tại dựa trên phần dư
+          elapsed = remainder; // Cập nhật elapsed cho đúng
+
+          // Nếu muốn nhảy ngay về 0 thay vì tính phần dư:
+          // animationStartTime.current = currentTimestamp;
+          // progress = 0;
+        }
+        // Đảm bảo progress không bao giờ lớn hơn 1 (quan trọng khi tính toán index)
+        progress = Math.min(progress, 1);
+
+
+        // --- Phần tính toán và cập nhật setData giữ nguyên ---
+        const targetIndex = Math.floor(progress * (routeCoordinatesShip.current.length - 1));
+        const currentPathSegment = routeCoordinatesShip.current.slice(0, targetIndex + 1);
+
+        // Log (tùy chọn, có thể xóa bớt để tránh spam console)
+        // console.log(`Animating Frame - Progress: ${progress.toFixed(2)}, Points: ${currentPathSegment.length}`);
+
+
+        // Cập nhật source của layer animation
+        const animatedSource = mapRef.current.getSource('animatedRoute-1');
+        if (animatedSource && typeof animatedSource.setData === 'function') {
+          animatedSource.setData({
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: currentPathSegment.length < 2 ? (currentPathSegment.length === 1 ? [currentPathSegment[0], currentPathSegment[0]] : []) : currentPathSegment
+            }
+          });
+        } else {
+          // Chỉ log cảnh báo một lần thôi để tránh spam
+          if (!(window as any).animatedSourceWarned) {
+            console.warn("Animated source/setData not available.");
+            (window as any).animatedSourceWarned = true; // Đánh dấu đã cảnh báo
+          }
+        }
+
+        animationFrameShipId.current = requestAnimationFrame(animateLine);
+      };
+
       fetchRouteAndDraw();
+
+      // Cleanup function khi component unmount hoặc dependency thay đổi
+      return () => {
+        console.log("Cleaning up animation frame (Looping)");
+        if (animationFrameShipId.current) {
+          cancelAnimationFrame(animationFrameShipId.current);
+          animationFrameShipId.current = null;
+        }
+        animationStartTimeShip.current = null; // Reset cả startTime
+        (window as any).animatedSourceWarned = false; // Reset cờ cảnh báo
+
+        // Cũng nên xóa các layer/source đã thêm khi cleanup
+        if (mapRef.current) {
+          if (mapRef.current.getLayer(routeLayerId)) mapRef.current.removeLayer(routeLayerId);
+          if (mapRef.current.getLayer('animatedRouteLine-1')) mapRef.current.removeLayer('animatedRouteLine-1');
+          if (mapRef.current.getSource(routeSourceId)) mapRef.current.removeSource(routeSourceId);
+          if (mapRef.current.getSource('animatedRoute-1')) mapRef.current.removeSource('animatedRoute-1');
+        }
+      };
+
+
     } else {
       // Xoá route cũ nếu fastShip[0] không còn tồn tại
       if (mapRef.current.getLayer('routeLine')) {

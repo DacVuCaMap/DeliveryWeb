@@ -6,6 +6,9 @@ import './TypeFastShip.css'
 import { fetchAutoCompleteVietMap, fetchPlaceVietMap, getNearShipper } from "@/utils/api";
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 import Image from "next/image";
+import DetailShip from "./DetailShip";
+import { toast } from "sonner";
+import { calTime } from "@/utils/allfunction";
 // Define types
 type OpenCard = {
   bottomCard: boolean;
@@ -77,6 +80,7 @@ export default function TypeFastShip(props: Props) {
   const [inputInfo, setInputInfo] = useState<InputInfo>({ input1: null, input2: null });
   const [listNearShipper, setListNearShipper] = useState<NearShipper[]>([]);
   const [searchShipCard, setSearchShipCard] = useState(false);
+  const [detailCard, setDetailCard] = useState(false);
   // Debounce input values (1.5 seconds delay)
   const debouncedInput1 = useDebounce(inputInfo.input1?.address || "", 500);
   const debouncedInput2 = useDebounce(inputInfo.input2?.address || "", 500);
@@ -180,24 +184,7 @@ export default function TypeFastShip(props: Props) {
       console.error("Error fetching suggestions:", error);
     }
   }
-  const calTime = () => {
-    const distanceKm = props.distance / 1000
-    const averageSpeedKmH = 40
 
-    const timeHours = distanceKm / averageSpeedKmH
-    const hours = Math.floor(timeHours)
-    const minutes = Math.round((timeHours - hours) * 60)
-
-    if (hours === 0 && minutes === 0) {
-      return 'ít hơn 1 phút'
-    } else if (hours === 0) {
-      return `${minutes} phút`
-    } else if (minutes === 0) {
-      return `${hours} giờ`
-    } else {
-      return `${hours} giờ ${minutes} phút`
-    }
-  }
   const handleFindShipper = async () => {
     if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) return;
     const response = await getNearShipper(props.fastShip[0].lat, props.fastShip[0].lng, 0);
@@ -229,124 +216,132 @@ export default function TypeFastShip(props: Props) {
   const setMarkerShip = (item: NearShipper) => {
     props.setNearShipper({ lat: item.latitude, lng: item.longitude });
   }
-
+  const openDetailCard = ()=>{
+    if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) {
+      toast.error("Nhập địa chỉ giao và nhận")
+      return
+    };
+    setDetailCard(true);
+  }
 
   return (
     <div className="absolute bottom-20 lg:left-4 lg:right-4 left-0 right-0 z-10">
-      <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
-        <button
-          onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
-          className="absolute top-2 right-4"
-        >
-          <X />
-        </button>
-        <div className="flex lg:flex-row flex-col items-start gap-6">
-          <div className="flex flex-col w-full">
-            <div className="flex flex-row gap-2">
-              <div className="w-2/3">
-                <span className="text-gray-500 text-sm">Nhập địa chỉ nhận hàng</span>
-                <input
-                  value={inputInfo.input1?.address || ""}
-                  onChange={(e) => handleInput(e, "input1")}
-                  onFocus={() => setFocused1(true)}
-                  onBlur={() => setTimeout(() => setFocused1(false), 100)}
-                  type="text"
-                  placeholder="Chọn địa chỉ nhận hàng"
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
+      {!detailCard && (
+        <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
+          <button
+            onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
+            className="absolute top-2 right-4"
+          >
+            <X />
+          </button>
+          <div className="flex lg:flex-row flex-col items-start gap-6">
+            <div className="flex flex-col w-full">
+              <div className="flex flex-row gap-2">
+                <div className="w-2/3">
+                  <span className="text-gray-500 text-sm">Nhập địa chỉ nhận hàng</span>
+                  <input
+                    value={inputInfo.input1?.address || ""}
+                    onChange={(e) => handleInput(e, "input1")}
+                    onFocus={() => setFocused1(true)}
+                    onBlur={() => setTimeout(() => setFocused1(false), 100)}
+                    type="text"
+                    placeholder="Chọn địa chỉ nhận hàng"
+                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                  />
+                </div>
+                <div className="w-1/3">
+                  <span className="text-gray-500 text-xs">SDT người gửi</span>
+                  <input
+                    value={inputInfo.input1?.phoneNumber || ""}
+                    onChange={(e) => handleInput(e, "input1", "phone")}
+                    type="text"
+                    placeholder="09..."
+                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                  />
+                </div>
               </div>
-              <div className="w-1/3">
-                <span className="text-gray-500 text-xs">SDT người gửi</span>
-                <input
-                  value={inputInfo.input1?.phoneNumber || ""}
-                  onChange={(e) => handleInput(e, "input1","phone")}
-                  type="text"
-                  placeholder="09..."
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
-              </div>
+              {isFocused1 && (
+                <div
+                  className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused1 ? "animate-slideDown" : "animate-slideUp"
+                    }`}
+                >
+                  {suggestList.length > 0 ? (
+                    suggestList.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
+                        onMouseDown={() => handleSelectSuggestion(suggestion, "input1")}
+                      >
+                        <span className="font-bold">{suggestion.address}</span>
+                        <span className="text-xs text-gray-400">{suggestion.display}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-gray-500">Không có gợi ý</div>
+                  )}
+                </div>
+              )}
             </div>
-            {isFocused1 && (
-              <div
-                className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused1 ? "animate-slideDown" : "animate-slideUp"
-                  }`}
-              >
-                {suggestList.length > 0 ? (
-                  suggestList.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
-                      onMouseDown={() => handleSelectSuggestion(suggestion, "input1")}
-                    >
-                      <span className="font-bold">{suggestion.address}</span>
-                      <span className="text-xs text-gray-400">{suggestion.display}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="px-4 py-2 text-gray-500">Không có gợi ý</div>
-                )}
-              </div>
-            )}
-          </div>
 
-          <div className="flex flex-col w-full">
-            <div className="flex flex-row gap-2">
-              <div className="w-2/3">
-                <span className="text-gray-500 text-sm">Nhập địa chỉ giao hàng</span>
-                <input
-                  value={inputInfo.input2?.address || ""}
-                  onChange={(e) => handleInput(e, "input2")}
-                  onFocus={() => setFocused2(true)}
-                  onBlur={() => setTimeout(() => setFocused2(false), 100)}
-                  type="text"
-                  placeholder="Chọn địa chỉ nhận hàng"
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
+            <div className="flex flex-col w-full">
+              <div className="flex flex-row gap-2">
+                <div className="w-2/3">
+                  <span className="text-gray-500 text-sm">Nhập địa chỉ giao hàng</span>
+                  <input
+                    value={inputInfo.input2?.address || ""}
+                    onChange={(e) => handleInput(e, "input2")}
+                    onFocus={() => setFocused2(true)}
+                    onBlur={() => setTimeout(() => setFocused2(false), 100)}
+                    type="text"
+                    placeholder="Chọn địa chỉ nhận hàng"
+                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                  />
+                </div>
+                <div className="w-1/3">
+                  <span className="text-gray-500 text-xs">SDT người nhận</span>
+                  <input
+                    value={inputInfo.input2?.phoneNumber || ""}
+                    onChange={(e) => handleInput(e, "input2", "phone")}
+                    type="text"
+                    placeholder="09..."
+                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                  />
+                </div>
               </div>
-              <div className="w-1/3">
-                <span className="text-gray-500 text-xs">SDT người nhận</span>
-                <input
-                  value={inputInfo.input2?.phoneNumber || ""}
-                  onChange={(e) => handleInput(e, "input2", "phone")}
-                  type="text"
-                  placeholder="09..."
-                  className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
-                />
-              </div>
+              {isFocused2 && (
+                <div
+                  className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused2 ? "animate-slideDown" : "animate-slideUp"
+                    }`}
+                >
+                  {suggestList.length > 0 ? (
+                    suggestList.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
+                        onMouseDown={() => handleSelectSuggestion(suggestion, "input2")}
+                      >
+                        <span className="font-bold">{suggestion.address}</span>
+                        <span className="text-xs text-gray-400">{suggestion.display}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-gray-500">Không có gợi ý</div>
+                  )}
+                </div>
+              )}
             </div>
-            {isFocused2 && (
-              <div
-                className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused2 ? "animate-slideDown" : "animate-slideUp"
-                  }`}
-              >
-                {suggestList.length > 0 ? (
-                  suggestList.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
-                      onMouseDown={() => handleSelectSuggestion(suggestion, "input2")}
-                    >
-                      <span className="font-bold">{suggestion.address}</span>
-                      <span className="text-xs text-gray-400">{suggestion.display}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="px-4 py-2 text-gray-500">Không có gợi ý</div>
-                )}
-              </div>
-            )}
           </div>
+          {inputInfo.input1 && inputInfo.input2 && (
+            <div className="flex flex-row gap-4">
+              <span>Quãng đường: {(props.distance / 1000).toFixed(2)}km</span>
+              <span>Thời gian: {calTime(props.distance)}</span>
+            </div>
+          )}
+          <button onClick={e => openDetailCard()} className="w-full bg-orange-500 rounded-xl text-white py-2">
+            Tìm shipper ngay
+          </button>
         </div>
-        {inputInfo.input1 && inputInfo.input2 && (
-          <div className="flex flex-row gap-4">
-            <span>Quãng đường: {(props.distance / 1000).toFixed(2)}km</span>
-            <span>Thời gian: {calTime()}</span>
-          </div>
-        )}
-        <button onClick={e => handleFindShipper()} className="w-full bg-orange-500 rounded-xl text-white py-2">
-          Tìm shipper ngay
-        </button>
-      </div>
+      )}
 
 
 
@@ -391,6 +386,8 @@ export default function TypeFastShip(props: Props) {
           </div>
         </div>
       )}
+
+      {detailCard && <DetailShip handleFindShipper={handleFindShipper} distance={props.distance} inputInfo={inputInfo} setDetailCard={setDetailCard} />}
     </div>
   );
 }
