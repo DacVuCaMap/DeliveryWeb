@@ -345,15 +345,15 @@ export default function TypeFastShip(props: Props) {
           </button>
           <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
           <p className="text-gray-500">Danh sách shipper</p>
-          <div className="flex flex-row gap-2 bg-gray-600 w-fit px-4 py-2 ">
+          <div className="flex flex-row gap-2 ">
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-white">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
+              <span className="text-gray-600">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-white">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
+              <span className="text-gray-600">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-white">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
+              <span className="text-gray-600">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
             </div>
           </div>
           <div className="mt-4 flex flex-col space-y-4">
