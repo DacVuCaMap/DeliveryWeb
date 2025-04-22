@@ -20,7 +20,7 @@ type InputInfo = {
 
 type Props = {
     setDetailCard: React.Dispatch<React.SetStateAction<boolean>>;
-    handleInput: (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string)=>void;
+    handleInput: (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string) => void;
     inputInfo: InputInfo;
     distance: number;
     handleFindShipper: () => Promise<void>;
@@ -42,10 +42,28 @@ export default function DetailShip(props: Props) {
 
     const itemTypes = ["Thực phẩm", "Quần áo", "Khác", "Tài liệu", "Dễ vỡ"];
 
-    const onSubmit = async() => {
+    const onSubmit = async () => {
         await props.handleFindShipper();
         props.setDetailCard(false);
     }
+    const calculateShippingFee = (km: number, weightLabel: string): number => {
+        if (km <= 1) {
+            return 10000;
+        }
+        const baseFee = Math.floor(km - 1) * 2000 + 10000;
+        const weightFees = {
+            "0-5kg": 0,
+            "5-10kg": 15000,
+            "10-15kg": 20000,
+            "15-20kg": 25000,
+            "20-25kg": 30000,
+            "25-30kg": 35000,
+            "30-50kg": 45000,
+        };
+
+        const extraFee = weightFees[weightLabel as keyof typeof weightFees] || 0;
+        return parseFloat((baseFee + extraFee).toFixed(0));
+    };
     return (
         <div className="w-full mx-auto p-4 space-y-4">
 
@@ -60,7 +78,7 @@ export default function DetailShip(props: Props) {
                         <Input placeholder="Tên người nhận" required />
                     </div>
                     <div>
-                        <Input onChange={e=>props.handleInput(e,"input2","phone")} value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
+                        <Input onChange={e => props.handleInput(e, "input2", "phone")} value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
                     </div>
                     <div className="flex lg:flex-row gap-4 flex-col">
                         <div className="lg:w-1/2">
@@ -105,8 +123,15 @@ export default function DetailShip(props: Props) {
                         <Label>Thời gian dự kiến</Label>
                         <span>{calTime(props.distance)}</span>
                     </div>
-
-                    <Button onClick={e=>onSubmit()} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                    <div>
+                        <Label>Phí giao hàng</Label>
+                        <span>
+                            {weight
+                                ? `${calculateShippingFee(props.distance / 1000, weight).toLocaleString("vi-VN")} VND`
+                                : "Vui lòng chọn khối lượng"}
+                        </span>
+                    </div>
+                    <Button onClick={e => onSubmit()} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
                         Tim ship
                     </Button>
                 </CardContent>

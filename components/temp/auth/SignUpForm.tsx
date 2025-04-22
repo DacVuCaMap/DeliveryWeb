@@ -8,23 +8,13 @@ import { ChevronLeft, Eye, EyeClosed, RefreshCw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 import ConfirmCode from "./ConfirmCode";
+import AddressSign from "./AddressSign";
+import { RegisterForm } from "@/entity/TypeObject";
 
-type RegisterForm = {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  confirmPassword: string;
-  phoneNumber: string;
-  address: string;
-  name: string;
-  roleName: string;
-  citizenIdFront: File | null,
-  citizenIdBack: File | null,
-}
+
 type RoleRegister = {
   value: string, name: string, description: string, src: string
 }
@@ -41,7 +31,8 @@ export default function SignUpForm() {
   const [isLoading, setLoading] = useState(false);
   const [previewFront, setPreviewFront] = useState<string | null>(null);
   const [previewBack, setPreviewBack] = useState<string | null>(null);
-  const [isWaitCode,setIsWaitCode] = useState(false);
+  const [isWaitCode, setIsWaitCode] = useState(false);
+
   const [formData, setFormData] = useState<RegisterForm>({
     email: "",
     password: "",
@@ -54,6 +45,9 @@ export default function SignUpForm() {
     roleName: "",
     citizenIdFront: null,
     citizenIdBack: null,
+    lat: 0,
+    lng: 0,
+    storeName: ""
   });
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -65,9 +59,9 @@ export default function SignUpForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
+    console.log(formData);
     // Kiểm tra điều kiện đầu vào
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword || false) {
       toast.error("Mật khẩu nhập lại không giống nhau");
     } else if (!role) {
       toast.error("Chưa chọn kiểu tài khoản");
@@ -80,7 +74,7 @@ export default function SignUpForm() {
         };
         const data = await registerUser(formPost);
         if (data?.success) {
-          toast.success("Đăng ký thành công!"); 
+          toast.success("Đăng ký thành công!");
           setIsWaitCode(true);
           setLoading(false);
           return;
@@ -118,6 +112,16 @@ export default function SignUpForm() {
       setPreviewBack(previewUrl);
     }
   };
+
+  const updateAddressForPartner = (e: any, key: string) => {
+    if (key === "location") {
+      setFormData({ ...formData, lat: e.lat, lng: e.lng })
+
+    }
+    else  {
+      setFormData({ ...formData, [key]: e });
+    }
+  }
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar pb-10">
       {isLoading && <FullScreenLoader text="Đang thực hiện đăng ký ...." />}
@@ -143,7 +147,7 @@ export default function SignUpForm() {
           </div>
           {isWaitCode ? (
             <div>
-              <ConfirmCode email={formData.email}/>
+              <ConfirmCode email={formData.email} />
             </div>
           ) :
             <div>
@@ -192,16 +196,18 @@ export default function SignUpForm() {
                       </div>
                       <div>
                         <Label>
-                          Số điện thoại
+                          Số điện thoại<span className="text-error-500">*</span>
                         </Label>
                         <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
                       </div>
-                      <div>
-                        <Label>
-                          Địa chỉ
-                        </Label>
-                        <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
-                      </div>
+                      {role.value != "PARTNER" &&
+                        <div>
+                          <Label>
+                            Địa chỉ<span className="text-error-500">*</span>
+                          </Label>
+                          <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
+                        </div>
+                      }
                       <div>
                         <Label>
                           Mật khẩu<span className="text-error-500">*</span>
@@ -266,6 +272,8 @@ export default function SignUpForm() {
                         </div>
                       )}
 
+                      {role.value === "PARTNER" && <AddressSign updateAddressForPartner={updateAddressForPartner} formData={formData} />}
+
                       <div className="flex items-center gap-3">
                         <Checkbox className="w-5 h-5" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
                         <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
@@ -324,7 +332,7 @@ export default function SignUpForm() {
         </div>
       </div>
 
-      
+
     </div>
   );
 }

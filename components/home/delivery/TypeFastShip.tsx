@@ -9,23 +9,13 @@ import Image from "next/image";
 import DetailShip from "./DetailShip";
 import { toast } from "sonner";
 import { calTime } from "@/utils/allfunction";
+import { InputInfo, MapInfo } from "@/entity/TypeObject";
 // Define types
 type OpenCard = {
   bottomCard: boolean;
   fastShip: boolean;
 };
 
-type MapInfo = {
-  address: string;
-  ref_id: string;
-  display: string;
-  phoneNumber?: string;
-};
-
-type InputInfo = {
-  input1: MapInfo | null;
-  input2: MapInfo | null;
-};
 
 type Props = {
   setOpenCard: React.Dispatch<React.SetStateAction<OpenCard>>;
@@ -171,7 +161,6 @@ export default function TypeFastShip(props: Props) {
     try {
       // const response = await axios.get(`https://maps.vietmap.vn/api/place/v3?apikey=${API_KEY}&refid=${encodeURIComponent(item.ref_id)}`)
       const response = await fetchPlaceVietMap(item.ref_id);
-      console.log(response)
       if (response.data && response.data.lat && response.data.lng) {
         const newLoc: Location = { lat: response.data.lat, lng: response.data.lng };
         props.setFastShip((prev) => {

@@ -24,7 +24,6 @@ export default function LocationTracker() {
 
   useEffect(() => {
     if (!user || user.role !== 'SHIPPER') {
-      console.log('[LocationTracker] Không phải shipper, không theo dõi vị trí.')
       return
     }
 

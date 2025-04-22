@@ -1,15 +1,25 @@
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { activeUser } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import { toast } from 'sonner';
 
 export default function ConfirmCode({ email }: { email: string }) {
     const [otp, setOtp] = useState("");
     const router = useRouter();
-    const handleOtp = (e: any) => {
+    const handleOtp = async (e: any) => {
         e.preventDefault();
         console.log(otp);
-        router.push("/signin");
+        const response = await activeUser(email,otp);
+        console.log(response);
+        if (response && response.status===200) {
+            toast.message("Kích hoạt thành công")
+            router.push("/signin");
+        }
+        else{
+            toast.error("Kích hoạt thất bại")
+        }
     }
     return (
         <div>

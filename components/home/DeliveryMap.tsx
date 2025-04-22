@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { ArrowDownUp, ArrowRightLeft, X } from 'lucide-react';
 import TypeFastShip from './delivery/TypeFastShip';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'
-import { fetchRouteVietMap, getNearShipper } from '@/utils/api';
+import { apiNearStore, fetchRouteVietMap, getNearShipper } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 type Opencard = {
   bottomCard: boolean;
   fastShip: boolean;
@@ -16,6 +15,8 @@ type Location = {
   lng: number | null;
 }
 export default function DeliveryMap() {
+
+  const router = useRouter();
 
   //animation ship route
   const animationFrameShipId = useRef<number | null>(null);
@@ -39,6 +40,7 @@ export default function DeliveryMap() {
   const [nearShipper, setNearShipper] = useState<Location | null>(null);
   const [nearListShipper, setNearListShipper] = useState<Location[]>([]);
   const shipperMarkersRef = useRef<any[]>([]);
+  const storeMarkerRef = useRef<any[]>([]);
   // Khởi tạo bản đồ NGAY từ đầu
   useEffect(() => {
     const vietmapgl = (window as any).vietmapgl
@@ -52,18 +54,8 @@ export default function DeliveryMap() {
       center: defaultCenter,
       zoom: 15,
     })
-
-
     markerRef.current = new vietmapgl.Marker().setLngLat(defaultCenter).addTo(mapRef.current)
   }, [])
-  useEffect(() => {
-    const checkStyleResponse = async () => {
-      const res = await axios(process.env.NEXT_PUBLIC_API_URL + `/api/vietmap/style`);
-      console.log(res);
-    };
-
-    checkStyleResponse();
-  }, []);
 
   // Theo dõi vị trí liên tục
   useEffect(() => {
@@ -139,13 +131,31 @@ export default function DeliveryMap() {
       .setLngLat([userLocation.lng, userLocation.lat])
       .addTo(mapRef.current);
 
-    // FlyTo lần đầu nếu chưa thực hiện
+    // FlyTo lần đầu nếu chưa thực hiện ham nay chi thuc hien lan dau tien load khi da co userlocation
     if (!hasFlownToUserRef.current) {
       mapRef.current.flyTo({
         center: [userLocation.lng, userLocation.lat],
         zoom: 15,
       });
       hasFlownToUserRef.current = true;
+
+      const fetchStoreNear = async () => {
+        if (!userLocation || !userLocation.lat || !userLocation.lng) return;
+        try {
+          const response = await apiNearStore(userLocation?.lat, userLocation?.lng, 0);
+          if (response && response.success) {
+            console.log(response)
+            const listStore: any[] = response.value.map((item: any) => {
+              return { ...item }
+            })
+            markStoreInMap(listStore);
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      fetchStoreNear();
+
     }
   }, [userLocation]);
   useEffect(() => {
@@ -921,6 +931,79 @@ export default function DeliveryMap() {
       shipperMarkersRef.current.push(shipperMarker); // Lưu trữ marker mới
     });
   }, [nearListShipper]);
+
+
+  const markStoreInMap = (listStore: any[]) => {
+    const vietmapgl = (window as any).vietmapgl;
+    // console.log("get near list ship", nearListShipper)
+    // Xóa các marker shipper cũ
+    storeMarkerRef.current.forEach((marker) => marker.remove());
+    storeMarkerRef.current = []; // Reset mảng lưu trữ marker
+    // Tạo marker cho từng shipper trong danh sách
+    listStore.forEach((storeLocation) => {
+      // Tạo phần tử HTML tùy chỉnh cho marker
+      const storeMarkerElement = document.createElement('div');
+      storeMarkerElement.style.width = '65px'; // Kích thước marker
+      storeMarkerElement.style.height = '65px';
+      storeMarkerElement.style.backgroundImage = 'url(/images/map/vitricuahang.png)'; // Icon ghim bản đồ
+      storeMarkerElement.style.backgroundSize = 'contain';
+      storeMarkerElement.style.backgroundRepeat = 'no-repeat';
+      storeMarkerElement.style.backgroundPosition = 'center';
+      storeMarkerElement.style.cursor = 'pointer';
+      storeMarkerElement.style.display = 'flex'; // Để căn giữa avatar
+      storeMarkerElement.style.alignItems = 'center';
+      storeMarkerElement.style.justifyContent = 'center';
+
+      // Tạo phần tử ảnh avatar
+      const avatarElement = document.createElement('img');
+      avatarElement.src = '/images/map/store1.png';
+      avatarElement.style.width = '40px'; // Kích thước avatar
+      avatarElement.style.height = '40px';
+      avatarElement.style.borderRadius = '50%'; // Hình tròn cho avatar
+      avatarElement.style.objectFit = 'cover'; // Đảm bảo ảnh không méo
+      avatarElement.style.position = 'absolute';
+      avatarElement.style.top = '5px'; // Đẩy avatar lên trên để nằm trong phần hình tròn của ghim
+      avatarElement.style.left = '50%';
+      avatarElement.style.transform = 'translateX(-50%)'; // Căn giữa theo chiều ngang
+      storeMarkerElement.appendChild(avatarElement);
+
+
+      const storeMarker = new vietmapgl.Marker({
+        element: storeMarkerElement,
+        anchor: 'center',
+      })
+        .setLngLat([storeLocation.lng, storeLocation.lat])
+        .addTo(mapRef.current);
+
+      // Tạo popup
+      const popup = new vietmapgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 25,
+      }).setHTML(
+        `<div class="bg-white text-orange-500 font-bold text-center max-w-[200px]">${storeLocation.storeName || 'Không có tên'
+        }</div>`
+      );
+      // Sự kiện hover để hiển thị popup
+      storeMarkerElement.addEventListener('mouseenter', () => {
+        // Gắn popup vào marker và hiển thị
+        popup.setLngLat([storeLocation.lng, storeLocation.lat]).addTo(mapRef.current);
+      });
+
+      // Sự kiện rời chuột để ẩn popup
+      storeMarkerElement.addEventListener('mouseleave', () => {
+        popup.remove();
+      });
+
+      // Sự kiện click để chuyển hướng đến URL
+      storeMarkerElement.addEventListener('click', () => {
+        const storeUrl = `/store/${storeLocation.id}`;
+        window.open(storeUrl, '_blank');
+      });
+      storeMarkerRef.current.push(storeMarker); // Lưu trữ marker mới
+    });
+  }
+
 
   /// lay vi tri near shipper ban dau so voi userlocation
   return (
