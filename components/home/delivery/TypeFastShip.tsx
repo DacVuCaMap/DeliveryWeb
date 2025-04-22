@@ -74,9 +74,9 @@ export default function TypeFastShip(props: Props) {
   // Debounce input values (1.5 seconds delay)
   const debouncedInput1 = useDebounce(inputInfo.input1?.address || "", 500);
   const debouncedInput2 = useDebounce(inputInfo.input2?.address || "", 500);
+  //ship price
+  const [shipPrice, setShipPrice] = useState<number>(0);
 
-  // API key (replace with your actual Vietmap API key)
-  const API_KEY = process.env.NEXT_PUBLIC_VIETMAP_TOKEN;
   // Fetch suggestions from Vietmap API
   useEffect(() => {
     const fetchSuggestions = async (query: string) => {
@@ -174,7 +174,7 @@ export default function TypeFastShip(props: Props) {
     }
   }
 
-  const handleFindShipper = async () => {
+  const handleFindShipper = async (price: number) => {
     if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) return;
     const response = await getNearShipper(props.fastShip[0].lat, props.fastShip[0].lng, 0);
     console.log(response);
@@ -195,6 +195,7 @@ export default function TypeFastShip(props: Props) {
       setSearchShipCard(true);
       setListNearShipper(newList);
       setIsOpen(!isOpen);
+      setShipPrice(price)
       animate(y, isOpen ? 200 : 200, { // Sử dụng animate để tạo animation
         duration: 0.3,
         ease: 'easeInOut',
@@ -205,7 +206,7 @@ export default function TypeFastShip(props: Props) {
   const setMarkerShip = (item: NearShipper) => {
     props.setNearShipper({ lat: item.latitude, lng: item.longitude });
   }
-  const openDetailCard = ()=>{
+  const openDetailCard = () => {
     if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) {
       toast.error("Nhập địa chỉ giao và nhận")
       return
@@ -344,6 +345,17 @@ export default function TypeFastShip(props: Props) {
           </button>
           <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
           <p className="text-gray-500">Danh sách shipper</p>
+          <div className="flex flex-row gap-2 bg-gray-600 w-fit px-4 py-2 ">
+            <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
+              <span className="text-white">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
+            </div>
+            <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
+              <span className="text-white">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
+            </div>
+            <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
+              <span className="text-white">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
+            </div>
+          </div>
           <div className="mt-4 flex flex-col space-y-4">
             {listNearShipper.map((item: NearShipper) => (
               <div onClick={e => setMarkerShip(item)} key={item.shipperId} className="flex cursor-pointer items-center space-x-4 p-3 border-b border-gray-300 hover:shadow-md">

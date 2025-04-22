@@ -23,7 +23,7 @@ type Props = {
     handleInput: (e: React.ChangeEvent<HTMLInputElement>, key: keyof InputInfo, key2?: string) => void;
     inputInfo: InputInfo;
     distance: number;
-    handleFindShipper: () => Promise<void>;
+    handleFindShipper: (price:number) => Promise<void>;
 }
 
 export default function DetailShip(props: Props) {
@@ -43,7 +43,7 @@ export default function DetailShip(props: Props) {
     const itemTypes = ["Thực phẩm", "Quần áo", "Khác", "Tài liệu", "Dễ vỡ"];
 
     const onSubmit = async () => {
-        await props.handleFindShipper();
+        await props.handleFindShipper(calculateShippingFee(props.distance / 1000, weight));
         props.setDetailCard(false);
     }
     const calculateShippingFee = (km: number, weightLabel: string): number => {
@@ -125,7 +125,7 @@ export default function DetailShip(props: Props) {
                     </div>
                     <div>
                         <Label>Phí giao hàng</Label>
-                        <span>
+                        <span className="font-bold">
                             {weight
                                 ? `${calculateShippingFee(props.distance / 1000, weight).toLocaleString("vi-VN")} VND`
                                 : "Vui lòng chọn khối lượng"}
