@@ -4,7 +4,7 @@ import ProfileHeader from "./ProfileHeader";
 import LiveStreamSection from "./LiveStreamSection";
 
 type Props = {
-    params: { slug: string }; // Lấy slug từ URL trong App Router
+    slug: string // Lấy slug từ URL trong App Router
 };
 
 // Dữ liệu mẫu - Thay thế bằng dữ liệu thực tế từ API hoặc nguồn khác
