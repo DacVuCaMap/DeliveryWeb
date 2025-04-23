@@ -12,7 +12,7 @@ type Props = {
 // Dữ liệu mẫu - Thay thế bằng dữ liệu thực tế từ API hoặc nguồn khác
 const storeData = {
     slug: "rosemad999",
-    coverImageUrl: "/testImg/headstore.png", // Thay thế bằng URL ảnh bìa thật
+    coverImageUrl: "/testImg/anhbia1.png", // Thay thế bằng URL ảnh bìa thật
     profileImageUrl: "/images/salexedap.png", // Thay thế bằng URL ảnh đại diện thật
     name: "Shop xe đạp",
     handle: "@xedapvip",
