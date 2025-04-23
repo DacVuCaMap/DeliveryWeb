@@ -14,6 +14,13 @@ type Location = {
   lat: number | null;
   lng: number | null;
 }
+type Shipper = {
+  lat: number,
+  lng: number,
+  firstName: string,
+  lastName: string,
+  email:string
+}
 export default function DeliveryMap() {
 
   const router = useRouter();
@@ -38,7 +45,7 @@ export default function DeliveryMap() {
   const fastShipMarkerRef = useRef<any>([]);
   const [distance, setDistance] = useState<number>(0);
   const [nearShipper, setNearShipper] = useState<Location | null>(null);
-  const [nearListShipper, setNearListShipper] = useState<Location[]>([]);
+  const [nearListShipper, setNearListShipper] = useState<Shipper[]>([]);
   const shipperMarkersRef = useRef<any[]>([]);
   const storeMarkerRef = useRef<any[]>([]);
   // Khởi tạo bản đồ NGAY từ đầu
@@ -166,10 +173,13 @@ export default function DeliveryMap() {
       if (userLocation.lat && userLocation.lng) {
         const response = await getNearShipper(userLocation.lat, userLocation.lng, 0);
         if (response && response.value && response.success && Array.isArray(response.value)) {
-          const newList: Location[] = response.value.map((item: any) => {
+          const newList: Shipper[] = response.value.map((item: any) => {
             return {
               lat: item.latitude,
               lng: item.longitude,
+              firstName: item.firstName,
+              lastName: item.lastName,
+              email:item.email
             };
           })
           setNearListShipper(newList);
@@ -927,6 +937,27 @@ export default function DeliveryMap() {
       })
         .setLngLat([shipperLocation.lng, shipperLocation.lat])
         .addTo(mapRef.current);
+
+
+      // Tạo popup
+      const popup = new vietmapgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 25,
+      }).setHTML(
+        `<div class="bg-white text-orange-500 font-bold text-center max-w-[200px]">${shipperLocation.email || 'Không có tên'
+        }</div>`
+      );
+      // Sự kiện hover để hiển thị popup
+      shipperMarkerElement.addEventListener('mouseenter', () => {
+        // Gắn popup vào marker và hiển thị
+        popup.setLngLat([shipperLocation.lng, shipperLocation.lat]).addTo(mapRef.current);
+      });
+
+      // Sự kiện rời chuột để ẩn popup
+      shipperMarkerElement.addEventListener('mouseleave', () => {
+        popup.remove();
+      });
 
       shipperMarkersRef.current.push(shipperMarker); // Lưu trữ marker mới
     });
