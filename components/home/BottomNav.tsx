@@ -26,8 +26,8 @@ export function BottomNav() {
                 {/* <div className="absolute right-0 top-0 w-full h-full rounded-xl bg-pink-500 translate-x-1 z-0" /> */}
 
                 {/* Main white button */}
-                <div className="absolute inset-0 bg-white rounded-xl flex items-center justify-center z-10 hover:bg-orange-500 hover:text-white">
-                    <Plus size={20} strokeWidth={3} className="text-black" />
+                <div className="absolute inset-0 bg-orange-500 text-white rounded-xl flex items-center justify-center z-10 hover:bg-orange-600 ">
+                    <Plus size={20} strokeWidth={3}  />
                 </div>
             </button>
 
