@@ -2,7 +2,7 @@
 import React from "react";
 import ProfileHeader from "./ProfileHeader";
 import LiveStreamSection from "./LiveStreamSection";
-
+import './StoreView.css'
 type Props = {
     slug: string // Lấy slug từ URL trong App Router
 };
@@ -11,9 +11,9 @@ type Props = {
 const storeData = {
     slug: "rosemad999",
     coverImageUrl: "/testImg/headstore.png", // Thay thế bằng URL ảnh bìa thật
-    profileImageUrl: "/snapgoimg", // Thay thế bằng URL ảnh đại diện thật
-    name: "Rose Madison",
-    handle: "@rosemad999",
+    profileImageUrl: "/images/salexedap.png", // Thay thế bằng URL ảnh đại diện thật
+    name: "Shop xe đạp",
+    handle: "@xedapvip",
     bio: "Gamers who are very active in the world of war with extraordinary intelligence are unmatched.",
     stats: {
         posts: 736,
@@ -21,9 +21,9 @@ const storeData = {
         following: "34K",
     },
     liveStreams: [
-        { id: 1, title: "War Against Fore...", viewers: "5.8K", thumbnailUrl: "/placeholder-stream1.jpg" },
-        { id: 2, title: "Overwatch Leag...", viewers: "2.8K", thumbnailUrl: "/placeholder-stream2.jpg" },
-        { id: 3, title: "Dies B...", viewers: "2.1K", thumbnailUrl: "/placeholder-stream3.jpg" },
+        { id: 1, title: "Xe đạp bk1 ", viewers: "5.8K", thumbnailUrl: "/testImg/biketest.png" },
+        { id: 2, title: "Xe đạp mới nhập..", viewers: "2.8K", thumbnailUrl: "/testImg/biketest2.png" },
+        { id: 3, title: "Hàng trung quốc", viewers: "2.1K", thumbnailUrl: "/testImg/biketest3.png" },
         // Thêm các stream khác nếu cần
     ],
 };

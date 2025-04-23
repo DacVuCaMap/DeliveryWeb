@@ -55,6 +55,7 @@
     "@types/react-dom": "^19",
     "@types/react-map-gl": "^6.1.7",
     "@types/sockjs-client": "^1.5.4",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

@@ -7,13 +7,12 @@ import React from 'react'
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className='flex flex-col '>
-            <div className='h-screen flex flex-col overflow-hidden'>
+            <div className='h-screen flex flex-col'>
                 {children}
                 <div className='h-10 w-full bg-red-200'>
 
                 </div>
             </div>
-
             <BottomNav />
         </div>
     )

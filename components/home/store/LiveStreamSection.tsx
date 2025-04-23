@@ -1,5 +1,6 @@
 // app/store/[slug]/components/LiveStreamSection.tsx
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 // Định nghĩa kiểu dữ liệu cho stream
@@ -29,31 +30,21 @@ export default function LiveStreamSection({ streams }: Props) {
             {/* Section Header */}
             <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">Live Stream</h2>
-                <a href="#" className="text-sm text-gray-400 hover:text-gray-200">
-                    See alls &gt;
-                </a>
+                <Link href="#" className="text-sm text-gray-400 hover:text-gray-200">
+                    See all &gt;
+                </Link>
             </div>
 
             {/* Stream List (Scrollable Horizontally) */}
-            <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
-                {/* --- Scrollbar Hide (Cài đặt Tailwind plugin nếu cần) ---
-                    Để ẩn thanh cuộn một cách nhất quán, bạn có thể cần plugin:
-                    1. npm install -D tailwind-scrollbar-hide
-                    2. Thêm vào `tailwind.config.js`:
-                       plugins: [
-                         require('tailwind-scrollbar-hide')
-                       ]
-                    Nếu không muốn cài plugin, trình duyệt vẫn hiển thị thanh cuộn mặc định.
-                 */}
+            <div className="flex space-x-4 overflow-x-auto pb-2 custom-scrollbar">
                 {streams.map((stream) => (
-                    <div key={stream.id} className="flex-shrink-0 w-40"> {/* Đặt chiều rộng cố định cho card */}
-                        <div className="relative mb-1.5">
+                    <div key={stream.id} className="flex-shrink-0 w-64">
+                        <div className="relative mb-1.5 h-40 w-full bg-black">
                             <Image
                                 src={stream.thumbnailUrl}
                                 alt={stream.title}
-                                width={160} // Tương ứng với w-40
-                                height={90} // Tỷ lệ 16:9
-                                className="rounded-md object-cover"
+                                fill // dùng fill thay vì width/height cố định
+                                className="object-contain object-center rounded-md"
                             />
                             {/* Viewer Count Overlay */}
                             <div className="absolute bottom-1.5 left-1.5 bg-black bg-opacity-60 px-1.5 py-0.5 rounded text-xs flex items-center">
@@ -63,9 +54,10 @@ export default function LiveStreamSection({ streams }: Props) {
                         </div>
                         <h3 className="text-sm font-medium truncate">{stream.title}</h3>
                     </div>
+
                 ))}
-                 {/* Thêm một phần tử trống để tạo khoảng trống cuối cùng nếu cần */}
-                 <div className="flex-shrink-0 w-1"></div>
+                {/* Thêm một phần tử trống để tạo khoảng trống cuối cùng nếu cần */}
+                <div className="flex-shrink-0 w-1"></div>
             </div>
         </div>
     );

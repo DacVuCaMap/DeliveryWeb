@@ -76,9 +76,9 @@ export default function ProfileHeader({ data }: Props) {
                     <Image
                         src={data.profileImageUrl}
                         alt={data.name}
-                        width={96} // Kích thước lớn hơn một chút
-                        height={96}
-                        className="rounded-full border-4 border-black bg-black" // Thêm border để tách biệt
+                        width={500} // Kích thước lớn hơn một chút
+                        height={500}
+                        className="rounded-full w-25 h-25 border-4 border-black bg-black" // Thêm border để tách biệt
                     />
                 </div>
 
@@ -98,7 +98,7 @@ export default function ProfileHeader({ data }: Props) {
                 <div className="flex space-x-6 mt-4">
                     <div>
                         <span className="font-bold">{data.stats.posts}</span>
-                        <span className="text-gray-400 ml-1 text-sm">Posts</span>
+                        <span className="text-gray-400 ml-1 text-sm">Video</span>
                     </div>
                     <div>
                         <span className="font-bold">{data.stats.followers}</span>
@@ -112,10 +112,10 @@ export default function ProfileHeader({ data }: Props) {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3 mt-5">
-                    <button className="flex-1 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                    <button className="flex-1 flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition duration-200">
                        <PlusIcon /> Follow
                     </button>
-                    <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 rounded-lg transition duration-200">
+                    <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 transition duration-200">
                         Message
                     </button>
                 </div>
