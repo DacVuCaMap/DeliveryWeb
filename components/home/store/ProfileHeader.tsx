@@ -2,8 +2,9 @@
 "use client"; // Cần thiết nếu có tương tác phía client (như nút Follow/Message)
 
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Định nghĩa kiểu dữ liệu cho props
 type ProfileData = {
@@ -21,6 +22,7 @@ type ProfileData = {
 
 type Props = {
     data: ProfileData;
+    scrolled:boolean
 };
 
 // SVG Icons (Ví dụ đơn giản, nên dùng thư viện icon)
@@ -36,17 +38,12 @@ const MoreIcon = () => (
     </svg>
 );
 
-const PlusIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-    </svg>
-);
 
 
-export default function ProfileHeader({ data }: Props) {
+export default function ProfileHeader({ data,scrolled }: Props) {
 
     return (
-        <div className="bg-none pb-4 border-b border-b-gray-600">
+        <div className="bg-none pb-4">
             {/* Header Icons (Positioned over cover image) */}
             <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 pt-10 z-10">
                 {/* Giả định có thanh status bar iOS, nên thêm padding top */}
@@ -61,7 +58,7 @@ export default function ProfileHeader({ data }: Props) {
             {/* Profile Info Container */}
             <div className="relative px-4 pb-4 z-0">
                 {/* Profile Picture (Overlapping) */}
-                <div className="absolute -top-12 left-4">
+                <div className={`absolute -top-12 left-0 flex flex-row justify-between items-center w-full pr-4`}>
                     <Image
                         src={data.profileImageUrl}
                         alt={data.name}
@@ -69,6 +66,28 @@ export default function ProfileHeader({ data }: Props) {
                         height={500}
                         className="rounded-full w-25 h-25 border-4 border-black bg-black" // Thêm border để tách biệt
                     />
+                    <div className="flex flex-row gap-2">
+                        <AnimatePresence>
+                            {scrolled && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="flex space-x-3 mt-5">
+                                        <button className=" flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 transition duration-200">
+                                            + Follow
+                                        </button>
+                                        <button className=" bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-6 transition duration-200">
+                                            Message
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
 
                 {/* Spacer to push content below the profile picture */}
@@ -99,15 +118,26 @@ export default function ProfileHeader({ data }: Props) {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-3 mt-5">
-                    <button className="flex-1 flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition duration-200">
-                        <PlusIcon /> Follow
-                    </button>
-                    <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 transition duration-200">
-                        Message
-                    </button>
-                </div>
+                <AnimatePresence>
+                    {!scrolled && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="flex space-x-3 mt-5">
+                                <button className="flex-1 flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition duration-200">
+                                    + Follow
+                                </button>
+                                <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 transition duration-200">
+                                    Message
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ type Stream = {
     title: string;
     viewers: string;
     thumbnailUrl: string;
+    price:number;
 };
 
 type Props = {
@@ -26,39 +27,36 @@ const EyeIcon = () => (
 
 export default function LiveStreamSection({ streams }: Props) {
     return (
-        <div className="px-4 py-5 bg-none border-t-gray-600">
-            {/* Section Header */}
-            <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-semibold">Videos</h2>
-                <Link href="#" className="text-sm text-gray-400 hover:text-gray-200">
-                    See all &gt;
-                </Link>
-            </div>
-
-            {/* Stream List (Scrollable Horizontally) */}
-            <div className="flex space-x-4 overflow-x-auto pb-2 custom-scrollbar">
-                {streams.map((stream) => (
-                    <Link href={"/videos/1"} key={stream.id} className="flex-shrink-0 w-64">
-                        <div className="relative aspect-[16/9] w-full bg-black overflow-hidden">
-                            <Image
-                                src={stream.thumbnailUrl}
-                                alt={stream.title}
-                                fill
-                                className="object-cover"
-                            />
-                            {/* Viewer Count Overlay */}
-                            <div className="absolute bottom-1.5 left-1.5 bg-black bg-opacity-60 px-1.5 py-0.5 rounded text-xs flex items-center">
-                                <EyeIcon />
-                                <span>{stream.viewers}</span>
+        <div className="px-4 py-5 pb-20 mt-4">
+            <div>
+                {/* Stream List (Scrollable Horizontally) */}
+                <div className="md:flex md:space-x-4 md:overflow-x-auto md:pb-2 grid grid-cols-3 gap-4 custom-scrollbar">
+                    {streams.map((stream) => (
+                        <Link href={`/videos/${stream.id}`} key={stream.id} className="flex-shrink-0 w-42"> {/* w-36 tương ứng 144px */}
+                            <div className="relative aspect-[9/16] w-full bg-black overflow-hidden rounded-md z-0">
+                                <Image
+                                    src={stream.thumbnailUrl}
+                                    alt={stream.title}
+                                    fill
+                                    className="object-cover"
+                                />
+                                {/* Viewer Count Overlay */}
+                                <div className="absolute bottom-1.5 left-1.5 bg-black bg-opacity-60 px-1.5 py-0.5 rounded text-xs flex items-center text-white">
+                                    <EyeIcon />
+                                    <span className="ml-1">{stream.viewers}</span>
+                                </div>
                             </div>
-                        </div>
-                        <h3 className="text-sm font-medium truncate">{stream.title}</h3>
-                    </Link>
-
-                ))}
-                {/* Thêm một phần tử trống để tạo khoảng trống cuối cùng nếu cần */}
-                <div className="flex-shrink-0 w-1"></div>
+                            <h3 className="text-sm font-medium truncate mt-1">{stream.title}</h3>
+                            <div className="flex flex-row text-blue-400 text-xs gap-1">
+                                <span className="text-gray-400">Giá:</span>
+                                <span>{(stream.price).toLocaleString("vi-VN")} vnd</span>
+                            </div>
+                        </Link>
+                    ))}
+                    <div className="flex-shrink-0 w-1"></div>
+                </div>
             </div>
+        
         </div>
     );
 }

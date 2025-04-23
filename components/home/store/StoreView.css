@@ -22,5 +22,5 @@
 
 .bg-content {
     background: #ffffff;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 16%, rgba(16, 24, 40, 0.47) 39%, rgba(16, 24, 40, 1) 95%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0px, rgba(16, 24, 40, 0.47) 200px, rgba(16, 24, 40, 0.94) 400px);
 }
