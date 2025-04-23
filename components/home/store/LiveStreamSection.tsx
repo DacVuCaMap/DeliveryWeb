@@ -30,7 +30,7 @@ export default function LiveStreamSection({ streams }: Props) {
             <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">Live Stream</h2>
                 <a href="#" className="text-sm text-gray-400 hover:text-gray-200">
-                    See all &gt;
+                    See alls &gt;
                 </a>
             </div>
 
