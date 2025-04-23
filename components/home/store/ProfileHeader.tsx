@@ -1,8 +1,9 @@
 // app/store/[slug]/components/ProfileHeader.tsx
 "use client"; // Cần thiết nếu có tương tác phía client (như nút Follow/Message)
 
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 // Định nghĩa kiểu dữ liệu cho props
 type ProfileData = {
@@ -37,30 +38,18 @@ const MoreIcon = () => (
 
 const PlusIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
-         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
     </svg>
 );
 
 
 export default function ProfileHeader({ data }: Props) {
-    return (
-        <div className="relative">
-            {/* Cover Image */}
-            <div className="relative h-48 md:h-64 w-full">
-                <Image
-                    src={data.coverImageUrl}
-                    alt="Cover Photo"
-                    layout="fill"
-                    objectFit="cover"
-                    className="opacity-50" // Điều chỉnh độ mờ nếu cần
-                />
-                {/* Lớp phủ gradient hoặc màu tối để text dễ đọc hơn */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
-            </div>
 
+    return (
+        <div className="bg-none pb-4 border-b border-b-gray-600">
             {/* Header Icons (Positioned over cover image) */}
-            <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 pt-10 md:pt-4 z-10">
-                 {/* Giả định có thanh status bar iOS, nên thêm padding top */}
+            <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 pt-10 z-10">
+                {/* Giả định có thanh status bar iOS, nên thêm padding top */}
                 <button className="text-white">
                     <BackIcon />
                 </button>
@@ -113,7 +102,7 @@ export default function ProfileHeader({ data }: Props) {
                 {/* Action Buttons */}
                 <div className="flex space-x-3 mt-5">
                     <button className="flex-1 flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition duration-200">
-                       <PlusIcon /> Follow
+                        <PlusIcon /> Follow
                     </button>
                     <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 transition duration-200">
                         Message

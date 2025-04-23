@@ -59,7 +59,7 @@ export const getNearShipper = async (lat:number,lng:number,status:number) =>{
         const response = await api.get(`/api/location/shipper-locations/near?lat=${lat}&lng=${lng}&status=${status}`);
         return response.data;
     } catch (error:any) {
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi get near shipper:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }
@@ -70,19 +70,21 @@ export const updateShipperLocation = async (postData:any) =>{
         return response.data;
     } catch (error:any) {
         toast.error("Lỗi server")
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi update shipper location:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }
 
 /// vietmap from be
 export const fetchRouteVietMap=async (start:string,end:string)=>{
+    console.log(`/api/vietmap/route?start=${start}&end=${end}`)
     try {
         const response = await api.get(`/api/vietmap/route?start=${start}&end=${end}`)
+        
         return response;
     } catch (error:any) {
         toast.error("Lỗi server")
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi lỗi khi route:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }
@@ -93,7 +95,7 @@ export const fetchPlaceVietMap=async (refId:string)=>{
         return response;
     } catch (error:any) {
         toast.error("Lỗi server")
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi place:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }
@@ -103,7 +105,7 @@ export const fetchAutoCompleteVietMap=async (text:string,lat?:number,lng?:number
         return response;
     } catch (error:any) {
         toast.error("Lỗi server")
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi autocomplete:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }
@@ -114,7 +116,7 @@ export const apiNearStore = async (lat:number,lng:number,status:number) =>{
         return response.data;
     } catch (error:any) {
         toast.error("Lỗi server")
-        console.error("Lỗi khi đăng nhập:", error);
+        console.error("Lỗi khi near store:", error);
         throw error.response?.data || "Lỗi không xác định";
     }
 }

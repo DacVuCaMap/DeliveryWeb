@@ -1,15 +1,26 @@
 .custom-scrollbar {
-    scrollbar-color: #888 transparent; /* Firefox: thumb color, then track color */
-  }
-  
-  /* Webkit-based browsers */
-  .custom-scrollbar::-webkit-scrollbar {
-    height: 6px; /* or 8px nếu muốn to hơn */
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent; /* hoặc dùng màu tối hơn nếu muốn thấy */
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #555; /* màu của nút cuộn */
+    scrollbar-color: #888 transparent;
+    /* Firefox: thumb color, then track color */
+}
+
+/* Webkit-based browsers */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 6px;
+    /* or 8px nếu muốn to hơn */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    /* hoặc dùng màu tối hơn nếu muốn thấy */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #555;
+    /* màu của nút cuộn */
     border-radius: 4px;
-  }
+}
+
+.bg-content {
+    background: #ffffff;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 16%, rgba(16, 24, 40, 0.47) 39%, rgba(16, 24, 40, 1) 95%);
+}

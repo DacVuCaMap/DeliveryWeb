@@ -1,8 +1,10 @@
-// app/store/[slug]/page.tsx
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import ProfileHeader from "./ProfileHeader";
 import LiveStreamSection from "./LiveStreamSection";
 import './StoreView.css'
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 type Props = {
     slug: string // Lấy slug từ URL trong App Router
 };
@@ -32,24 +34,29 @@ const storeData = {
 export default function StoreViewPage(props: Props) {
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            {/* Component Header và Profile */}
-            <ProfileHeader data={storeData} />
+        <div className="min-h-screen text-white">
+            <div className="relative flex flex-col justify-end h-full pb-10">
+                {/* Background Cover Image */}
+                <div className="fixed top-0 left-0 w-full h-screen z-[-2] bg-black" />
 
-            {/* Component Phần Live Stream */}
-            <LiveStreamSection streams={storeData.liveStreams} />
+                <div className="fixed top-0 left-0 w-full h-screen z-[-1]">
+                    <Image
+                        src={storeData.coverImageUrl}
+                        alt="Cover Photo"
+                        fill
+                        className="object-cover opacity-50"
+                    />
+                </div>
 
-            {/* Các phần khác của trang (nếu có) */}
-            {/* Ví dụ: Phần bài đăng */}
-            {/* <PostsSection posts={storeData.postsData} /> */}
+
+                <div className="mt-[300px] bg-content">
+
+                    <ProfileHeader data={storeData} />
+                    <LiveStreamSection streams={storeData.liveStreams} />
+                </div>
+
+            </div>
+
         </div>
     );
 }
-
-// Hàm fetch dữ liệu mẫu (thay thế bằng logic fetch thực tế)
-// async function fetchDataForStore(slug: string) {
-//     // const response = await fetch(`/api/store/${slug}`);
-//     // const data = await response.json();
-//     // return data;
-//     return storeData; // Trả về dữ liệu mẫu
-// }

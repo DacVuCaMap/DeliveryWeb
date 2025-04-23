@@ -26,7 +26,7 @@ const EyeIcon = () => (
 
 export default function LiveStreamSection({ streams }: Props) {
     return (
-        <div className="px-4 py-5">
+        <div className="px-4 py-5 bg-none border-t-gray-600">
             {/* Section Header */}
             <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">Videos</h2>
@@ -38,13 +38,13 @@ export default function LiveStreamSection({ streams }: Props) {
             {/* Stream List (Scrollable Horizontally) */}
             <div className="flex space-x-4 overflow-x-auto pb-2 custom-scrollbar">
                 {streams.map((stream) => (
-                    <div key={stream.id} className="flex-shrink-0 w-64">
-                        <div className="relative mb-1.5 h-40 w-full bg-black">
+                    <Link href={"/videos/1"} key={stream.id} className="flex-shrink-0 w-64">
+                        <div className="relative aspect-[16/9] w-full bg-black overflow-hidden">
                             <Image
                                 src={stream.thumbnailUrl}
                                 alt={stream.title}
-                                fill // dùng fill thay vì width/height cố định
-                                className="object-contain object-center rounded-md"
+                                fill
+                                className="object-cover"
                             />
                             {/* Viewer Count Overlay */}
                             <div className="absolute bottom-1.5 left-1.5 bg-black bg-opacity-60 px-1.5 py-0.5 rounded text-xs flex items-center">
@@ -53,7 +53,7 @@ export default function LiveStreamSection({ streams }: Props) {
                             </div>
                         </div>
                         <h3 className="text-sm font-medium truncate">{stream.title}</h3>
-                    </div>
+                    </Link>
 
                 ))}
                 {/* Thêm một phần tử trống để tạo khoảng trống cuối cùng nếu cần */}
