@@ -29,7 +29,7 @@ export default function LiveStreamSection({ streams }: Props) {
         <div className="px-4 py-5">
             {/* Section Header */}
             <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-semibold">Live Stream</h2>
+                <h2 className="text-xl font-semibold">Videos</h2>
                 <Link href="#" className="text-sm text-gray-400 hover:text-gray-200">
                     See all &gt;
                 </Link>
