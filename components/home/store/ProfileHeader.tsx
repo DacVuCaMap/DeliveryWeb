@@ -58,7 +58,7 @@ export default function ProfileHeader({ data, scrolled }: Props) {
                                         transition={{ duration: 0.3 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="flex space-x-3 mt-5">
+                                        <div className="flex space-x-3 mt-5 text-xs">
                                             <button className=" flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 transition duration-200">
                                                 + Follow
                                             </button>
@@ -71,7 +71,7 @@ export default function ProfileHeader({ data, scrolled }: Props) {
                             </AnimatePresence>
                         </div>
                     )}
-                    {data.role && <Badge className="py-2 px-4">{data.role}</Badge>}
+
                 </div>
 
                 {/* Spacer to push content below the profile picture */}
@@ -83,7 +83,7 @@ export default function ProfileHeader({ data, scrolled }: Props) {
                     <p className="text-sm text-gray-400">{data.handle}</p>
                     <p className="text-sm text-gray-400">{data.email}</p>
                 </div>
-
+                {(data.role==="Shipper" || data.role==="Đối tác bán hàng")&& <div className="">{data.role}</div>}
                 {/* Bio */}
                 <p className="mt-3 text-sm text-gray-300">{data.bio}</p>
 

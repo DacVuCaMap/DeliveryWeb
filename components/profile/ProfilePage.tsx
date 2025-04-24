@@ -72,7 +72,7 @@ export default function ProfilePage() {
   ];
   return (
     <div className="min-h-screen text-white">
-      <div className="relative flex flex-col  h-full">
+      <div className="relative flex flex-col h-full min-h-screen">
         {/* Background Cover Image */}
         <div className="fixed top-0 left-0 w-full h-screen z-[-2] bg-black" />
 
@@ -97,7 +97,7 @@ export default function ProfilePage() {
           </div>
         </div>
         <div
-          className="mt-[300px]"
+          className="mt-[180px] flex-1"
           style={{ background: dynamicBg }}>
 
           <ProfileHeader scrolled={scrolled} data={profileData} />

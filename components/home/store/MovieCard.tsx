@@ -15,7 +15,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ item }) => {
   return (
-    <div className="flex-shrink-0 w-36 sm:w-40 space-y-2">
+    <div className="flex-shrink-0 w-32 sm:w-40 space-y-2">
       <div className="relative aspect-[2/3] rounded-lg overflow-hidden group">
         <Image
           src={item.imageUrl}

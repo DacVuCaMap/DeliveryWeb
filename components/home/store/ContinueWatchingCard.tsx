@@ -13,8 +13,8 @@ interface ContinueWatchingCardProps {
 
 const ContinueWatchingCard: React.FC<ContinueWatchingCardProps> = ({ item }) => {
   return (
-    <div className="flex-shrink-0 w-60 sm:w-72 space-y-2 group">
-        <div className="relative aspect-video rounded-lg overflow-hidden">
+    <div className="flex-shrink-0 w-32 sm:w-40 space-y-2">
+        <div className="relative aspect-[2/3] rounded-lg overflow-hidden">
              {/* You might want a progress bar overlay here */}
             <Image
                 src={item.imageUrl}

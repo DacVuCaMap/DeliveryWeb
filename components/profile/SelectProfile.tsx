@@ -31,7 +31,7 @@ export default function SelectProfile() {
         <div className="">
 
             {/* Đơn mua */}
-            <Card className="rounded-none bg-black/10 border-none text-white">
+            <Card className="rounded-none bg-black/10 border-none text-white p-2">
                 <CardContent>
                     <h3 className="font-medium mb-4">Đơn mua</h3>
                     <div className="grid grid-cols-4 gap-2 text-center text-xs ">
@@ -57,7 +57,7 @@ export default function SelectProfile() {
 
 
             {/* Đơn mua */}
-            <Card className="rounded-none bg-black/10 border-none text-white">
+            <Card className="rounded-none bg-black/10 border-none text-white p-2">
                 <CardContent>
                     <h3 className="font-medium mb-4">Quản lý chung</h3>
                     <div className="grid grid-cols-4 gap-2 text-center text-sm">
@@ -82,7 +82,7 @@ export default function SelectProfile() {
             </Card>
 
             {/* 15.4 Sale Giữa Tháng */}
-            <Card className="rounded-none bg-black/10 border-none text-white">
+            <Card className="rounded-none bg-black/10 border-none text-white p-2">
                 <CardContent className="p-4">
                     <h3 className="font-medium mb-2">Tiện ích</h3>
                     <div className="grid grid-cols-3 gap-4 text-center">
