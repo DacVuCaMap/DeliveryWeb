@@ -5,6 +5,7 @@ import LiveStreamSection from "./LiveStreamSection";
 import './StoreView.css'
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { ChevronLeft } from "lucide-react";
 type Props = {
     slug: string // Lấy slug từ URL trong App Router
 };
@@ -23,13 +24,13 @@ const storeData = {
         following: "34K",
     },
     liveStreams: [
-        { id: 1, title: "Xe đạp bk1 ",price:100000, viewers: "5.8K", thumbnailUrl: "/testImg/biketest.png" },
-        { id: 2, title: "Xe đạp mới nhập..",price:650000, viewers: "2.8K", thumbnailUrl: "/testImg/biketest2.png" },
-        { id: 3, title: "Hàng trung quốc",price:2000000, viewers: "2.1K", thumbnailUrl: "/testImg/biketest3.png" },
-        { id: 4, title: "Nội địa BK1",price:1200000, viewers: "5.1K", thumbnailUrl: "/testImg/biketest4.png" },
-        { id: 5, title: "Xe đạp hoàng kim 1",price:6020000, viewers: "6.1K", thumbnailUrl: "/testImg/testbike5.png" },
-        { id: 6, title: "Bike Siêu hot 2025",price:4400000, viewers: "1.2tr", thumbnailUrl: "/testImg/testbike6.png" },
-        { id: 7, title: "Nội địa BK4",price:900000, viewers: "2K", thumbnailUrl: "/testImg/testbike7.png" },
+        { id: 1, title: "Xe đạp bk1 ", price: 100000, viewers: "5.8K", thumbnailUrl: "/testImg/biketest.png" },
+        { id: 2, title: "Xe đạp mới nhập..", price: 650000, viewers: "2.8K", thumbnailUrl: "/testImg/biketest2.png" },
+        { id: 3, title: "Hàng trung quốc", price: 2000000, viewers: "2.1K", thumbnailUrl: "/testImg/biketest3.png" },
+        { id: 4, title: "Nội địa BK1", price: 1200000, viewers: "5.1K", thumbnailUrl: "/testImg/biketest4.png" },
+        { id: 5, title: "Xe đạp hoàng kim 1", price: 6020000, viewers: "6.1K", thumbnailUrl: "/testImg/testbike5.png" },
+        { id: 6, title: "Bike Siêu hot 2025", price: 4400000, viewers: "1.2tr", thumbnailUrl: "/testImg/testbike6.png" },
+        { id: 7, title: "Nội địa BK4", price: 900000, viewers: "2K", thumbnailUrl: "/testImg/testbike7.png" },
         // Thêm các stream khác nếu cần
     ],
 };
@@ -80,14 +81,20 @@ export default function StoreViewPage(props: Props) {
                     />
                 </div>
 
-
+                {/* Header Icons (Positioned over cover image) */}
+                <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-10">
+                    {/* Giả định có thanh status bar iOS, nên thêm padding top */}
+                    <button className="text-white">
+                        <ChevronLeft />
+                    </button>
+                </div>
                 <div
                     className="mt-[300px]"
                     style={{ background: dynamicBg }}>
 
                     <ProfileHeader scrolled={scrolled} data={storeData} />
                     {/* Tab selection bar */}
-                    <div className={`flex justify-around sticky top-0  ${scrollY>600 ? "bg-[rgba(16,24,40,0.93)]" : "bg-none" } z-10`}>
+                    <div className={`flex justify-around sticky top-0  ${scrollY > 600 ? "bg-[rgba(16,24,40,0.93)]" : "bg-none"} z-10`}>
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
