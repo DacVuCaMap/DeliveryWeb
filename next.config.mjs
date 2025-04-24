@@ -6,7 +6,12 @@ const nextConfig = {
       use: ["@svgr/webpack"],
     })
 
+
     return config
+  },
+  reactStrictMode: true, // Hoặc các cấu hình khác của bạn
+  images: {
+    domains: ['www.apple.com'], // Thêm tên miền vào đây
   },
 };
 

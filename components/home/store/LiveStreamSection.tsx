@@ -30,7 +30,7 @@ export default function LiveStreamSection({ streams }: Props) {
         <div className="px-4 py-5 pb-20 mt-4">
             <div>
                 {/* Stream List (Scrollable Horizontally) */}
-                <div className="md:flex md:space-x-4 md:overflow-x-auto md:pb-2 grid grid-cols-3 gap-4 custom-scrollbar">
+                <div className="md:flex md:space-x-4 md:overflow-x-auto md:pb-2 grid sm:grid-cols-3 grid-cols-2 gap-4 custom-scrollbar">
                     {streams.map((stream) => (
                         <Link href={`/videos/${stream.id}`} key={stream.id} className="flex-shrink-0 w-42"> {/* w-36 tương ứng 144px */}
                             <div className="relative aspect-[9/16] w-full bg-black overflow-hidden rounded-md z-0">

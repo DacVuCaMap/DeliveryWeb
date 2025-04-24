@@ -31,10 +31,10 @@ export function BottomNav() {
                 </div>
             </button>
 
-            <button className={`flex-1 flex flex-col items-center hover:bg-orange-500 hover:text-white py-1 ${rootPath === "/store" && "text-orange-400"}`} >
+            <Link href={"/store"} className={`flex-1 flex flex-col items-center hover:bg-orange-500 hover:text-white py-1 ${rootPath === "/store" && "text-orange-400"}`} >
                 <Store className="w-5 h-5" strokeWidth={3} />
                 <span className="text-xs">Cửa hàng</span>
-            </button>
+            </Link>
             <Link href={"/profile"} className={`flex-1 flex flex-col items-center hover:bg-orange-500 hover:text-white py-1 ${rootPath === "/profile" && "text-orange-400"}`} >
                 <UserRound className="w-5 h-5" strokeWidth={3} />
                 <span className="text-xs">Hồ sơ </span>
