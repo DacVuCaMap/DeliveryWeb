@@ -217,7 +217,7 @@ export default function TypeFastShip(props: Props) {
   return (
     <div className="absolute bottom-20 lg:left-4 lg:right-4 left-0 right-0 z-10">
       {!detailCard && (
-        <div className={`relative bg-white/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
+        <div className={`relative bg-black/60 backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 ${searchShipCard ? "hidden" : ""}`}>
           <button
             onClick={() => props.setOpenCard({ ...props.openCard, fastShip: false })}
             className="absolute top-2 right-4"
@@ -228,7 +228,7 @@ export default function TypeFastShip(props: Props) {
             <div className="flex flex-col w-full">
               <div className="flex flex-row gap-2">
                 <div className="w-2/3">
-                  <span className="text-gray-500 text-sm">Nhập địa chỉ nhận hàng</span>
+                  <span className="text-gray-300 text-sm">Nhập địa chỉ nhận hàng</span>
                   <input
                     value={inputInfo.input1?.address || ""}
                     onChange={(e) => handleInput(e, "input1")}
@@ -236,30 +236,30 @@ export default function TypeFastShip(props: Props) {
                     onBlur={() => setTimeout(() => setFocused1(false), 100)}
                     type="text"
                     placeholder="Chọn địa chỉ nhận hàng"
-                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                    className="bg-black rounded-sm px-6 py-2 outline-none w-full"
                   />
                 </div>
                 <div className="w-1/3">
-                  <span className="text-gray-500 text-xs">SDT người gửi</span>
+                  <span className="text-gray-300 text-xs">SDT người gửi</span>
                   <input
                     value={inputInfo.input1?.phoneNumber || ""}
                     onChange={(e) => handleInput(e, "input1", "phone")}
                     type="text"
                     placeholder="09..."
-                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                    className="bg-black rounded-sm px-6 py-2 outline-none w-full"
                   />
                 </div>
               </div>
               {isFocused1 && (
                 <div
-                  className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused1 ? "animate-slideDown" : "animate-slideUp"
+                  className={`bg-black rounded-md mt-2 w-full ${isFocused1 ? "animate-slideDown" : "animate-slideUp"
                     }`}
                 >
                   {suggestList.length > 0 ? (
                     suggestList.map((suggestion, index) => (
                       <div
                         key={index}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
+                        className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex flex-col border-b"
                         onMouseDown={() => handleSelectSuggestion(suggestion, "input1")}
                       >
                         <span className="font-bold">{suggestion.address}</span>
@@ -276,7 +276,7 @@ export default function TypeFastShip(props: Props) {
             <div className="flex flex-col w-full">
               <div className="flex flex-row gap-2">
                 <div className="w-2/3">
-                  <span className="text-gray-500 text-sm">Nhập địa chỉ giao hàng</span>
+                  <span className="text-gray-300 text-sm">Nhập địa chỉ giao hàng</span>
                   <input
                     value={inputInfo.input2?.address || ""}
                     onChange={(e) => handleInput(e, "input2")}
@@ -284,7 +284,7 @@ export default function TypeFastShip(props: Props) {
                     onBlur={() => setTimeout(() => setFocused2(false), 100)}
                     type="text"
                     placeholder="Chọn địa chỉ nhận hàng"
-                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                    className="bg-black rounded-sm px-6 py-2 outline-none w-full"
                   />
                 </div>
                 <div className="w-1/3">
@@ -294,20 +294,20 @@ export default function TypeFastShip(props: Props) {
                     onChange={(e) => handleInput(e, "input2", "phone")}
                     type="text"
                     placeholder="09..."
-                    className="bg-gray-200 rounded-sm px-6 py-2 outline-none w-full"
+                    className="bg-black rounded-sm px-6 py-2 outline-none w-full"
                   />
                 </div>
               </div>
               {isFocused2 && (
                 <div
-                  className={`bg-white border border-gray-300 rounded-md mt-2 w-full ${isFocused2 ? "animate-slideDown" : "animate-slideUp"
+                  className={`bg-black rounded-md mt-2 w-full ${isFocused2 ? "animate-slideDown" : "animate-slideUp"
                     }`}
                 >
                   {suggestList.length > 0 ? (
                     suggestList.map((suggestion, index) => (
                       <div
                         key={index}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b"
+                        className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex flex-col border-b"
                         onMouseDown={() => handleSelectSuggestion(suggestion, "input2")}
                       >
                         <span className="font-bold">{suggestion.address}</span>
@@ -336,7 +336,7 @@ export default function TypeFastShip(props: Props) {
 
 
       {searchShipCard && (
-        <div className="bg-white/50 absolute bottom-[-50px] w-full min-h-[400px] pt-4 px-6 backdrop-blur-md">
+        <div className="bg-black/50 absolute bottom-[-50px] w-full min-h-[400px] pt-4 px-6 backdrop-blur-md">
           <button
             onClick={e => setSearchShipCard(false)}
             className="absolute top-2 right-4"
@@ -344,16 +344,16 @@ export default function TypeFastShip(props: Props) {
             <X />
           </button>
           <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
-          <p className="text-gray-500">Danh sách shipper</p>
+          <p className="text-gray-300">Danh sách shipper</p>
           <div className="flex flex-row gap-2 ">
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-600">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
+              <span className="text-gray-800">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-600">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
+              <span className="text-gray-800">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-600">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
+              <span className="text-gray-800">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
             </div>
           </div>
           <div className="mt-4 flex flex-col space-y-4">
@@ -375,8 +375,8 @@ export default function TypeFastShip(props: Props) {
                 {/* Thông tin shipper */}
                 <div className="flex-grow">
                   <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
-                  <p className="text-gray-500 text-sm">ID: {item.shipperId}</p>
-                  <p className="text-blue-500 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
+                  <p className="text-gray-700 text-sm">ID: {item.shipperId}</p>
+                  <p className="text-blue-800 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
                   <p className="text-gray-600 text-sm">SĐT: {item.phoneNumber}</p>
                   {/* Thêm các thông tin khác bạn muốn hiển thị */}
                 </div>

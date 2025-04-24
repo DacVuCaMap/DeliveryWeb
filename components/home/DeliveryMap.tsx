@@ -945,7 +945,7 @@ export default function DeliveryMap() {
         closeOnClick: false,
         offset: 25,
       }).setHTML(
-        `<div class="bg-white text-orange-500 font-bold text-center max-w-[200px]">${shipperLocation.email || 'Không có tên'
+        `<div class="bg-black text-orange-500 font-bold text-center max-w-[200px]">${shipperLocation.email || 'Không có tên'
         }</div>`
       );
       // Sự kiện hover để hiển thị popup
@@ -1012,7 +1012,7 @@ export default function DeliveryMap() {
         closeOnClick: false,
         offset: 25,
       }).setHTML(
-        `<div class="bg-white text-orange-500 font-bold text-center max-w-[200px]">${storeLocation.storeName || 'Không có tên'
+        `<div class="bg-black text-orange-500 font-bold text-center max-w-[200px]">${storeLocation.storeName || 'Không có tên'
         }</div>`
       );
       // Sự kiện hover để hiển thị popup
@@ -1038,10 +1038,10 @@ export default function DeliveryMap() {
 
   /// lay vi tri near shipper ban dau so voi userlocation
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen text-white">
       {/* Header Tìm kiếm */}
       <div className="absolute top-4 left-4 right-4 z-10">
-        <div className="bg-white shadow-md px-4 py-2 flex items-center">
+        <div className="bg-black shadow-md px-4 py-2 flex items-center">
           <span className="font-bold text-xl dark:text-white text-orange-600 border-r pr-4">snapgo.vn</span>
           <input
             type="text"
