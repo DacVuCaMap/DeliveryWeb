@@ -82,7 +82,7 @@ const SearchStoreBar = () => {
     // Ref được thêm vào đây để bắt sự kiện click outside
     <div className="relative w-full" ref={searchContainerRef}>
       <div className={`flex items-center bg-gray-800 rounded-full px-4 py-2 border border-transparent transition-colors ${isFocused ? 'border-gray-600' : ''}`}>
-        <span className='text-orange-500 font-bold text-lg pr-4'>snapgo.vn</span>
+        <span className='text-white font-bold text-lg pr-4'>snapgo.vn</span>
         <FiSearch className="text-gray-400 mr-2 flex-shrink-0" />
         <input
           type="text"

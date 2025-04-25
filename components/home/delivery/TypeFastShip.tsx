@@ -225,7 +225,7 @@ export default function TypeFastShip(props: Props) {
           >
             <X />
           </button>
-          <div className="flex lg:flex-row flex-col items-start gap-6">
+          <div className="flex lg:flex-row flex-col items-start gap-6 mb-2">
             <div className="flex flex-col w-full">
               <div className="flex flex-row gap-2">
                 <div className="w-2/3">

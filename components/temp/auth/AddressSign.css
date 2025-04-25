@@ -1,0 +1,25 @@
+/* custom.css */
+.black-input-antd .ant-input {
+    background-color: rgba(0, 0, 0, 0) !important; /* Sử dụng !important để tăng độ ưu tiên */
+    color: white !important;
+  }
+  
+  /* Nếu là AutoComplete, có thể cần nhắm mục tiêu khác một chút */
+  /* Class cho AutoComplete có thể là .ant-select, .ant-select-selector, .ant-select-selection-search-input */
+  .black-autocomplete-antd .ant-select-selector {
+      background-color: rgba(0, 0, 0, 0) !important;
+      color: white !important;
+  }
+  
+  .black-autocomplete-antd .ant-select-selection-search-input {
+       color: white !important; /* Đảm bảo chữ trong lúc gõ cũng trắng */
+  }
+  
+  /* Có thể cần thêm style cho placeholder nếu cần */
+  .black-input-antd .ant-input::placeholder {
+      color: #ccc !important; /* Hoặc màu nhạt hơn */
+  }
+  
+  .black-autocomplete-antd .ant-select-selector .ant-select-selection-placeholder {
+       color: #ccc !important;
+  }

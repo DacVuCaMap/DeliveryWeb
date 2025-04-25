@@ -123,7 +123,7 @@ export default function SignUpForm() {
     }
   }
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar pb-10">
+    <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar pb-10 text-gray-400">
       {isLoading && <FullScreenLoader text="Đang thực hiện đăng ký ...." />}
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
@@ -138,7 +138,7 @@ export default function SignUpForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-semibold text-title-sm text-white/90 sm:text-title-md">
               Đăng Ký
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -176,77 +176,77 @@ export default function SignUpForm() {
                       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
                         <div className="sm:col-span-1">
-                          <Label>
+                          <Label className="text-gray-400">
                             Họ<span className="text-error-500">*</span>
                           </Label>
-                          <Input required type="text" name="lastName" placeholder="Enter your last name" value={formData.lastName} onChange={handleChange} />
+                          <Input className="text-white" required type="text" name="lastName" placeholder="Enter your last name" value={formData.lastName} onChange={handleChange} />
                         </div>
                         <div className="sm:col-span-1">
-                          <Label>
+                          <Label className="text-gray-400">
                             Tên<span className="text-error-500">*</span>
                           </Label>
-                          <Input required type="text" name="firstName" placeholder="Enter your first name" value={formData.firstName} onChange={handleChange} />
+                          <Input className="text-white" required type="text" name="firstName" placeholder="Enter your first name" value={formData.firstName} onChange={handleChange} />
                         </div>
                       </div>
                       <div>
-                        <Label>
+                        <Label className="text-gray-400">
                           Email<span className="text-error-500">*</span>
                         </Label>
-                        <Input required type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
+                        <Input className="text-white" required type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
                       </div>
                       <div>
-                        <Label>
+                        <Label className="text-gray-400">
                           Số điện thoại<span className="text-error-500">*</span>
                         </Label>
-                        <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
+                        <Input className="text-white" required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={formData.phoneNumber} onChange={handleChange} />
                       </div>
                       {role.value != "PARTNER" &&
                         <div>
-                          <Label>
+                          <Label className="text-gray-400">
                             Địa chỉ<span className="text-error-500">*</span>
                           </Label>
-                          <Input required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
+                          <Input className="text-white" required type="text" name="address" placeholder="Enter your address" value={formData.address} onChange={handleChange} />
                         </div>
                       }
                       <div>
-                        <Label>
+                        <Label className="text-gray-400">
                           Mật khẩu<span className="text-error-500">*</span>
                         </Label>
                         <div className="relative">
-                          <Input required type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
+                          <Input className="text-white" required type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
                           <span onClick={() => setShowPassword(!showPassword)} className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
                             {showPassword ? <Eye /> : <EyeClosed />}
                           </span>
                         </div>
                       </div>
                       <div>
-                        <Label>
+                        <Label className="text-gray-400">
                           Nhập lại mật khẩu<span className="text-error-500">*</span>
                         </Label>
-                        <Input required type="password" name="confirmPassword" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
+                        <Input className="text-white" required type="password" name="confirmPassword" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
                       </div>
                       {role.value != "USER" && (
                         <div>
-                          <Label>
+                          <Label className="text-gray-400">
                             Ảnh căn cước công dân<span className="text-error-500">*</span>
                           </Label>
                           <span className="text-gray-400 text-xs">(đối với tài khoản giao hàng và người bán chúng tôi cần thu thập thêm CCCD để hợp tác 1 cách minh bạch)</span>
                           <div className="flex flex-col gap-4 mt-4">
                             <div>
-                              <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">Mặt trước</p>
+                              <p className="text-sm mb-1 text-gray-400">Mặt trước</p>
                               <input
                                 required
                                 type="file"
                                 name="citizenIdFront"
                                 accept="image/*"
                                 onChange={(e) => handleImageChange(e, "front")}
-                                className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
+                                className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-800 dark:bg-gray-800 border border-gray-600 rounded-lg"
                               />
                               {previewFront && (
                                 <img
                                   src={previewFront}
                                   alt="Preview mặt trước"
-                                  className="mt-2 w-1/2 h-auto rounded-lg border border-gray-200 dark:border-gray-600"
+                                  className="mt-2 w-1/2 h-auto rounded-lg border border-gray-600"
                                 />
                               )}
                             </div>
@@ -258,7 +258,7 @@ export default function SignUpForm() {
                                 name="citizenIdFront"
                                 accept="image/*"
                                 onChange={(e) => handleImageChange(e, "back")}
-                                className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
+                                className="block w-full text-sm file:text-white file:bg-orange-500 file:hover:bg-orange-600 file:border-0 file:rounded-lg file:px-4 file:py-2 cursor-pointer bg-gray-800 dark:bg-gray-800 border border-gray-600 rounded-lg"
                               />
                               {previewBack && (
                                 <img
@@ -276,9 +276,9 @@ export default function SignUpForm() {
 
                       <div className="flex items-center gap-3">
                         <Checkbox className="w-5 h-5" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
-                        <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
+                        <p className="inline-block font-normal text-gray-500">
                           Bằng cách tạo một tài khoản có nghĩa là bạn đồng ý với {" "}
-                          <span className="text-gray-800 dark:text-white/90">
+                          <span className="font-bold text-white/90">
                             Điều khoản và Điều kiện, Chính sách Bảo mật
                           </span>{" "}của chúng tôi
                         </p>
@@ -296,7 +296,7 @@ export default function SignUpForm() {
                   <div className="flex flex-col mb-10">
                     <span className="text-gray-400 mb-2">Chọn vai trò tài khoản</span>
                     {roleList.map((item) => (
-                      <button key={item.value} onClick={e => handleClickRole(item)} className="flex flex-row items-center space-x-2 border-b hover:bg-gray-300 py-2 px-4">
+                      <button key={item.value} onClick={e => handleClickRole(item)} className="flex flex-row items-center space-x-2 border-b hover:bg-gray-800 py-2 px-4">
                         <div className="w-14 h-14 relative rounded-full overflow-hidden">
                           <Image
                             src={`${item.src}`}

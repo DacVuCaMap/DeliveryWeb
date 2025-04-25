@@ -52,7 +52,7 @@ export default function SignInForm() {
     }
   };
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full">
+    <div className="flex flex-col flex-1 lg:w-1/2 w-full bg-black">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
           href="/home"
@@ -66,7 +66,7 @@ export default function SignInForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-semibold text-title-sm text-white/90 sm:text-title-md">
               ĐĂNG NHẬP
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -136,7 +136,7 @@ export default function SignInForm() {
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">
+                <span className="p-2 text-gray-400  bg-gray-900 sm:px-5 sm:py-2">
                   Or
                 </span>
               </div>
@@ -144,13 +144,13 @@ export default function SignInForm() {
             <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
-                  <Label>
+                  <Label className="text-gray-400">
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input required onChange={e => setEmail(e.target.value)} value={email} placeholder="info@gmail.com" type="email" />
                 </div>
                 <div>
-                  <Label>
+                  <Label className="text-gray-400">
                     Mật khẩu <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
@@ -163,7 +163,7 @@ export default function SignInForm() {
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2 text-gray-400"
                     >
                       {showPassword ? (
                         // <EyeIcon className="fill-gray-500 dark:fill-gray-400" />

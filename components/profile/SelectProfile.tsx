@@ -37,7 +37,7 @@ export default function SelectProfile(props: Props) {
                         {props.data.selects.map(item => (
                             <button onClick={e => setSelectTab(item)} key={item.id} className={`${selectTab.id === item.id ? "text-orange-500" : ""} flex flex-col items-center justify-center gap-2 hover:text-orange-500`}>
                                 {item.icon ? item.icon : <div className="font-bold text-sm">COD</div>}
-                                <span>Chờ xác nhận</span>
+                                <span>{item.name}</span>
                             </button>
                         ))}
                     </div>

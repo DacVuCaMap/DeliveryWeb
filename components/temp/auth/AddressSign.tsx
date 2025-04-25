@@ -6,6 +6,7 @@ import { Location, MapInfo, RegisterForm } from '@/entity/TypeObject'
 import { fetchAutoCompleteVietMap, fetchPlaceVietMap } from '@/utils/api'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import './AddressSign.css'
 
 type Props = {
     updateAddressForPartner: (e: any, key: string) => void
@@ -66,7 +67,7 @@ export default function AddressSign(props: Props) {
                 const response = await fetchPlaceVietMap(selectedAddress.ref_id);
                 if (response.data && response.data.lat && response.data.lng) {
                     const newLoc: Location = { lat: response.data.lat, lng: response.data.lng };
-                    props.updateAddressForPartner(newLoc,"location");
+                    props.updateAddressForPartner(newLoc, "location");
                     // Update map location and marker
                     if (newLoc.lat && newLoc.lng && mapRef.current) {
                         mapRef.current.setCenter(newLoc)
@@ -118,13 +119,23 @@ export default function AddressSign(props: Props) {
                 <Label>
                     Tên cửa hàng<span style={{ color: 'red' }}>*</span>
                 </Label>
-                <Input required type="tel" name="phoneNumber" placeholder="Enter your phone number" value={props.formData.storeName} onChange={e=>props.updateAddressForPartner(e.target.value,"storeName")} />
+                {/* Áp dụng className cho Input */}
+                <Input
+                    required
+                    type="tel"
+                    name="phoneNumber"
+                    placeholder="Enter your phone number"
+                    value={props.formData.storeName}
+                    onChange={e => props.updateAddressForPartner(e.target.value, "storeName")}
+                    className="black-input-antd" // Thêm className này
+                // style={{ backgroundColor: 'black', color: 'white' }} // Có thể xóa hoặc giữ lại
+                />
             </div>
             <div className='flex flex-col gap-2'>
-
                 <Label>
                     Địa chỉ cửa hàng<span style={{ color: 'red' }}>*</span>
                 </Label>
+                {/* Áp dụng className cho AutoComplete */}
                 <AutoComplete
                     value={inputValue}
                     open={open}
@@ -142,7 +153,8 @@ export default function AddressSign(props: Props) {
                             </div>
                         ),
                     }))}
-                    style={{ width: '100%' }}
+                    className="black-autocomplete-antd" // Thêm className này
+                    style={{ width: '100%' }} // Giữ lại style về width nếu cần, bỏ màu ở đây
                 />
                 <div ref={mapContainer} className="w-full h-64 border" />
             </div>
