@@ -4,7 +4,22 @@ import React, { useEffect, useState } from 'react'
 import ProfileHeader from '../home/store/ProfileHeader';
 import SelectProfile from './SelectProfile';
 import { useUser } from '@/context/userContext';
-import { ChevronLeft, MessageSquare, Settings, ShoppingCart } from 'lucide-react';
+import { Bike, ChevronLeft, Eye, Heart, History, Inbox, ListRestart, LogOut, MessageSquare, PackageOpen, Rocket, Settings, ShoppingCart, Star, Truck, Zap } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { logoutUser } from '@/utils/api';
+import { toast } from 'sonner';
+type SelectOption = {
+  id: number;
+  icon: React.ReactNode | null; // Giả định rằng <Inbox />, <PackageOpen />, v.v. là các React Node
+  name: string;
+  childTab:any[]
+}
+
+type TabItem = {
+  id: string;
+  selects: SelectOption[];
+  label: string;
+}
 const tempData = {
   slug: "rosemad999",
   coverImageUrl: "/testImg/anhbia1.png", // Thay thế bằng URL ảnh bìa thật
@@ -29,9 +44,43 @@ const tempData = {
     // Thêm các stream khác nếu cần
   ],
 };
+const tabs: TabItem[] = [
+  {
+    id: 'donmua',
+    selects: [
+      { id: 0, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Inbox />, name: "Chờ xác nhận" },
+      { id: 1, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <PackageOpen />, name: "Chờ lấy hàng" },
+      { id: 2, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Truck />, name: "Hàng đang giao" },
+      { id: 3, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Star />, name: "Đánh giá" },
+    ],
+    label: 'Đơn mua'
+  },
+  {
+    id: 'chung',
+    selects: [
+      { id: 0, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <History />, name: "Lịch sử mua hàng" },
+      { id: 1, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Bike />, name: "Lịch sử ship" },
+      { id: 2, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <ListRestart />, name: "Lịch sử COD" },
+      { id: 3, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Heart />, name: "Video đã thích" }
+    ],
+    label: 'Quản lý chung',
+  },
+  {
+    id: 'tienich',
+    selects: [
+      { id: 0, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Zap />, name: "Đơn hàng gần bạn" },
+      { id: 1, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: null, name: "Top COD" },
+      { id: 2, childTab:["Đơn hàng 1","Đơn hàng 2"],icon: <Rocket />, name: "Shipper gần bạn" },
+    ],
+    label: 'Tiện ích',
+  }
+];
 export default function ProfilePage() {
+  const [selectedTab, setSelectedTab] = useState<TabItem>(tabs[0]);
   const [profileData, setProfileData] = useState(tempData)
   const { user } = useUser();
+  const { logout } = useUser();
+  const router = useRouter();
   useEffect(() => {
 
     if (user) {
@@ -65,11 +114,20 @@ export default function ProfilePage() {
           rgba(16, 24, 40, 0.94) ${start2}px
       )`;
 
-  const tabs = [
-    { id: 'all', label: 'Tất cả sản phẩm' },
-    { id: 'fast', label: 'Ship nhanh' },
-    { id: 'cod', label: 'Sản phẩm COD' },
-  ];
+  const handleLogout = async () => {
+    const response = await logoutUser();
+    console.log(response);
+    if (response && response.success) {
+      logout();
+      // Hiển thị thông báo thành công
+      toast.success('Đã đăng xuất thành công');
+      // Chuyển hướng về trang đăng nhập
+      router.push('/signin');
+    }
+    else {
+      toast.error('Đăng xuất thất bại');
+    }
+  }
   return (
     <div className="min-h-screen text-white">
       <div className="relative flex flex-col h-full min-h-screen">
@@ -101,9 +159,28 @@ export default function ProfilePage() {
           style={{ background: dynamicBg }}>
 
           <ProfileHeader scrolled={scrolled} data={profileData} />
-          <SelectProfile />
+          <div className={`flex justify-around sticky top-0  ${scrollY > 600 ? "bg-[rgba(16,24,40,0.93)]" : "bg-none"} z-10`}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedTab(tab)}
+                className={`py-3 px-2 text-sm font-medium ${selectedTab.id === tab.id
+                  ? 'text-white border-b-2 border-white'
+                  : 'text-gray-400'
+                  }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <SelectProfile data={selectedTab  } />
         </div>
-
+        <div className="p-4 bg-black">
+          <button onClick={handleLogout} className="outline w-full p-2 rounded-2xl text-gray-400 hover:underline flex flex-row items-center justify-center gap-2 hover:bg-gray-200">
+            <LogOut />
+            <span>Đăng xuất</span>
+          </button>
+        </div>
       </div>
 
     </div>

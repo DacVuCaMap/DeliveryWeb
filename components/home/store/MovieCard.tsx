@@ -1,3 +1,4 @@
+import { Eye } from 'lucide-react';
 import Image from 'next/image';
 import { FaStar, FaRegHeart } from 'react-icons/fa'; // Or FaHeart for filled
 
@@ -7,6 +8,7 @@ interface MovieItem {
   rating: number;
   price: number;
   imageUrl: string;
+  view:number;
 }
 
 interface MovieCardProps {
@@ -16,7 +18,7 @@ interface MovieCardProps {
 const MovieCard: React.FC<MovieCardProps> = ({ item }) => {
   return (
     <div className="flex-shrink-0 w-32 sm:w-40 space-y-2">
-      <div className="relative aspect-[2/3] rounded-lg overflow-hidden group">
+      <div className="relative aspect-[2/3]  overflow-hidden group">
         <Image
           src={item.imageUrl}
           alt={item.title}
@@ -28,6 +30,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ item }) => {
         <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 text-xs flex items-center">
           <FaStar className="text-yellow-400 mr-1" />
           <span>{item.rating.toFixed(1)}</span>
+        </div>
+        {/* Rating Badge */}
+        <div className="absolute top-10 left-2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 text-xs flex items-center">
+          <Eye className="mr-1" size={14} />
+          <span>{item.view}</span>
         </div>
         {/* Favorite Button */}
         <button className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-full p-1.5 text-white hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">

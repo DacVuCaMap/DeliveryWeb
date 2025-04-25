@@ -18,7 +18,7 @@ const ContentRow: React.FC<ContentRowProps> = ({ title, showSeeAll = false, chil
         )}
       </div>
       {/* Horizontal Scroll */}
-      <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex space-x-4 overflow-x-auto pb-2 hide-scrollbar">
         {/* scrollbar-hide is a custom utility you might need to add in tailwind.config.js if you want to hide the scrollbar */}
         {children}
       </div>

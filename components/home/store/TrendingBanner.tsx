@@ -10,7 +10,7 @@ interface TrendingBannerProps {
 
 const TrendingBanner: React.FC<TrendingBannerProps> = ({ imageUrl, title, tags }) => {
   return (
-    <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-lg overflow-hidden">
+    <div className="relative w-full h-96 sm:h-80 md:h-96 overflow-hidden">
       {/* Background Image */}
       <Image
         src={imageUrl}

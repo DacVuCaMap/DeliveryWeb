@@ -1012,7 +1012,7 @@ export default function DeliveryMap() {
         closeOnClick: false,
         offset: 25,
       }).setHTML(
-        `<div class="bg-black text-orange-500 font-bold text-center max-w-[200px]">${storeLocation.storeName || 'Không có tên'
+        `<div class=" text-orange-500 font-bold text-center max-w-[200px]">${storeLocation.storeName || 'Không có tên'
         }</div>`
       );
       // Sự kiện hover để hiển thị popup
