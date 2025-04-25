@@ -205,6 +205,7 @@ export default function TypeFastShip(props: Props) {
   }
   const setMarkerShip = (item: NearShipper) => {
     props.setNearShipper({ lat: item.latitude, lng: item.longitude });
+    setListNearShipper([item]);
   }
   const openDetailCard = () => {
     if (!inputInfo.input1 || !inputInfo.input2 || !props.userLocation || !props.fastShip[0].lat || !props.fastShip[0].lng) {
@@ -337,7 +338,7 @@ export default function TypeFastShip(props: Props) {
 
 
       {searchShipCard && (
-        <div className="bg-none w-full min-h-[300px] pt-14 px-6">
+        <div className="bg-none w-full pb-4 pt-14 px-6">
           <button
             onClick={e => setSearchShipCard(false)}
             className="absolute top-2 right-4"
@@ -345,8 +346,7 @@ export default function TypeFastShip(props: Props) {
             <X />
           </button>
           <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
-          <p className="text-gray-300">Danh sách shipper</p>
-          <div className="flex flex-row gap-2 ">
+          <div className="flex flex-row gap-2 text-xs">
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
               <span className="text-gray-300">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
             </div>
@@ -354,7 +354,7 @@ export default function TypeFastShip(props: Props) {
               <span className="text-gray-300">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-300">Phí giao hàng:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
+              <span className="text-gray-300">Phí vận chuyển:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
             </div>
           </div>
           <div className="mt-4 flex flex-col space-y-4">

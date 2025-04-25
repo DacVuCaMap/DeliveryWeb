@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import TypeFastShip from './delivery/TypeFastShip';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'
-import { apiNearStore, fetchRouteVietMap, getNearShipper } from '@/utils/api';
+import { apiFetchStyleVietMap, apiNearStore, fetchRouteVietMap, getNearShipper } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 type Opencard = {
   bottomCard: boolean;
@@ -62,6 +62,10 @@ export default function DeliveryMap() {
       zoom: 15,
     })
     markerRef.current = new vietmapgl.Marker().setLngLat(defaultCenter).addTo(mapRef.current)
+    // const fetchStyle = async () =>{
+    //   const response = await apiFetchStyleVietMap();
+    //   console.log(response);
+    // }
   }, [])
 
   // Theo dõi vị trí liên tục
@@ -1056,7 +1060,7 @@ export default function DeliveryMap() {
       </div>
 
       {/* Bản đồ */}
-      <div ref={mapContainer} className="w-full" />
+      <div ref={mapContainer} className="w-full " />
       {/* Nút thay đổi kích thước */}
 
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
