@@ -19,7 +19,7 @@ type Shipper = {
   lng: number,
   firstName: string,
   lastName: string,
-  email:string
+  email: string
 }
 export default function DeliveryMap() {
 
@@ -179,7 +179,7 @@ export default function DeliveryMap() {
               lng: item.longitude,
               firstName: item.firstName,
               lastName: item.lastName,
-              email:item.email
+              email: item.email
             };
           })
           setNearListShipper(newList);
@@ -1038,10 +1038,10 @@ export default function DeliveryMap() {
 
   /// lay vi tri near shipper ban dau so voi userlocation
   return (
-    <div className="relative w-full h-screen text-white">
+    <div className="relative w-full flex-1 text-white flex  overflow-hidden">
       {/* Header Tìm kiếm */}
-      <div className="absolute top-4 left-4 right-4 z-10">
-        <div className="bg-black shadow-md px-4 py-2 flex items-center">
+      <div className="absolute top-4 left-4 right-4 z-10 ">
+        <div className="bg-black/70 backdrop-blur-md shadow-md px-4 py-2 flex items-center">
           <span className="font-bold text-xl dark:text-white text-orange-600 border-r pr-4">snapgo.vn</span>
           <input
             type="text"
@@ -1056,12 +1056,13 @@ export default function DeliveryMap() {
       </div>
 
       {/* Bản đồ */}
-      <div ref={mapContainer} className="w-full h-full" />
+      <div ref={mapContainer} className="w-full" />
+      {/* Nút thay đổi kích thước */}
 
       {/* Thẻ hỏi nhập nhận đơn hàng nhanh */}
       {openCard.fastShip &&
         (<TypeFastShip setNearShipper={setNearShipper} fastShip={fastShip} mapRef={mapRef} setFastShip={setFastShip} setOpenCard={setOpenCard} openCard={openCard} userLocation={userLocation} distance={distance} />)
-      }s
+      }
     </div>
   )
 }

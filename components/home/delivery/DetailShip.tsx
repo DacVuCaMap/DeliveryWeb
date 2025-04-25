@@ -65,9 +65,9 @@ export default function DetailShip(props: Props) {
         return parseFloat((baseFee + extraFee).toFixed(0));
     };
     return (
-        <div className="w-full mx-auto p-4 space-y-4 ">
+        <div className="w-full space-y-4 pt-32">
 
-            <Card className="bg-black/80 backdrop-blur-md text-white">
+            <div className="bg-custom2 text-white">
                 <CardContent className="space-y-4">
                     <button onClick={e => props.setDetailCard(false)}><ArrowLeft /></button>
                     <div>Người nhận</div>
@@ -87,7 +87,7 @@ export default function DetailShip(props: Props) {
                                 <div className="grid grid-cols-3 gap-2">
                                     {weights.map((w) => (
                                         <Button
-                                            className="bg-black"
+                                            className={`bg-black ${weight===w ? "bg-white text-black" : ""}`}
                                             key={w}
                                             variant={weight === w ? "default" : "outline"}
                                             onClick={() => setWeight(w)}
@@ -104,7 +104,7 @@ export default function DetailShip(props: Props) {
                                 <div className="grid grid-cols-3 gap-2">
                                     {itemTypes.map((type) => (
                                         <Button
-                                            className="bg-black"
+                                            className={`${itemType === type ? "bg-white text-black" : "bg-black"}`}
                                             key={type}
                                             variant={itemType === type ? "default" : "outline"}
                                             onClick={() => setItemType(type)}
@@ -117,27 +117,29 @@ export default function DetailShip(props: Props) {
                         </div>
                     </div>
 
-                    <div>
-                        <Label>Quãng đường</Label>
-                        <span>{(props.distance / 1000).toFixed(2)} km</span>
-                    </div>
-                    <div>
-                        <Label>Thời gian dự kiến</Label>
-                        <span>{calTime(props.distance)}</span>
-                    </div>
-                    <div>
-                        <Label>Phí giao hàng</Label>
-                        <span className="font-bold">
-                            {weight
-                                ? `${calculateShippingFee(props.distance / 1000, weight).toLocaleString("vi-VN")} VND`
-                                : "Vui lòng chọn khối lượng"}
-                        </span>
+                    <div className="flex flex-row gap-4 justify-between px-2">
+                        <div>
+                            <Label>Quãng đường</Label>
+                            <span>{(props.distance / 1000).toFixed(2)} km</span>
+                        </div>
+                        <div>
+                            <Label>Thời gian dự kiến</Label>
+                            <span>{calTime(props.distance)}</span>
+                        </div>
+                        <div>
+                            <Label>Phí giao hàng</Label>
+                            <span className="font-bold">
+                                {weight
+                                    ? `${calculateShippingFee(props.distance / 1000, weight).toLocaleString("vi-VN")} VND`
+                                    : "Chọn khối lượng"}
+                            </span>
+                        </div>
                     </div>
                     <Button onClick={e => onSubmit()} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
                         Tim ship
                     </Button>
                 </CardContent>
-            </Card>
+            </div>
         </div>
     );
 }
