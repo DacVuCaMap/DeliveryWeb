@@ -326,7 +326,7 @@ export default function TypeFastShip(props: Props) {
           )} */}
           <div className="flex flex-row gap-4">
             <span>Quãng đường: {(props.distance / 1000).toFixed(2)}km</span>
-            <span>Thời gian: {calTime(props.distance)}</span>
+            {props.distance>0 && <span>Thời gian: {calTime(props.distance)}</span>}
           </div>
           <button onClick={e => openDetailCard()} className="w-full bg-orange-500  text-white py-2">
             Tiếp tục

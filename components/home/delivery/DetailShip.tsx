@@ -72,13 +72,13 @@ export default function DetailShip(props: Props) {
                     <button onClick={e => props.setDetailCard(false)}><ArrowLeft /></button>
                     <div>Người nhận</div>
                     <div>
-                        <Input className="cursor-pointer" onClick={e => props.setDetailCard(false)} readOnly value={props.inputInfo.input2?.address === "Vị trí hiện tại của bạn" ? "Vị trí hiện tại của bạn" : props.inputInfo.input2?.display} id="address" placeholder="Địa chỉ người nhận" />
+                        <Input className="border-gray-500 border rounded-none cursor-pointer" onClick={e => props.setDetailCard(false)} readOnly value={props.inputInfo.input2?.address === "Vị trí hiện tại của bạn" ? "Vị trí hiện tại của bạn" : props.inputInfo.input2?.display} id="address" placeholder="Địa chỉ người nhận" />
                     </div>
                     <div>
-                        <Input placeholder="Tên người nhận" required />
+                        <Input className="border-gray-500 border rounded-none " placeholder="Tên người nhận" required />
                     </div>
                     <div>
-                        <Input onChange={e => props.handleInput(e, "input2", "phone")} value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
+                        <Input className="border-gray-500 border rounded-none " onChange={e => props.handleInput(e, "input2", "phone")} value={props.inputInfo.input2?.phoneNumber} type="tel" placeholder="Số điện thoại" required />
                     </div>
                     <div className="flex lg:flex-row gap-4 flex-col">
                         <div className="lg:w-1/2">
@@ -86,14 +86,13 @@ export default function DetailShip(props: Props) {
                                 <Label className="mb-2">Khối lượng</Label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {weights.map((w) => (
-                                        <Button
-                                            className={`bg-black ${weight===w ? "bg-white text-black" : ""}`}
+                                        <button
+                                            className={`py-1 border hover:bg-white hover:text-black bg-gray-800 ${weight===w ? "bg-white text-black" : ""}`}
                                             key={w}
-                                            variant={weight === w ? "default" : "outline"}
                                             onClick={() => setWeight(w)}
                                         >
                                             {w}
-                                        </Button>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
@@ -103,21 +102,20 @@ export default function DetailShip(props: Props) {
                                 <Label className="mb-2">Loại hàng hóa</Label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {itemTypes.map((type) => (
-                                        <Button
-                                            className={`${itemType === type ? "bg-white text-black" : "bg-black"}`}
+                                        <button
+                                            className={`py-1 border hover:bg-white hover:text-black ${itemType === type ? "bg-white text-black" : "bg-gray-800"}`}
                                             key={type}
-                                            variant={itemType === type ? "default" : "outline"}
                                             onClick={() => setItemType(type)}
                                         >
                                             {type}
-                                        </Button>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-row gap-4 justify-between px-2">
+                    <div className="flex flex-row gap-4 lg:justify-start justify-between px-2">
                         <div>
                             <Label>Quãng đường</Label>
                             <span>{(props.distance / 1000).toFixed(2)} km</span>

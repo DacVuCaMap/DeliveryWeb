@@ -31,9 +31,8 @@ export default function SelectProfile(props: Props) {
         <div>
 
             {/* Đơn mua */}
-            <Card className="rounded-none bg-black/10 border-none text-white p-2 pb-6 ">
+            <Card className="rounded-none bg-black/10 border-none text-white p-2 pb-6 pt-6">
                 <CardContent>
-                    <h3 className="font-medium mb-4">{props.data.label}</h3>
                     <div className="grid grid-cols-4 gap-2 text-center text-xs ">
                         {props.data.selects.map(item => (
                             <button onClick={e => setSelectTab(item)} key={item.id} className={`${selectTab.id === item.id ? "text-orange-500" : ""} flex flex-col items-center justify-center gap-2 hover:text-orange-500`}>
