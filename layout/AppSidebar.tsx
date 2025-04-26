@@ -102,6 +102,7 @@ const othersItems: NavItem[] = [
     name: "Sản phẩm",
     subItems: [
       { name: "Quản lý sản phẩm", path: "/admin/product/manager", pro: false },
+      { name: "Thêm sản phẩm", path: "/admin/product/manager/add", pro: false },
     ],
   },
   {

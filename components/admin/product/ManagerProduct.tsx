@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 type Product = {
@@ -13,9 +14,9 @@ export default function ManagerProduct() {
       </div>
 
       <div className="flex justify-end mb-6">
-        <button className="bg-brand-500 text-white px-4 py-2 rounded hover:bg-brand-600">
+        <Link href={"/admin/product/manager/add"} className="bg-brand-500 text-white px-4 py-2 rounded hover:bg-brand-600">
           Thêm sản phẩm mới
-        </button>
+        </Link>
         {/* Add other bulk action buttons here if needed */}
         {/* <button className="ml-2 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Thao tác hàng loạt</button> */}
       </div>
