@@ -18,13 +18,13 @@ import {
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
-import { AlignJustify, AlignLeft, Bell, ChartColumnIncreasing, ChevronRight, CircleUserRound, SquareMenu } from "lucide-react";
+import { AlignJustify, AlignLeft, Bell, ChartColumnIncreasing, ChevronRight, CircleUserRound, ShoppingBag, SquareMenu } from "lucide-react";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean; nof?:boolean }[];
+  subItems?: { name: string; path: string; pro?: boolean; new?: boolean; nof?: boolean }[];
 };
 
 const navItems: NavItem[] = [
@@ -94,7 +94,14 @@ const othersItems: NavItem[] = [
       { name: "Người vận chuyển", path: "/admin/users/shipper", pro: false },
       { name: "Đối tác", path: "/admin/users/partner", pro: false },
       { name: "Nhân viên", path: "/admin/users/employee", pro: false },
-      { name: "Duyệt tài khoản", path: "/admin/users/user-request", pro: false,nof:true },
+      { name: "Duyệt tài khoản", path: "/admin/users/user-request", pro: false, nof: true },
+    ],
+  },
+  {
+    icon: <ShoppingBag />,
+    name: "Sản phẩm",
+    subItems: [
+      { name: "Quản lý sản phẩm", path: "/admin/product/manager", pro: false },
     ],
   },
   {
@@ -219,7 +226,7 @@ const AppSidebar: React.FC = () => {
                           </span>
                         )}
                         {subItem.nof && (
-                          <span className="rounded-full w-2 h-2 bg-red-500"></span> 
+                          <span className="rounded-full w-2 h-2 bg-red-500"></span>
                         )
                         }
                       </span>
