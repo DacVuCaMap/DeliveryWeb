@@ -100,7 +100,7 @@ export default function ManagerProduct() {
                 {/* Product Info */}
                 <div className="flex items-center">
                     {/* Assuming product image */}
-                    <img src="/placeholder-product-image.png" alt="Product" className="w-10 h-10 mr-2 object-cover rounded" />
+                    <img src="/testImg/biketest.png" alt="Product" className="w-10 h-10 mr-2 object-cover rounded" />
                     <div>
                         <p className="font-semibold">MÁT XA ks</p>
                          <p className="text-sm text-gray-500">Cốt Xoa Bóp - Hoàn Toàn...</p>

@@ -6,9 +6,9 @@ import { ArrowLeft, UploadCloud, Save, Send, Bold, Italic, Underline, List, List
 
 export default function AddProduct() {
   return (
-    <div className="min-h-screen bg-gray-50 -mx-8">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white rounded-md p-4 mb-4 flex items-center justify-between sticky top-0 z-10">
+      <div className="bg-white rounded-md p-4 mb-4 flex items-center justify-between sticky top-[78px] z-10">
         <div className="flex items-center gap-3">
           <button className="text-gray-600 hover:text-gray-900">
             <ArrowLeft size={20} />
@@ -30,7 +30,7 @@ export default function AddProduct() {
 
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Left Sidebar Navigation */}
-        <nav className="w-full lg:w-1/5 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[88px]"> {/* Adjust top offset based on header height */}
+        <nav className="w-full lg:w-1/5 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[150px]"> {/* Adjust top offset based on header height */}
           <ul className="space-y-2">
             <li><a href="#basic-info" className="block px-3 py-2 rounded-md text-blue-600 bg-blue-50 font-medium">Thông tin cơ bản</a></li>
             <li><a href="#product-details" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Chi tiết sản phẩm</a></li>
@@ -159,7 +159,7 @@ export default function AddProduct() {
         </main>
 
         {/* Right Sidebar Preview */}
-        <aside className="w-full lg:w-1/4 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[88px]"> {/* Adjust top offset */}
+        <aside className="w-full lg:w-1/4 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[150px]"> {/* Adjust top offset */}
            <h3 className="text-lg font-semibold mb-3">Xem trước</h3>
            {/* Add Preview components/placeholders here */}
            <div className="border rounded-md p-4 text-center text-gray-400">
