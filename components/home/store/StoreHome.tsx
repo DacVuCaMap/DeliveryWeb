@@ -41,18 +41,18 @@ const trendingItems = [
   },
 ];
 const continueWatchingItems = [
-  { id: 1,view:100, title: 'Xe đạp bk1', price: 600000, imageUrl: '/testImg/biketest.png' },
-  { id: 2,view:100, title: 'Review xe đạp GIANT', price: 2300000, imageUrl: '/testImg/biketest2.png' },
-  { id: 3,view:100, title: 'Xe hot 2025', price: 900000, imageUrl: '/testImg/biketest3.png' },
-  { id: 4,view:100, title: 'K20 Xe đạp chuẩn cho dân chơi', price: 1900000, imageUrl: '/testImg/biketest4.png' },
-  { id: 5,view:100, title: 'Xe KVB Sơn tùng hay đi', price: 4200000, imageUrl: '/testImg/testbike5.png' },
+  { id: 1, view: 100, title: 'Xe đạp bk1', price: 600000, imageUrl: '/testImg/biketest.png' },
+  { id: 2, view: 100, title: 'Review xe đạp GIANT', price: 2300000, imageUrl: '/testImg/biketest2.png' },
+  { id: 3, view: 100, title: 'Xe hot 2025', price: 900000, imageUrl: '/testImg/biketest3.png' },
+  { id: 4, view: 100, title: 'K20 Xe đạp chuẩn cho dân chơi', price: 1900000, imageUrl: '/testImg/biketest4.png' },
+  { id: 5, view: 100, title: 'Xe KVB Sơn tùng hay đi', price: 4200000, imageUrl: '/testImg/testbike5.png' },
 ];
 
 const movieItems = [
-  { id: 1,view:100, title: 'Xe đạp BIKE GIANT 1', rating: 4.5, price: 10230000, imageUrl: '/testImg/testbike5.png' },
-  { id: 2,view:100, title: 'Loa JBL 3 hàng xách tay', rating: 4.9, price: 3200000, imageUrl: '/testImg/jblbanner.png' },
-  { id: 3,view:100, title: 'Ốp điện thoại IPHONE 16', rating: 2.2, price: 200000, imageUrl: '/testImg/opdienthoai.png' },
-  { id: 4,view:100, title: ' Quạt trần KL 9', rating: 4.1, price: 5200000, imageUrl: '/testImg/quat.png' },
+  { id: 1, view: 100, title: 'Xe đạp BIKE GIANT 1', rating: 4.5, price: 10230000, imageUrl: '/testImg/testbike5.png' },
+  { id: 2, view: 100, title: 'Loa JBL 3 hàng xách tay', rating: 4.9, price: 3200000, imageUrl: '/testImg/jblbanner.png' },
+  { id: 3, view: 100, title: 'Ốp điện thoại IPHONE 16', rating: 2.2, price: 200000, imageUrl: '/testImg/opdienthoai.png' },
+  { id: 4, view: 100, title: ' Quạt trần KL 9', rating: 4.1, price: 5200000, imageUrl: '/testImg/quat.png' },
 ];
 
 export default function StoreHome() {
@@ -67,19 +67,13 @@ export default function StoreHome() {
           <h2 className="text-xl font-semibold">Thịnh hành</h2>
         </div>
         <div className='absolute h-20 w-full top-10 head-slider z-20'>
-          
+
         </div>
         {/* Sử dụng TrendingSlider component */}
         <TrendingSliderStore items={trendingItems} />
       </section>
 
 
-      {/* Continue Watching Section */}
-      <ContentRow title="Đã xem gần đây" showSeeAll >
-        {continueWatchingItems.map((item) => (
-          <ContinueWatchingCard key={item.id} item={item} />
-        ))}
-      </ContentRow>
 
       {/* Movies Section */}
       <ContentRow title="Sản phẩm mới nhất" showSeeAll>
@@ -97,6 +91,13 @@ export default function StoreHome() {
       <ContentRow title="Sản phẩm ship COD" showSeeAll>
         {movieItems.map((item) => (
           <MovieCard key={item.id} item={item} />
+        ))}
+      </ContentRow>
+
+      {/* Continue Watching Section */}
+      <ContentRow title="Đã xem gần đây" showSeeAll >
+        {continueWatchingItems.map((item) => (
+          <ContinueWatchingCard key={item.id} item={item} />
         ))}
       </ContentRow>
     </main>

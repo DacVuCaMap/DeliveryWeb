@@ -348,13 +348,13 @@ export default function TypeFastShip(props: Props) {
           <h2 className="text-lg font-semibold">Kết quả tìm kiếm</h2>
           <div className="flex flex-row gap-2 text-xs">
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-300">Quãng đường:</span><span className="text-blue-300"> {(props.distance / 1000).toFixed(2)}km</span>
+              <span className="text-gray-300">Quãng đường:</span><span className="text-gray-300"> {(props.distance / 1000).toFixed(2)}km</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-300">Thời gian:</span><span className="text-blue-300"> {calTime(props.distance)}</span>
+              <span className="text-gray-300">Thời gian:</span><span className="text-gray-300"> {calTime(props.distance)}</span>
             </div>
             <div className="flex flex-row gap-1 border-r border-gray-400 pr-2">
-              <span className="text-gray-300">Phí vận chuyển:</span><span className="font-bold text-blue-400"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
+              <span className="text-gray-300">Phí vận chuyển:</span><span className="font-bold text-gray-300"> {shipPrice.toLocaleString("vi-VN")} vnđ</span>
             </div>
           </div>
           <div className="mt-4 flex flex-col space-y-4">
@@ -377,7 +377,7 @@ export default function TypeFastShip(props: Props) {
                 <div className="flex-grow">
                   <h3 className="text-lg font-semibold">{`${item.firstName} ${item.lastName}`}</h3>
                   <p className="text-gray-300 text-sm">ID: {item.shipperId}</p>
-                  <p className="text-blue-800 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
+                  <p className="text-gray-300 text-sm">Cách bạn: {item.distance.toFixed(2)} km</p>
                   <p className="text-gray-300 text-sm">SĐT: {item.phoneNumber}</p>
                   {/* Thêm các thông tin khác bạn muốn hiển thị */}
                 </div>
