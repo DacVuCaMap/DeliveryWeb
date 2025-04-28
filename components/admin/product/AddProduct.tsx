@@ -1,14 +1,45 @@
-// src/app/add-product/page.tsx (hoặc vị trí tương ứng trong cấu trúc `app` router)
-import React from 'react';
-import { ArrowLeft, UploadCloud, Save, Send, Bold, Italic, Underline, List, ListOrdered } from 'lucide-react'; // Ví dụ sử dụng lucide-react cho icons
+"use client"
+import React, { useEffect, useState } from 'react';
+import { ArrowLeft, UploadCloud, Save, Send, Bold, Italic, Underline, List, ListOrdered, X } from 'lucide-react'; // Ví dụ sử dụng lucide-react cho icons
 
 // Bạn cần cài đặt: npm install lucide-react
+type Props = {
+  header?: boolean;
+  videoUrl?: string;
+}
 
-export default function AddProduct() {
+export default function AddProduct(props: Props) {
+
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Kiểm tra kiểu file và kích thước
+      if (file.size > 100 * 1024 * 1024) {
+        alert("Video quá lớn, tối đa 100 MB!");
+        return;
+      }
+      if (!["video/mp4", "video/avi", "video/mov"].includes(file.type)) {
+        alert("Định dạng không hợp lệ! Vui lòng chọn MP4, MOV hoặc AVI.");
+        return;
+      }
+
+      setVideoFile(file);
+      const videoUrl = URL.createObjectURL(file);
+      setVideoUrl(videoUrl); // Lưu lại video URL để hiển thị
+    }
+  };
+  useEffect(() => {
+    if (props.videoUrl) {
+      setVideoUrl(props.videoUrl);
+    }
+  }, [props.videoUrl])
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white rounded-md p-4 mb-4 flex items-center justify-between sticky top-[78px] z-10">
+      <div className="bg-white rounded-md p-4 mb-4 lg:flex items-center justify-between sticky top-[78px] z-50">
         <div className="flex items-center gap-3">
           <button className="text-gray-600 hover:text-gray-900">
             <ArrowLeft size={20} />
@@ -30,7 +61,7 @@ export default function AddProduct() {
 
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Left Sidebar Navigation */}
-        <nav className="w-full lg:w-1/5 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[150px]"> {/* Adjust top offset based on header height */}
+        <nav className="hidden lg:block w-full lg:w-1/5 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[150px]"> {/* Adjust top offset based on header height */}
           <ul className="space-y-2">
             <li><a href="#basic-info" className="block px-3 py-2 rounded-md text-blue-600 bg-blue-50 font-medium">Thông tin cơ bản</a></li>
             <li><a href="#product-details" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Chi tiết sản phẩm</a></li>
@@ -44,6 +75,43 @@ export default function AddProduct() {
           {/* Section: Thông tin cơ bản */}
           <section id="basic-info" className="mb-8">
             <h2 className="text-xl font-semibold mb-4 border-b pb-2">Thông tin cơ bản</h2>
+
+
+            {/* video card */}
+            <div className='mb-6'> 
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Video
+              </label>
+              <p className="text-xs text-gray-500 mb-2">Thêm video để mô tả sản phẩm rõ hơn. Kích thước tối đa 100 MB, thời lượng tối đa 60s, định dạng: MP4, MOV, AVI.</p>
+              <div
+                className="w-28 h-28 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-center text-gray-500 cursor-pointer hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50"
+                onClick={() => document.getElementById('video-upload-input')?.click()}
+              >
+                <UploadCloud size={24} />
+                <span className="text-xs mt-1">Tải video</span>
+              </div>
+
+              {/* Input file bị ẩn đi, chỉ khi bấm vào div trên mới mở */}
+              <input
+                type="file"
+                id="video-upload-input"
+                className="hidden"
+                accept="video/*"
+                onChange={handleVideoChange}
+              />
+
+              {/* Hiển thị video nếu đã chọn */}
+              {videoUrl && (
+                <div className="mt-4 relative w-fit">
+                  <video
+                    src={videoUrl}
+                    controls
+                    className="w-full h-auto max-w-md rounded-lg shadow-lg"
+                  />
+                  <button onClick={e=>setVideoUrl("")} className='bg-white/50 rounded hover:bg-gray-300 absolute top-4 right-2'><X/></button>
+                </div>
+              )}
+            </div>
 
             {/* Image Upload */}
             <div className="mb-6">
@@ -61,9 +129,9 @@ export default function AddProduct() {
                 {/* Other Image Placeholders */}
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="w-28 h-28 border border-gray-300 rounded-md flex items-center justify-center bg-gray-100 text-gray-400 cursor-pointer hover:bg-gray-200">
-                     {/* Placeholder Icon or Text */}
-                     <span className="text-xs">Ảnh {i + 1}</span>
-                     {/* <input type="file" className="hidden" /> */}
+                    {/* Placeholder Icon or Text */}
+                    <span className="text-xs">Ảnh {i + 1}</span>
+                    {/* <input type="file" className="hidden" /> */}
                   </div>
                 ))}
               </div>
@@ -103,20 +171,20 @@ export default function AddProduct() {
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                 Mô tả sản phẩm <span className="text-red-500">*</span>
               </label>
-               {/* Placeholder for Rich Text Editor */}
+              {/* Placeholder for Rich Text Editor */}
               <div className="border border-gray-300 rounded-md">
                 {/* Toolbar Placeholder */}
                 <div className="flex items-center gap-2 p-2 border-b bg-gray-50">
-                   <button title="AI Generate" className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200">Nội dung mô tả sản phẩm do AI tạo?</button>
-                   <div className="flex gap-1">
-                     <button className="p-1 hover:bg-gray-200 rounded"><Bold size={16}/></button>
-                     <button className="p-1 hover:bg-gray-200 rounded"><Italic size={16}/></button>
-                     <button className="p-1 hover:bg-gray-200 rounded"><Underline size={16}/></button>
-                     <button className="p-1 hover:bg-gray-200 rounded"><List size={16}/></button>
-                     <button className="p-1 hover:bg-gray-200 rounded"><ListOrdered size={16}/></button>
-                   </div>
+                  <button title="AI Generate" className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200">Nội dung mô tả sản phẩm do AI tạo?</button>
+                  <div className="flex gap-1">
+                    <button className="p-1 hover:bg-gray-200 rounded"><Bold size={16} /></button>
+                    <button className="p-1 hover:bg-gray-200 rounded"><Italic size={16} /></button>
+                    <button className="p-1 hover:bg-gray-200 rounded"><Underline size={16} /></button>
+                    <button className="p-1 hover:bg-gray-200 rounded"><List size={16} /></button>
+                    <button className="p-1 hover:bg-gray-200 rounded"><ListOrdered size={16} /></button>
+                  </div>
                 </div>
-                 {/* Text Area */}
+                {/* Text Area */}
                 <textarea
                   id="description"
                   rows={8}
@@ -124,52 +192,41 @@ export default function AddProduct() {
                   placeholder="Mô tả chi tiết sản phẩm của bạn..."
                 ></textarea>
               </div>
-               {/* Helper text */}
-               <p className="text-xs text-gray-500 mt-1">Mô tả sản phẩm cần chi tiết, rõ ràng, cung cấp đầy đủ thông tin về sản phẩm.</p>
+              {/* Helper text */}
+              <p className="text-xs text-gray-500 mt-1">Mô tả sản phẩm cần chi tiết, rõ ràng, cung cấp đầy đủ thông tin về sản phẩm.</p>
             </div>
 
-            {/* Video Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Video
-              </label>
-               <p className="text-xs text-gray-500 mb-2">Thêm video để mô tả sản phẩm rõ hơn. Kích thước tối đa 100 MB, thời lượng tối đa 60s, định dạng: MP4, MOV, AVI.</p>
-              <div className="w-28 h-28 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-center text-gray-500 cursor-pointer hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50">
-                 <UploadCloud size={24} />
-                 <span className="text-xs mt-1">Tải video</span>
-                 {/* <input type="file" className="hidden" accept="video/*" /> */}
-              </div>
-            </div>
+
           </section>
 
           {/* Section: Thông tin bán hàng (Placeholder) */}
           <section id="sales-info" className="mb-8">
-             <h2 className="text-xl font-semibold mb-4 border-b pb-2">Thông tin bán hàng</h2>
-             {/* Add Price, Stock, Variations etc. here */}
-             <p className="text-gray-500">...</p>
+            <h2 className="text-xl font-semibold mb-4 border-b pb-2">Thông tin bán hàng</h2>
+            {/* Add Price, Stock, Variations etc. here */}
+            <p className="text-gray-500">...</p>
           </section>
 
           {/* Section: Vận chuyển (Placeholder) */}
           <section id="shipping">
-             <h2 className="text-xl font-semibold mb-4 border-b pb-2">Vận chuyển</h2>
-             {/* Add Weight, Dimensions, Shipping Options etc. here */}
-             <p className="text-gray-500">...</p>
+            <h2 className="text-xl font-semibold mb-4 border-b pb-2">Vận chuyển</h2>
+            {/* Add Weight, Dimensions, Shipping Options etc. here */}
+            <p className="text-gray-500">...</p>
           </section>
 
         </main>
 
         {/* Right Sidebar Preview */}
         <aside className="w-full lg:w-1/4 bg-white p-4 rounded-md shadow-sm h-fit sticky top-[150px]"> {/* Adjust top offset */}
-           <h3 className="text-lg font-semibold mb-3">Xem trước</h3>
-           {/* Add Preview components/placeholders here */}
-           <div className="border rounded-md p-4 text-center text-gray-400">
-               <p>Khu vực xem trước sản phẩm</p>
-               {/* Desktop/Mobile Toggle Placeholder */}
-               <div className="mt-4 flex justify-center gap-2">
-                    <button className="text-xs px-3 py-1 border rounded bg-gray-200">Desktop</button>
-                    <button className="text-xs px-3 py-1 border rounded">Mobile</button>
-               </div>
-           </div>
+          <h3 className="text-lg font-semibold mb-3">Xem trước</h3>
+          {/* Add Preview components/placeholders here */}
+          <div className="border rounded-md p-4 text-center text-gray-400">
+            <p>Khu vực xem trước sản phẩm</p>
+            {/* Desktop/Mobile Toggle Placeholder */}
+            <div className="mt-4 flex justify-center gap-2">
+              <button className="text-xs px-3 py-1 border rounded bg-gray-200">Desktop</button>
+              <button className="text-xs px-3 py-1 border rounded">Mobile</button>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
