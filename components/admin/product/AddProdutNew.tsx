@@ -1,15 +1,49 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { UploadCloud, MapPin, Tag, AtSign, Users, Settings, Send, Image as ImageIcon, Video, X } from 'lucide-react'; // Using lucide-react for icons
+import { UploadCloud, MapPin, Tag, AtSign, Users, Settings, Send, Image as ImageIcon, Video, X, List, DollarSign, Type, ChevronDown, ChevronUp } from 'lucide-react'; // Added ChevronDown, ChevronUp
 
 // Define Props interface if needed, otherwise remove or adjust
-type Props = {
-    header?: boolean;
-    videoUrl?: string;
+interface Props {
+    videoUrl?: string; // Optional initial video URL from props
+    // Add other props if necessary
 }
+
+// Reusable Collapsible Section Component
+interface CollapsibleSectionProps {
+    title: string;
+    icon: React.ElementType;
+    children: React.ReactNode;
+    initialOpen?: boolean; // Optional: Set if the section should be open initially
+}
+
+const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ title, icon: Icon, children, initialOpen = false }) => {
+    const [isOpen, setIsOpen] = useState(initialOpen);
+
+    return (
+        <div className="border-b border-gray-200">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-lg px-2 transition-colors focus:outline-none"
+                aria-expanded={isOpen}
+            >
+                <span className="flex items-center text-sm font-medium">
+                    <Icon size={20} className="mr-3 text-gray-500" /> {title}
+                </span>
+                {isOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
+            </button>
+            {/* Collapsible content */}
+            <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100 pb-4 px-2' : 'max-h-0 opacity-0'}`} // Adjust max-h as needed
+                style={{ transitionProperty: 'max-height, opacity, padding' }} // Ensure smooth transition
+            >
+                {isOpen && <div className="mt-2">{children}</div>} {/* Render children only when open or during transition */}
+            </div>
+        </div>
+    );
+};
 
 
 // Main component for adding a product
-export default function AddProductNew(props: Props) {
+export default function AddProduct(props: Props) {
     // State variables for form fields
     const [productName, setProductName] = useState<string>('');
     const [productPrice, setProductPrice] = useState<string>('');
@@ -21,31 +55,27 @@ export default function AddProductNew(props: Props) {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
     const [videoFile, setVideoFile] = useState<File | null>(null);
 
-    // --- Video Handling Logic (from user) ---
+    // --- Video Handling Logic ---
     const handleVideoChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Check file type and size
-            if (file.size > 100 * 1024 * 1024) { // 100 MB limit
-                alert("Video quá lớn, tối đa 100 MB!"); // Video too large, max 100 MB!
+            if (file.size > 100 * 1024 * 1024) {
+                alert("Video quá lớn, tối đa 100 MB!");
                 return;
             }
             if (!["video/mp4", "video/quicktime", "video/x-msvideo", "video/avi"].includes(file.type)) {
-                // Added quicktime (mov) and avi
-                alert("Định dạng không hợp lệ! Vui lòng chọn MP4, MOV hoặc AVI."); // Invalid format! Please select MP4, MOV, or AVI.
+                alert("Định dạng không hợp lệ! Vui lòng chọn MP4, MOV hoặc AVI.");
                 return;
             }
-
+            if (videoUrl && videoUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(videoUrl);
+            }
             setVideoFile(file);
             const objectUrl = URL.createObjectURL(file);
-            setVideoUrl(objectUrl); // Save video URL for display
-
-            // Clean up the previous object URL if it exists
-            return () => URL.revokeObjectURL(objectUrl);
+            setVideoUrl(objectUrl);
         }
     };
 
-    // Effect to handle initial video URL from props
     useEffect(() => {
         if (props.videoUrl) {
             setVideoUrl(props.videoUrl);
@@ -58,125 +88,83 @@ export default function AddProductNew(props: Props) {
         if (files) {
             const newFiles = Array.from(files);
             const currentImageCount = images.length;
-
-            // Limit to 3 images total for this example
             if (currentImageCount + newFiles.length > 3) {
-                alert("Bạn chỉ có thể tải lên tối đa 3 ảnh."); // You can only upload a maximum of 3 images.
-                // Optionally slice the newFiles array to fit the limit
-                // newFiles = newFiles.slice(0, 3 - currentImageCount);
-                return; // Or prevent adding any if limit exceeded
+                alert("Bạn chỉ có thể tải lên tối đa 3 ảnh.");
+                return;
             }
-
-            // Validate file types and sizes (example: max 5MB, JPG/JPEG/PNG)
             const validFiles = newFiles.filter(file => {
                 if (file.size > 5 * 1024 * 1024) {
-                    alert(`Ảnh "${file.name}" quá lớn, tối đa 5 MB.`); // Image too large
+                    alert(`Ảnh "${file.name}" quá lớn, tối đa 5 MB.`);
                     return false;
                 }
                 if (!["image/jpeg", "image/png"].includes(file.type)) {
-                    alert(`Định dạng ảnh "${file.name}" không hợp lệ. Chỉ chấp nhận JPG, PNG.`); // Invalid format
+                    alert(`Định dạng ảnh "${file.name}" không hợp lệ. Chỉ chấp nhận JPG, PNG.`);
                     return false;
                 }
                 return true;
             });
-
             setImages(prevImages => [...prevImages, ...validFiles]);
-
-            // Create previews
             const newPreviews = validFiles.map(file => URL.createObjectURL(file));
             setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
         }
     };
 
-    // Function to remove an image
     const removeImage = (index: number) => {
         setImages(prevImages => prevImages.filter((_, i) => i !== index));
         setImagePreviews(prevPreviews => {
             const previewToRemove = prevPreviews[index];
-            URL.revokeObjectURL(previewToRemove); // Clean up object URL
+            URL.revokeObjectURL(previewToRemove);
             return prevPreviews.filter((_, i) => i !== index);
         });
     };
 
-    // Clean up image object URLs on component unmount
     useEffect(() => {
         return () => {
             imagePreviews.forEach(url => URL.revokeObjectURL(url));
             if (videoUrl && videoUrl.startsWith('blob:')) {
-                URL.revokeObjectURL(videoUrl); // Clean up video URL if it's a blob
+                URL.revokeObjectURL(videoUrl);
             }
         };
     }, [imagePreviews, videoUrl]);
 
-
-    // --- Handlers for button clicks (implement actual logic) ---
+    // --- Handlers for button clicks ---
     const handleDraft = () => {
-        console.log("Saving draft:", { productName, productPrice, description, /* ... other state */ });
-        alert("Đã lưu nháp!"); // Draft saved!
+        console.log("Saving draft:", { productName, productPrice, description, images, videoFile });
+        alert("Đã lưu nháp!");
     };
 
     const handlePost = () => {
-        console.log("Posting product:", { productName, productPrice, description, images, videoFile, /* ... other state */ });
-        // Here you would typically send data to a server
-        alert("Đã đăng sản phẩm!"); // Product posted!
+        if (!productName || !productPrice) {
+            alert("Vui lòng nhập tên và giá sản phẩm.");
+            return;
+        }
+        console.log("Posting product:", { productName, productPrice, description, images, videoFile });
+        alert("Đã đăng sản phẩm!");
     };
 
 
     return (
         <div className="flex flex-col h-screen bg-white font-sans">
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-gray-200">
-                <button onClick={() => window.history.back()} className="text-gray-600"> {/* Simple back button */}
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 sticky top-0 bg-white z-10">
+                <button onClick={() => window.history.back()} className="text-gray-600 p-2 rounded-full hover:bg-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </button>
-                <h1 className="text-lg font-semibold">Thêm sản phẩm</h1> {/* Add Product Title */}
-                <div className="w-6"></div> {/* Spacer */}
+                <h1 className="text-lg font-semibold">Thêm sản phẩm</h1>
+                <div className="w-10"></div> {/* Spacer */}
             </div>
 
             {/* Form Content - Scrollable */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                {/* Product Name Input */}
-                <div className="mb-4">
-                    <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
-                        Tên sản phẩm <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="productName"
-                        value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
-                        placeholder="Nhập tên sản phẩm" // Enter product name
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
-
-                {/* Product Price Input */}
-                <div className="mb-4">
-                    <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                        Giá sản phẩm <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="number" // Use number type for price, or text with validation
-                        id="productPrice"
-                        value={productPrice}
-                        onChange={(e) => setProductPrice(e.target.value)}
-                        placeholder="Nhập giá sản phẩm" // Enter product price
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        required
-                        min="0" // Optional: prevent negative prices
-                    />
-                </div>
-
+            <div className="flex-grow overflow-y-auto p-4 space-y-4"> {/* Reduced space-y slightly */}
 
                 {/* Description */}
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Thêm mô tả ..." // Add description...
-                    className="w-full p-2 border border-gray-300 rounded-md h-24 resize-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Thêm mô tả ..."
+                    className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
 
                 {/* Hashtags and Mentions */}
@@ -185,156 +173,142 @@ export default function AddProductNew(props: Props) {
                         <Tag size={16} className="mr-1" /> #Hashtag
                     </button>
                     <button className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
-                        <AtSign size={16} className="mr-1" /> @Nhắc đến {/* @Mention */}
+                        <AtSign size={16} className="mr-1" /> @Nhắc đến
                     </button>
-                    {/* Add input fields or modals for these if needed */}
                 </div>
 
-                {/* Video Section */}
+                {/* --- Video Section (Not collapsible by default, adjust if needed) --- */}
                 <div className="border-t border-b border-gray-200 py-4">
-                    <h2 className="text-md font-semibold mb-2">Video sản phẩm</h2>
-                    <div className="flex items-center space-x-4">
+                    <h2 className="text-md font-semibold mb-3 px-2">Video sản phẩm</h2> {/* Added px-2 */}
+                    <div className="flex items-start space-x-4 px-2"> {/* Added px-2 */}
                         {videoUrl ? (
-                            <div className="relative w-24 h-32 rounded-md overflow-hidden">
-                                <video src={videoUrl} className="w-full h-full object-cover" controls={false} />
+                            <div className="relative w-24 h-32 rounded-lg overflow-hidden shadow-sm">
+                                <video src={videoUrl} className="w-full h-full object-cover" controls={false} preload="metadata" />
                                 <button
                                     onClick={() => {
-                                        if (videoUrl && videoUrl.startsWith('blob:')) {
-                                            URL.revokeObjectURL(videoUrl); // Clean up blob URL
-                                        }
-                                        setVideoUrl(null);
-                                        setVideoFile(null);
+                                        if (videoUrl && videoUrl.startsWith('blob:')) { URL.revokeObjectURL(videoUrl); }
+                                        setVideoUrl(null); setVideoFile(null);
                                     }}
-                                    className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full p-0.5"
-                                >
-                                    <X size={14} />
-                                </button>
-                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs text-center py-0.5">
-                                    Xem {/* View */}
-                                </div>
+                                    className="absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full p-1 hover:bg-opacity-75"
+                                    aria-label="Xóa video"
+                                > <X size={14} /> </button>
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent text-white text-xs text-center py-1"> Xem </div>
                             </div>
                         ) : (
-                            <label htmlFor="video-upload" className="w-24 h-32 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50">
-                                <Video size={32} />
-                                <span className="text-xs mt-1 text-center">Tải video lên</span> {/* Upload video */}
-                                <input
-                                    id="video-upload"
-                                    type="file"
-                                    accept="video/mp4,video/quicktime,video/x-msvideo,video/avi" // Accept mp4, mov, avi
-                                    onChange={handleVideoChange}
-                                    className="hidden"
-                                />
+                            <label htmlFor="video-upload" className="w-24 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors">
+                                <Video size={32} className="mb-1" /> <span className="text-xs text-center px-1">Tải video lên</span>
+                                <input id="video-upload" type="file" accept="video/mp4,video/quicktime,video/x-msvideo,video/avi" onChange={handleVideoChange} className="hidden" />
                             </label>
                         )}
-                        <p className="text-xs text-gray-500 flex-1">
-                            Video sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 100 MB, định dạng: MP4, MOV, AVI.
-                        </p>
+                        <p className="text-xs text-gray-600 flex-1 mt-1"> Video sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 100 MB, định dạng: MP4, MOV, AVI. </p>
                     </div>
                 </div>
 
-
-                {/* Image Section */}
+                {/* --- Image Section (Not collapsible by default, adjust if needed) --- */}
                 <div className="border-b border-gray-200 pb-4">
-                    <h2 className="text-md font-semibold mb-2">Hình ảnh</h2> {/* Images */}
-                    <p className="text-xs text-gray-500 mb-3">
-                        Ảnh bìa sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 5 MB, định dạng: JPG, JPEG, PNG. Tối đa 3 ảnh.
-                        {/* Cover image will be displayed on the product page. Max size 5 MB, format: JPG, JPEG, PNG. Max 3 images. */}
-                    </p>
-                    <div className="flex space-x-2">
-                        {/* Image Previews */}
+                    <h2 className="text-md font-semibold mb-2 px-2">Hình ảnh</h2> {/* Added px-2 */}
+                    <p className="text-xs text-gray-600 mb-3 px-2"> Ảnh bìa sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 5 MB, định dạng: JPG, JPEG, PNG. Tối đa 3 ảnh. </p>
+                    <div className="flex flex-wrap gap-2 px-2"> {/* Added px-2 */}
                         {imagePreviews.map((preview, index) => (
-                            <div key={index} className="relative w-20 h-20 rounded-md overflow-hidden border border-gray-200">
+                            <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                                 <img src={preview} alt={`Xem trước ảnh ${index + 1}`} className="w-full h-full object-cover" />
-                                <button
-                                    onClick={() => removeImage(index)}
-                                    className="absolute top-0.5 right-0.5 bg-black bg-opacity-50 text-white rounded-full p-0.5"
-                                    aria-label={`Xóa ảnh ${index + 1}`} // Remove image
-                                >
-                                    <X size={12} />
-                                </button>
-                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-[10px] text-center py-0.5">
-                                    Ảnh {index + 1} {/* Image {index + 1} */}
+                                <button onClick={() => removeImage(index)} className="absolute top-0.5 right-0.5 bg-black bg-opacity-60 text-white rounded-full p-0.5 hover:bg-opacity-75" aria-label={`Xóa ảnh ${index + 1}`} > <X size={12} /> </button>
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent text-white text-[10px] text-center py-0.5"> Ảnh {index + 1} </div>
+                            </div>
+                        ))}
+                        {images.length < 3 && (
+                            <label htmlFor="image-upload" className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors">
+                                <UploadCloud size={24} className="mb-1" /> <span className="text-xs mt-1 text-center px-1">Tải ảnh lên</span>
+                                <input id="image-upload" type="file" accept="image/jpeg,image/png" multiple onChange={handleImageChange} className="hidden" />
+                            </label>
+                        )}
+                        {Array.from({ length: Math.max(0, 3 - images.length - (images.length < 3 ? 1 : 0)) }).map((_, index) => (
+                            <div key={`placeholder-${index}`} className="w-20 h-20 border border-gray-200 rounded-lg flex items-center justify-center bg-gray-50 text-gray-400">
+                                <span className="text-xs">Ảnh {images.length + (images.length < 3 ? 1 : 0) + index + 1}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* --- Collapsible Product Details Section --- */}
+                <CollapsibleSection title="Chi tiết sản phẩm" icon={List} initialOpen={true}> {/* Open by default */}
+                    <div className="space-y-3">
+                        {/* Product Name Input */}
+                        <div>
+                            <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Tên sản phẩm <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative shadow-sm">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <Type className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                </div>
+                                <input
+                                    type="text" id="productName" value={productName} onChange={(e) => setProductName(e.target.value)}
+                                    placeholder="Nhập tên sản phẩm"
+                                    className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        {/* Product Price Input */}
+                        <div>
+                            <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                                Giá sản phẩm <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative shadow-sm">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <DollarSign className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                </div>
+                                <input
+                                    type="number" id="productPrice" value={productPrice} onChange={(e) => setProductPrice(e.target.value)}
+                                    placeholder="Nhập giá sản phẩm"
+                                    className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                    required min="0"
+                                />
+                                <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center pr-3">
+                                    <span className="text-gray-500 sm:text-sm" id="price-currency"> VND </span>
                                 </div>
                             </div>
-                        ))}
-
-                        {/* Upload Button Placeholder (if less than 3 images) */}
-                        {images.length < 3 && (
-                            <label htmlFor="image-upload" className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50">
-                                <UploadCloud size={24} />
-                                <span className="text-xs mt-1 text-center">Tải ảnh lên</span> {/* Upload image */}
-                                <input
-                                    id="image-upload"
-                                    type="file"
-                                    accept="image/jpeg,image/png"
-                                    multiple // Allow multiple file selection
-                                    onChange={handleImageChange}
-                                    className="hidden"
-                                />
-                            </label>
-                        )}
-
-                        {/* Fill remaining slots with placeholders if needed, matching the screenshot */}
-                        {Array.from({ length: Math.max(0, 3 - images.length - (images.length < 3 ? 1 : 0)) }).map((_, index) => (
-                            <div key={`placeholder-${index}`} className="w-20 h-20 border border-gray-200 rounded-md flex items-center justify-center bg-gray-50 text-gray-400">
-                                <span className="text-xs">Ảnh {images.length + (images.length < 3 ? 1 : 0) + index + 1}</span> {/* Placeholder text */}
-                            </div>
-                        ))}
+                        </div>
                     </div>
-                </div>
+                </CollapsibleSection>
 
+                {/* --- Collapsible Other Options List --- */}
+                <div className="space-y-0"> {/* Removed space-y-1 here */}
+                    <CollapsibleSection title="Vị trí" icon={MapPin}>
+                        {/* Content for Location - Add inputs or components here */}
+                        <p className="text-sm text-gray-600">Thêm vị trí của bạn...</p>
+                    </CollapsibleSection>
 
-                {/* Other Options List */}
-                <div className="space-y-1">
-                    <button className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-md px-2">
-                        <span className="flex items-center"><MapPin size={20} className="mr-3 text-gray-500" /> Vị trí</span> {/* Location */}
-                        <ChevronRight />
-                    </button>
-                    <button className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-md px-2">
-                        <span className="flex items-center"><ImageIcon size={20} className="mr-3 text-gray-500" /> Thêm thuộc tính của sản phẩm</span> {/* Add product attributes */}
-                        <ChevronRight />
-                    </button>
-                    <button className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-md px-2">
-                        <span className="flex items-center"><Users size={20} className="mr-3 text-gray-500" /> Ai cũng có thể xem bài đăng này</span> {/* Everyone can see this post */}
-                        <ChevronRight />
-                    </button>
-                    <button className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-md px-2">
-                        <span className="flex items-center"><Settings size={20} className="mr-3 text-gray-500" /> Tùy chọn khác</span> {/* Other options */}
-                        <ChevronRight />
-                    </button>
-                    <button className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-md px-2">
-                        <span className="flex items-center"><Send size={20} className="mr-3 text-gray-500" /> Chia sẻ với</span> {/* Share with */}
-                        {/* Add social icons or similar here */}
-                        <ChevronRight />
-                    </button>
+                    <CollapsibleSection title="Ai cũng có thể xem bài đăng này" icon={Users}>
+                        {/* Content for Visibility - Add radio buttons or dropdown here */}
+                        <p className="text-sm text-gray-600">Chọn quyền riêng tư...</p>
+                    </CollapsibleSection>
+
+                    <CollapsibleSection title="Tùy chọn khác" icon={Settings}>
+                        {/* Content for Other Options */}
+                        <p className="text-sm text-gray-600">Cài đặt nâng cao...</p>
+                    </CollapsibleSection>
+
+                    <CollapsibleSection title="Chia sẻ với" icon={Send}>
+                        {/* Content for Sharing - Add social icons/buttons here */}
+                        <p className="text-sm text-gray-600">Chọn nền tảng chia sẻ...</p>
+                    </CollapsibleSection>
                 </div>
             </div>
 
             {/* Footer Buttons */}
-            <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
-                <button
-                    onClick={handleDraft}
-                    className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
-                >
-                    Nháp {/* Draft */}
+            <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-white sticky bottom-0 z-10">
+                <button onClick={handleDraft} className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors text-sm font-medium">
+                    Nháp
                 </button>
-                <button
-                    onClick={handlePost}
-                    className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-red-600 font-semibold"
-                >
-                    Đăng {/* Post */}
+                <button onClick={handlePost} className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-red-600 transition-colors font-semibold text-sm shadow-sm">
+                    Đăng
                 </button>
             </div>
         </div>
     );
 }
-
-// Simple ChevronRight component for list items
-const ChevronRight = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-);
 
 // Make sure to export App as default if this is the main component
 // export default AddProduct; // Already done above

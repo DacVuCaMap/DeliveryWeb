@@ -11,7 +11,7 @@ export default function AddVideoHome() {
     const videoUrl = searchParams.get('videoUrl') || "";
     return (
         <div>
-            <AddProductNew videoUrl={videoUrl} header={true}/>
+            <AddProductNew videoUrl={videoUrl}/>
         </div>
     );
 }
