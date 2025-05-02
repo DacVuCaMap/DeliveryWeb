@@ -25,8 +25,8 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ title, icon: Ic
                 className="w-full flex justify-between items-center py-3 text-left text-gray-800 hover:bg-gray-50 rounded-lg px-2 transition-colors focus:outline-none"
                 aria-expanded={isOpen}
             >
-                <span className="flex items-center text-sm font-medium">
-                    <Icon size={20} className="mr-3 text-gray-500" /> {title}
+                <span className="flex items-center text-sm font-bold">
+                    <Icon size={20} className="mr-3 font-bold" /> {title}
                 </span>
                 {isOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
             </button>
@@ -159,27 +159,26 @@ export default function AddProduct(props: Props) {
             {/* Form Content - Scrollable */}
             <div className="flex-grow overflow-y-auto p-4 space-y-4"> {/* Reduced space-y slightly */}
 
-                {/* Description */}
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Thêm mô tả ..."
-                    className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-blue-500 focus:border-blue-500 text-sm"
-                />
 
-                {/* Hashtags and Mentions */}
-                <div className="flex space-x-2">
-                    <button className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
-                        <Tag size={16} className="mr-1" /> #Hashtag
-                    </button>
-                    <button className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
-                        <AtSign size={16} className="mr-1" /> @Nhắc đến
-                    </button>
-                </div>
-
-                {/* --- Video Section (Not collapsible by default, adjust if needed) --- */}
-                <div className="border-t border-b border-gray-200 py-4">
-                    <h2 className="text-md font-semibold mb-3 px-2">Video sản phẩm</h2> {/* Added px-2 */}
+                <div className='flex flex-row'>
+                    <div className='w-full'>
+                        {/* Description */}
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Thêm mô tả ..."
+                            className="w-full p-3 border-gray-300 rounded-lg h-32 resize-none focus:outline-none text-sm"
+                        />
+                        {/* Hashtags and Mentions */}
+                        <div className="flex space-x-2 font-bold">
+                            <button className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
+                                # Hashtag
+                            </button>
+                            <button className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
+                                @ Nhắc đến
+                            </button>
+                        </div>
+                    </div>
                     <div className="flex items-start space-x-4 px-2"> {/* Added px-2 */}
                         {videoUrl ? (
                             <div className="relative w-24 h-32 rounded-lg overflow-hidden shadow-sm">
@@ -200,12 +199,12 @@ export default function AddProduct(props: Props) {
                                 <input id="video-upload" type="file" accept="video/mp4,video/quicktime,video/x-msvideo,video/avi" onChange={handleVideoChange} className="hidden" />
                             </label>
                         )}
-                        <p className="text-xs text-gray-600 flex-1 mt-1"> Video sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 100 MB, định dạng: MP4, MOV, AVI. </p>
                     </div>
                 </div>
 
+
                 {/* --- Image Section (Not collapsible by default, adjust if needed) --- */}
-                <div className="border-b border-gray-200 pb-4">
+                <div className="border-gray-200 pb-4">
                     <h2 className="text-md font-semibold mb-2 px-2">Hình ảnh</h2> {/* Added px-2 */}
                     <p className="text-xs text-gray-600 mb-3 px-2"> Ảnh bìa sẽ hiển thị trên trang sản phẩm. Kích thước tối đa 5 MB, định dạng: JPG, JPEG, PNG. Tối đa 3 ảnh. </p>
                     <div className="flex flex-wrap gap-2 px-2"> {/* Added px-2 */}
@@ -230,51 +229,52 @@ export default function AddProduct(props: Props) {
                     </div>
                 </div>
 
-                {/* --- Collapsible Product Details Section --- */}
-                <CollapsibleSection title="Chi tiết sản phẩm" icon={List} initialOpen={true}> {/* Open by default */}
-                    <div className="space-y-3">
-                        {/* Product Name Input */}
-                        <div>
-                            <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
-                                Tên sản phẩm <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <Type className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="text" id="productName" value={productName} onChange={(e) => setProductName(e.target.value)}
-                                    placeholder="Nhập tên sản phẩm"
-                                    className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        {/* Product Price Input */}
-                        <div>
-                            <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                                Giá sản phẩm <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <DollarSign className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    type="number" id="productPrice" value={productPrice} onChange={(e) => setProductPrice(e.target.value)}
-                                    placeholder="Nhập giá sản phẩm"
-                                    className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                    required min="0"
-                                />
-                                <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center pr-3">
-                                    <span className="text-gray-500 sm:text-sm" id="price-currency"> VND </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </CollapsibleSection>
+
 
                 {/* --- Collapsible Other Options List --- */}
                 <div className="space-y-0"> {/* Removed space-y-1 here */}
+                    {/* --- Collapsible Product Details Section --- */}
+                    <CollapsibleSection title="Chi tiết sản phẩm" icon={List} initialOpen={false}> {/* Open by default */}
+                        <div className="space-y-3">
+                            {/* Product Name Input */}
+                            <div>
+                                <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Tên sản phẩm <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative shadow-sm">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <Type className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    </div>
+                                    <input
+                                        type="text" id="productName" value={productName} onChange={(e) => setProductName(e.target.value)}
+                                        placeholder="Nhập tên sản phẩm"
+                                        className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            {/* Product Price Input */}
+                            <div>
+                                <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Giá sản phẩm <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative shadow-sm">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <DollarSign className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    </div>
+                                    <input
+                                        type="number" id="productPrice" value={productPrice} onChange={(e) => setProductPrice(e.target.value)}
+                                        placeholder="Nhập giá sản phẩm"
+                                        className="block w-full border-gray-300 pl-10 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                        required min="0"
+                                    />
+                                    <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center pr-3">
+                                        <span className="text-gray-500 sm:text-sm" id="price-currency"> VND </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapsibleSection>
                     <CollapsibleSection title="Vị trí" icon={MapPin}>
                         {/* Content for Location - Add inputs or components here */}
                         <p className="text-sm text-gray-600">Thêm vị trí của bạn...</p>
